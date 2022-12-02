@@ -1,0 +1,30 @@
+<resources>
+    <string name="app_name">WatchMovie</string>
+    <string name="facebook_app_id">820005722423714</string>
+    <string name="fb_login_protocol_scheme">fb820005722423714</string>
+    <string name="facebook_client_token">4db1dd7b95804ee77a1c83b7c9793c46</string>
+    <string name="film_start">%1$d*</string>
+    <string name="episode_film">%1$d</string>
+    <string name="one_episode">1 Tập</string>
+    <string name="episode_total">%1$d Tập</string>
+    <string name="image_logo_app">logo_app</string>
+    <string name="image_play_film">image_play_film</string>
+    <string name="xem_phim">Xem phim</string>
+    <string name="description">Description</string>
+    <string name="image_film">Image Film</string>
+    <string name="tb_edit_text">Bạn hãy nhập tên phim cần tìm!</string>
+    <string name="hint">Tên phim…</string>
+    <string name="login_facebook">Đăng nhập bằng Facebook</string>
+    <string name="title_login">Đăng nhập vào App</string>
+    <string name="text_gt_login">Đăng nhập để trải nghiệm tốt hơn</string>
+    <string name="login_google">Đăng nhập bằng Google</string>
+    <string name="tap">Tập</string>
+    <string name="trang_chu">Trang chủ</string>
+    <string name="kham_pha">Khám phá</string>
+    <string name="ca_nhan">Cá nhân</string>
+    <string name="tv_duration">%1$s / tập</string>
+    <string name="tv_view_number">View number: %1$d</string>
+    <string name="tv_created">Created: %1$s-%2$s-%3$s</string>
+    <string name="tv_star_rating">Star rating: %1$d*</string>
+    <string name="tv_at_episode">Tập %1$d</string>
+</resources>

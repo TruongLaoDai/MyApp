@@ -1,7 +1,5 @@
 # Watch Movie Project
 
-
-
 ## Getting started
 
 To make it easy for you to get started with GitLab, here's a list of recommended next steps.
@@ -15,14 +13,14 @@ Already a pro? Just edit this README.md and make it your own. Want to make it ea
 
 ```
 cd existing_repo
-git remote add origin https://gitlab.com/tranning9/watch-movie_project.git
+git remote add origin https://gitlab.com/tranning9/watch-movieMainHome.git
 git branch -M main
 git push -uf origin main
 ```
 
 ## Integrate with your tools
 
-- [ ] [Set up project integrations](https://gitlab.com/tranning9/watch-movie_project/-/settings/integrations)
+- [ ] [Set up project integrations](https://gitlab.com/tranning9/watch-movieMainHome/-/settings/integrations)
 
 ## Collaborate with your team
 
