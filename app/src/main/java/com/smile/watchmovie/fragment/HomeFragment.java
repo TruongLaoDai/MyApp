@@ -32,7 +32,7 @@ import retrofit2.Response;
 
 public class HomeFragment extends Fragment {
 
-    private FragmentHomeBinding mFragmentHomeBinding;
+    private FragmentHomeBinding binding;
     private FilmAdapter mFilmAdapter;
     private MainActivity mMainActivity;
     private boolean mIsLoading;
@@ -46,22 +46,22 @@ public class HomeFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mMainActivity = (MainActivity) getActivity();
-        mFragmentHomeBinding = FragmentHomeBinding.inflate(inflater, container, false);
+        binding = FragmentHomeBinding.inflate(inflater, container, false);
 
         mFilmAdapter = new FilmAdapter(mMainActivity);
-        mFragmentHomeBinding.ivMoveToHeadPage.setVisibility(View.INVISIBLE);
-        mFragmentHomeBinding.loadMore.setVisibility(View.INVISIBLE);
+        binding.ivMoveToHeadPage.setVisibility(View.INVISIBLE);
+        binding.loadMore.setVisibility(View.INVISIBLE);
         movieMainHomeList = new ArrayList<>();
 
         GridLayoutManager gridLayoutManager = new GridLayoutManager(mMainActivity, 2);
-        mFragmentHomeBinding.rcvFilm.setLayoutManager(gridLayoutManager);
+        binding.rcvFilm.setLayoutManager(gridLayoutManager);
         RecyclerView.ItemDecoration itemDecoration=new DividerItemDecoration(mMainActivity, DividerItemDecoration.VERTICAL);
-        mFragmentHomeBinding.rcvFilm.addItemDecoration(itemDecoration);
-        mFragmentHomeBinding.rcvFilm.addOnScrollListener(new PaginationScrollListener(gridLayoutManager) {
+        binding.rcvFilm.addItemDecoration(itemDecoration);
+        binding.rcvFilm.addOnScrollListener(new PaginationScrollListener(gridLayoutManager) {
             @Override
             public void loadMoreItems() {
                 mIsLoading=true;
-                mFragmentHomeBinding.loadMore.setVisibility(View.VISIBLE);
+                binding.loadMore.setVisibility(View.VISIBLE);
                 mCurrentPage+=1;
                 loadNextPage();
             }
@@ -77,11 +77,11 @@ public class HomeFragment extends Fragment {
             }
         });
 
-        mFragmentHomeBinding.ivMoveToHeadPage.setVisibility(View.VISIBLE);
-        mFragmentHomeBinding.ivMoveToHeadPage.setOnClickListener(v -> mFragmentHomeBinding.rcvFilm.setAdapter(mFilmAdapter));
+        binding.ivMoveToHeadPage.setVisibility(View.VISIBLE);
+        binding.ivMoveToHeadPage.setOnClickListener(v -> binding.rcvFilm.setAdapter(mFilmAdapter));
 
         callApiGetHomeFilm(0);
-        return mFragmentHomeBinding.getRoot();
+        return binding.getRoot();
     }
 
     public void callApiGetHomeFilm(int page) {
@@ -90,10 +90,10 @@ public class HomeFragment extends Fragment {
             public void onResponse(@NonNull Call<MovieArrayResponse> call, @NonNull Response<MovieArrayResponse> response) {
                 MovieArrayResponse movieArrayResponse = response.body();
                 if (movieArrayResponse != null) {
-                    mFragmentHomeBinding.loadHomePage.setVisibility(View.INVISIBLE);
+                    binding.loadHomePage.setVisibility(View.INVISIBLE);
                     movieMainHomeList.addAll(movieArrayResponse.getData());
                     mFilmAdapter.setData(movieMainHomeList);
-                    mFragmentHomeBinding.rcvFilm.setAdapter(mFilmAdapter);
+                    binding.rcvFilm.setAdapter(mFilmAdapter);
                 }
                 else{
                     Toast.makeText(mMainActivity, "Đã hiển thị hết film", Toast.LENGTH_LONG).show();
@@ -112,8 +112,8 @@ public class HomeFragment extends Fragment {
         handler.postDelayed(() -> {
             mIsLoading=false;
             callApiGetMoreHomeFilm(mCurrentPage);
-            mFragmentHomeBinding.loadHomePage.setVisibility(View.VISIBLE);
-            mFragmentHomeBinding.loadMore.setVisibility(View.INVISIBLE);
+            binding.loadHomePage.setVisibility(View.VISIBLE);
+            binding.loadMore.setVisibility(View.INVISIBLE);
             if(mCurrentPage==mTotalPage){
                 mIsLastPage=true;
             }
@@ -127,7 +127,7 @@ public class HomeFragment extends Fragment {
             public void onResponse(@NonNull Call<MovieArrayResponse> call, @NonNull Response<MovieArrayResponse> response) {
                 MovieArrayResponse movieArrayResponse = response.body();
                 if (movieArrayResponse != null) {
-                    mFragmentHomeBinding.loadHomePage.setVisibility(View.INVISIBLE);
+                    binding.loadHomePage.setVisibility(View.INVISIBLE);
                     movieMainHomeList.addAll(movieArrayResponse.getData());
                     mFilmAdapter.notifyDataSetChanged();
                 }

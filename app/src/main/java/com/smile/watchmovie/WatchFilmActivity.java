@@ -224,7 +224,7 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
         player.addListener(new Player.Listener() {
             @Override
             public void onPlayerError(@NonNull PlaybackException error) {
-                Toast.makeText(WatchFilmActivity.this, "Film Playing Error", Toast.LENGTH_SHORT).show();
+                Toast.makeText(WatchFilmActivity.this, "FilmFavorites Playing Error", Toast.LENGTH_SHORT).show();
             }
         });
         player.setPlayWhenReady(true);

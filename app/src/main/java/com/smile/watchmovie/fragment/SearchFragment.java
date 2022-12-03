@@ -33,7 +33,7 @@ import retrofit2.Response;
 
 public class SearchFragment extends Fragment {
 
-    private FragmentSearchBinding mFragmentSearchBinding;
+    private FragmentSearchBinding binding;
     private FilmAdapter mFilmAdapter;
     private MainActivity mMainActivity;
     private boolean mIsLoading;
@@ -48,33 +48,33 @@ public class SearchFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        mFragmentSearchBinding = FragmentSearchBinding.inflate(inflater, container, false);
+        binding = FragmentSearchBinding.inflate(inflater, container, false);
         mMainActivity = (MainActivity) getActivity();
 
         mFilmAdapter = new FilmAdapter(mMainActivity);
 
-        mFragmentSearchBinding.loadMore.setVisibility(View.INVISIBLE);
-        mFragmentSearchBinding.loadSearchPage.setVisibility(View.INVISIBLE);
+        binding.loadMore.setVisibility(View.INVISIBLE);
+        binding.loadSearchPage.setVisibility(View.INVISIBLE);
         movieMainHomeList = new ArrayList<>();
 
-        mFragmentSearchBinding.searchView.clearFocus();
+        binding.searchView.clearFocus();
 
-        mFragmentSearchBinding.searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        binding.searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @SuppressLint("SetTextI18n")
             @Override
             public boolean onQueryTextSubmit(String query) {
-                mFragmentSearchBinding.loadSearchPage.setVisibility(View.VISIBLE);
+                binding.loadSearchPage.setVisibility(View.VISIBLE);
                 key = query;
                 movieMainHomeList.clear();
                 if(query.equals("")){
-                    mFragmentSearchBinding.loadSearchPage.setVisibility(View.INVISIBLE);
-                    mFragmentSearchBinding.tvTitle.setText("Bạn hãy nhập tên phim cần tìm!");
-                    mFragmentSearchBinding.tvTitle.setVisibility(View.VISIBLE);
+                    binding.loadSearchPage.setVisibility(View.INVISIBLE);
+                    binding.tvTitle.setText("Bạn hãy nhập tên phim cần tìm!");
+                    binding.tvTitle.setVisibility(View.VISIBLE);
                     mFilmAdapter.setData(movieMainHomeList);
-                    mFragmentSearchBinding.rcvFilm.setAdapter(mFilmAdapter);
+                    binding.rcvFilm.setAdapter(mFilmAdapter);
                 }
                 else {
-                    mFragmentSearchBinding.tvTitle.setVisibility(View.INVISIBLE);
+                    binding.tvTitle.setVisibility(View.INVISIBLE);
                     callApiSearchFilm(query, 0);
                 }
                 return false;
@@ -83,18 +83,18 @@ public class SearchFragment extends Fragment {
             @SuppressLint("SetTextI18n")
             @Override
             public boolean onQueryTextChange(String newText) {
-                mFragmentSearchBinding.loadSearchPage.setVisibility(View.VISIBLE);
+                binding.loadSearchPage.setVisibility(View.VISIBLE);
                 key = newText;
                 movieMainHomeList.clear();
                 if(newText.equals("")){
-                    mFragmentSearchBinding.loadSearchPage.setVisibility(View.INVISIBLE);
-                    mFragmentSearchBinding.tvTitle.setText("Bạn hãy nhập tên phim cần tìm!");
-                    mFragmentSearchBinding.tvTitle.setVisibility(View.VISIBLE);
+                    binding.loadSearchPage.setVisibility(View.INVISIBLE);
+                    binding.tvTitle.setText("Bạn hãy nhập tên phim cần tìm!");
+                    binding.tvTitle.setVisibility(View.VISIBLE);
                     mFilmAdapter.setData(movieMainHomeList);
-                    mFragmentSearchBinding.rcvFilm.setAdapter(mFilmAdapter);
+                    binding.rcvFilm.setAdapter(mFilmAdapter);
                 }
                 else {
-                    mFragmentSearchBinding.tvTitle.setVisibility(View.INVISIBLE);
+                    binding.tvTitle.setVisibility(View.INVISIBLE);
                     callApiSearchFilm(newText, 0);
                 }
                 return false;
@@ -102,14 +102,14 @@ public class SearchFragment extends Fragment {
         });
 
         GridLayoutManager gridLayoutManager = new GridLayoutManager(mMainActivity, 2);
-        mFragmentSearchBinding.rcvFilm.setLayoutManager(gridLayoutManager);
+        binding.rcvFilm.setLayoutManager(gridLayoutManager);
         RecyclerView.ItemDecoration itemDecoration=new DividerItemDecoration(mMainActivity, DividerItemDecoration.VERTICAL);
-        mFragmentSearchBinding.rcvFilm.addItemDecoration(itemDecoration);
-        mFragmentSearchBinding.rcvFilm.addOnScrollListener(new PaginationScrollListener(gridLayoutManager) {
+        binding.rcvFilm.addItemDecoration(itemDecoration);
+        binding.rcvFilm.addOnScrollListener(new PaginationScrollListener(gridLayoutManager) {
             @Override
             public void loadMoreItems() {
                 mIsLoading=true;
-                mFragmentSearchBinding.loadMore.setVisibility(View.VISIBLE);
+                binding.loadMore.setVisibility(View.VISIBLE);
                 mCurrentPage+=1;
                 loadNextPage();
             }
@@ -124,7 +124,7 @@ public class SearchFragment extends Fragment {
                 return mIsLastPage;
             }
         });
-        return mFragmentSearchBinding.getRoot();
+        return binding.getRoot();
     }
 
     private void callApiSearchFilm(String key, int page) {
@@ -135,26 +135,26 @@ public class SearchFragment extends Fragment {
                 MovieArrayResponse movieArrayResponse = response.body();
                 if (movieArrayResponse != null) {
                     if(!key.equals("")) {
-                        mFragmentSearchBinding.loadSearchPage.setVisibility(View.INVISIBLE);
+                        binding.loadSearchPage.setVisibility(View.INVISIBLE);
                         movieMainHomeList.addAll(movieArrayResponse.getData());
                         if (page == 0) {
                             mFilmAdapter.setData(movieMainHomeList);
-                            mFragmentSearchBinding.rcvFilm.setAdapter(mFilmAdapter);
+                            binding.rcvFilm.setAdapter(mFilmAdapter);
                         }
                         mFilmAdapter.notifyDataSetChanged();
                         if (movieMainHomeList.size() > 0 && movieArrayResponse.getData().size() == 0) {
                             Toast.makeText(mMainActivity, "Đã hiển thị hết film", Toast.LENGTH_LONG).show();
                         } else if (movieMainHomeList.size() == 0) {
-                            mFragmentSearchBinding.tvTitle.setVisibility(View.VISIBLE);
-                            mFragmentSearchBinding.tvTitle.setText("Không có phim bạn cần tìm!");
+                            binding.tvTitle.setVisibility(View.VISIBLE);
+                            binding.tvTitle.setText("Không có phim bạn cần tìm!");
                         }
                     }
-                    else if(mFragmentSearchBinding.searchView.toString().equals("")){
+                    else if(binding.searchView.toString().equals("")){
                         movieMainHomeList.clear();
                         mFilmAdapter.notifyDataSetChanged();
-                        mFragmentSearchBinding.rcvFilm.setAdapter(mFilmAdapter);
-                        mFragmentSearchBinding.tvTitle.setText("Bạn hãy nhập tên phim cần tìm!");
-                        mFragmentSearchBinding.tvTitle.setVisibility(View.VISIBLE);
+                        binding.rcvFilm.setAdapter(mFilmAdapter);
+                        binding.tvTitle.setText("Bạn hãy nhập tên phim cần tìm!");
+                        binding.tvTitle.setVisibility(View.VISIBLE);
                     }
                 }
 
@@ -173,8 +173,8 @@ public class SearchFragment extends Fragment {
         handler.postDelayed(() -> {
             mIsLoading=false;
             callApiSearchFilm(key, mCurrentPage);
-            mFragmentSearchBinding.loadSearchPage.setVisibility(View.VISIBLE);
-            mFragmentSearchBinding.loadMore.setVisibility(View.INVISIBLE);
+            binding.loadSearchPage.setVisibility(View.VISIBLE);
+            binding.loadMore.setVisibility(View.INVISIBLE);
             if(mCurrentPage==mTotalPage){
                 mIsLastPage=true;
             }

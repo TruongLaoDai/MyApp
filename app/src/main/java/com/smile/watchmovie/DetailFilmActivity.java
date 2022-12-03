@@ -1,6 +1,7 @@
 package com.smile.watchmovie;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
@@ -12,12 +13,25 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.facebook.AccessToken;
+import com.facebook.GraphRequest;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.smile.watchmovie.adapter.BannerAdapter;
 import com.smile.watchmovie.api.ApiService;
 import com.smile.watchmovie.databinding.ActivityDetailFilmBinding;
+import com.smile.watchmovie.model.FilmFavorite;
+import com.smile.watchmovie.model.FilmFavorites;
 import com.smile.watchmovie.model.MovieDetailResponse;
 import com.smile.watchmovie.model.MovieMainHome;
 import com.smile.watchmovie.model.Banner;
+
+import org.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +48,10 @@ public class DetailFilmActivity extends AppCompatActivity {
     private List<Banner> mBannerList;
     private Timer mTimer;
     private ActivityDetailFilmBinding binding;
-
+    private String idUser;
+    private int currentImage;
+    private int idFilm;
+    private List<FilmFavorite> filmFavorites;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,10 +62,54 @@ public class DetailFilmActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         binding.layoutPageDetail.setVisibility(View.INVISIBLE);
+        getIdUser();
+        filmFavorites = new ArrayList<>();
 
-        int idFilm = getIntent().getIntExtra("id_detail_film", 0);
+        idFilm = getIntent().getIntExtra("id_detail_film", 0);
         mBannerAdapter = new BannerAdapter(this);
+        isFilmFavorite();
+        currentImage = R.drawable.ic_baseline_favorite_border_24;
+        Toast.makeText(DetailFilmActivity.this, filmFavorites.size()+"",Toast.LENGTH_SHORT).show();
+        binding.ivNoFavorite.setOnClickListener(v -> {
+            if(currentImage == R.drawable.ic_baseline_favorite_border_24){
+                currentImage = R.drawable.ic_baseline_favorite_24;
+                Toast.makeText(DetailFilmActivity.this, "Bạn đã thích film", Toast.LENGTH_LONG).show();
+            }
+            else{
+                currentImage = R.drawable.ic_baseline_favorite_border_24;
+                Toast.makeText(DetailFilmActivity.this, "Bạn đã bỏ thích film", Toast.LENGTH_LONG).show();
+            }
+            binding.ivNoFavorite.setImageResource(currentImage);
+        });
         callApiGetDetailFilm(idFilm);
+    }
+
+    private void getIdUser(){
+        GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(this);
+        AccessToken accessToken = AccessToken.getCurrentAccessToken();
+        if(acct == null && accessToken == null){
+            binding.ivNoFavorite.setVisibility(View.INVISIBLE);
+        }
+        else if(acct != null){
+            idUser = acct.getId();
+        }
+        else if(!accessToken.isExpired()) {
+            GraphRequest request = GraphRequest.newMeRequest(
+                    accessToken,
+                    (object, response) -> {
+                        // Application code
+                        try {
+                            assert object != null;
+                            idUser = (String) object.get("id");
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    });
+            Bundle parameters = new Bundle();
+            parameters.putString("fields", "id,name,link");
+            request.setParameters(parameters);
+            request.executeAsync();
+        }
     }
 
     private void callApiGetDetailFilm(int id_film) {
@@ -153,5 +214,63 @@ public class DetailFilmActivity extends AppCompatActivity {
             mTimer.cancel();
             mTimer = null;
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference("favorite_film_"+idUser);
+        if(currentImage == R.drawable.ic_baseline_favorite_24){
+            FilmFavorite filmFavorite = new FilmFavorite(idFilm);
+            FilmFavorites filmFavoritesModel = new FilmFavorites();
+            ArrayList<FilmFavorite> favorites = new ArrayList<>();
+            favorites.add(filmFavorite);
+            filmFavoritesModel.setFilmFavorites(favorites);
+            myRef.setValue(filmFavorite);
+        }
+    }
+
+    public void isFilmFavorite(){
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference("favorite_film_"+idUser);
+        myRef.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+               FilmFavorite favorites = snapshot.getValue(FilmFavorite.class);
+                if(filmFavorites != null){
+                    //ArrayList<FilmFavorite> favorites = filmFavorites.getFilmFavorites();
+                    assert favorites != null;
+                    if(favorites.getIdFilm() == idFilm){
+                        currentImage = R.drawable.ic_baseline_favorite_24;
+                    }
+                    else{
+                        currentImage = R.drawable.ic_baseline_favorite_border_24;
+                    }
+                    binding.ivNoFavorite.setImageResource(currentImage);
+                    //Toast.makeText(DetailFilmActivity.this, filmFavorite.getIdFilm()+"",Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 }
