@@ -112,8 +112,6 @@ public class HomeFragment extends Fragment {
         handler.postDelayed(() -> {
             mIsLoading=false;
             callApiGetMoreHomeFilm(mCurrentPage);
-            binding.loadHomePage.setVisibility(View.VISIBLE);
-            binding.loadMore.setVisibility(View.INVISIBLE);
             if(mCurrentPage==mTotalPage){
                 mIsLastPage=true;
             }
@@ -127,7 +125,7 @@ public class HomeFragment extends Fragment {
             public void onResponse(@NonNull Call<MovieArrayResponse> call, @NonNull Response<MovieArrayResponse> response) {
                 MovieArrayResponse movieArrayResponse = response.body();
                 if (movieArrayResponse != null) {
-                    binding.loadHomePage.setVisibility(View.INVISIBLE);
+                    binding.loadMore.setVisibility(View.INVISIBLE);
                     movieMainHomeList.addAll(movieArrayResponse.getData());
                     mFilmAdapter.notifyDataSetChanged();
                 }

@@ -1,7 +1,6 @@
 package com.smile.watchmovie;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
@@ -17,16 +16,15 @@ import com.facebook.AccessToken;
 import com.facebook.GraphRequest;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.firebase.database.ChildEventListener;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.smile.watchmovie.adapter.BannerAdapter;
 import com.smile.watchmovie.api.ApiService;
 import com.smile.watchmovie.databinding.ActivityDetailFilmBinding;
-import com.smile.watchmovie.model.FilmFavorite;
-import com.smile.watchmovie.model.FilmFavorites;
 import com.smile.watchmovie.model.MovieDetailResponse;
 import com.smile.watchmovie.model.MovieMainHome;
 import com.smile.watchmovie.model.Banner;
@@ -34,7 +32,10 @@ import com.smile.watchmovie.model.Banner;
 import org.json.JSONException;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -51,7 +52,8 @@ public class DetailFilmActivity extends AppCompatActivity {
     private String idUser;
     private int currentImage;
     private int idFilm;
-    private List<FilmFavorite> filmFavorites;
+    private CollectionReference collectionReference;
+    private int changeImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,24 +65,25 @@ public class DetailFilmActivity extends AppCompatActivity {
 
         binding.layoutPageDetail.setVisibility(View.INVISIBLE);
         getIdUser();
-        filmFavorites = new ArrayList<>();
 
         idFilm = getIntent().getIntExtra("id_detail_film", 0);
         mBannerAdapter = new BannerAdapter(this);
+
+        FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
+        collectionReference = firebaseFirestore.collection("film_favorite_"+ idUser);
         isFilmFavorite();
-        currentImage = R.drawable.ic_baseline_favorite_border_24;
-        Toast.makeText(DetailFilmActivity.this, filmFavorites.size()+"",Toast.LENGTH_SHORT).show();
         binding.ivNoFavorite.setOnClickListener(v -> {
-            if(currentImage == R.drawable.ic_baseline_favorite_border_24){
-                currentImage = R.drawable.ic_baseline_favorite_24;
+            if(changeImage == R.drawable.ic_baseline_favorite_border_24){
+                changeImage = R.drawable.ic_baseline_favorite_24;
                 Toast.makeText(DetailFilmActivity.this, "Bạn đã thích film", Toast.LENGTH_LONG).show();
             }
-            else{
-                currentImage = R.drawable.ic_baseline_favorite_border_24;
+            else if(changeImage == R.drawable.ic_baseline_favorite_24){
+                changeImage = R.drawable.ic_baseline_favorite_border_24;
                 Toast.makeText(DetailFilmActivity.this, "Bạn đã bỏ thích film", Toast.LENGTH_LONG).show();
             }
-            binding.ivNoFavorite.setImageResource(currentImage);
+            binding.ivNoFavorite.setImageResource(changeImage);
         });
+
         callApiGetDetailFilm(idFilm);
     }
 
@@ -91,7 +94,7 @@ public class DetailFilmActivity extends AppCompatActivity {
             binding.ivNoFavorite.setVisibility(View.INVISIBLE);
         }
         else if(acct != null){
-            idUser = acct.getId();
+            this.idUser = acct.getId();
         }
         else if(!accessToken.isExpired()) {
             GraphRequest request = GraphRequest.newMeRequest(
@@ -100,7 +103,7 @@ public class DetailFilmActivity extends AppCompatActivity {
                         // Application code
                         try {
                             assert object != null;
-                            idUser = (String) object.get("id");
+                            this.idUser = (String) object.get("id");
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -219,57 +222,35 @@ public class DetailFilmActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference("favorite_film_"+idUser);
-        if(currentImage == R.drawable.ic_baseline_favorite_24){
-            FilmFavorite filmFavorite = new FilmFavorite(idFilm);
-            FilmFavorites filmFavoritesModel = new FilmFavorites();
-            ArrayList<FilmFavorite> favorites = new ArrayList<>();
-            favorites.add(filmFavorite);
-            filmFavoritesModel.setFilmFavorites(favorites);
-            myRef.setValue(filmFavorite);
+
+        Map<String, Object> filmFavorite = new HashMap<>();
+        filmFavorite.put("idFilm", idFilm+"");
+        if(currentImage == R.drawable.ic_baseline_favorite_border_24 && changeImage == R.drawable.ic_baseline_favorite_24){
+            collectionReference.add(filmFavorite);
         }
     }
 
     public void isFilmFavorite(){
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference("favorite_film_"+idUser);
-        myRef.addChildEventListener(new ChildEventListener() {
+        collectionReference.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
-            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-               FilmFavorite favorites = snapshot.getValue(FilmFavorite.class);
-                if(filmFavorites != null){
-                    //ArrayList<FilmFavorite> favorites = filmFavorites.getFilmFavorites();
-                    assert favorites != null;
-                    if(favorites.getIdFilm() == idFilm){
-                        currentImage = R.drawable.ic_baseline_favorite_24;
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if(task.isSuccessful()){
+                    int check = 0;
+                    QuerySnapshot snapshot = task.getResult();
+                    for(QueryDocumentSnapshot doc : snapshot){
+                        String idFilm1 = Objects.requireNonNull(doc.get("idFilm")).toString();
+                        if(Integer.parseInt(idFilm1) == idFilm){
+                            check = 1;
+                            changeImage = R.drawable.ic_baseline_favorite_24;
+                            currentImage = R.drawable.ic_baseline_favorite_24;
+                            binding.ivNoFavorite.setImageResource(currentImage);
+                        }
                     }
-                    else{
+                    if(check == 0){
                         currentImage = R.drawable.ic_baseline_favorite_border_24;
+                        changeImage = R.drawable.ic_baseline_favorite_border_24;
                     }
-                    binding.ivNoFavorite.setImageResource(currentImage);
-                    //Toast.makeText(DetailFilmActivity.this, filmFavorite.getIdFilm()+"",Toast.LENGTH_SHORT).show();
                 }
-            }
-
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-
-            }
-
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
             }
         });
     }
