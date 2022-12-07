@@ -19,6 +19,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -228,6 +229,25 @@ public class DetailFilmActivity extends AppCompatActivity {
         if(currentImage == R.drawable.ic_baseline_favorite_border_24 && changeImage == R.drawable.ic_baseline_favorite_24){
             collectionReference.add(filmFavorite);
         }
+        else if(currentImage == R.drawable.ic_baseline_favorite_24 && changeImage == R.drawable.ic_baseline_favorite_border_24){
+            deleteFilmFavortie(filmFavorite);
+        }
+    }
+
+    private void deleteFilmFavortie(Map<String, Object> filmFavorite) {
+        collectionReference.whereEqualTo("idFilm", idFilm+"")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if(task.isSuccessful()){
+                            DocumentSnapshot documentSnapshot = task.getResult().getDocuments().get(0);
+                            String documentId = documentSnapshot.getId();
+                            collectionReference.document(documentId)
+                                    .delete();
+                        }
+                    }
+                });
     }
 
     public void isFilmFavorite(){

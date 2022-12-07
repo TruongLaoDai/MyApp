@@ -126,6 +126,9 @@ public class MainActivity extends AppCompatActivity {
                 case R.id.action_search:
                     mViewPager.setCurrentItem(1);
                     break;
+                case R.id.action_person:
+                    mViewPager.setCurrentItem(2);
+                    break;
             }
             return true;
         });
@@ -159,6 +162,14 @@ public class MainActivity extends AppCompatActivity {
                         params.height= ViewGroup.LayoutParams.MATCH_PARENT;
                         binding.viewPager.setLayoutParams(params);
                         mNavigationView.getMenu().findItem(R.id.action_search).setChecked(true);
+                        break;
+                    case 2:
+                        binding.toolBarHome.setVisibility(View.VISIBLE);
+                        LinearLayout.LayoutParams params2=(LinearLayout.LayoutParams) binding.toolBarHome.getLayoutParams();
+                        params2.width= ViewGroup.LayoutParams.MATCH_PARENT;
+                        params2.height= (int)(65*getApplicationContext().getResources().getDisplayMetrics().density);
+                        binding.toolBarHome.setLayoutParams(params2);
+                        mNavigationView.getMenu().findItem(R.id.action_person).setChecked(true);
                         break;
                 }
             }

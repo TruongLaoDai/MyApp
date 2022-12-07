@@ -6,6 +6,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 
 import com.smile.watchmovie.fragment.HomeFragment;
+import com.smile.watchmovie.fragment.PersonFragment;
 import com.smile.watchmovie.fragment.SearchFragment;
 
 public class ViewPagerAdapter extends FragmentStatePagerAdapter {
@@ -20,11 +21,14 @@ public class ViewPagerAdapter extends FragmentStatePagerAdapter {
         if (position == 1) {
             return new SearchFragment();
         }
+        else if (position == 2){
+            return new PersonFragment();
+        }
         return new HomeFragment();
     }
 
     @Override
     public int getCount() {
-        return 2;
+        return 3;
     }
 }

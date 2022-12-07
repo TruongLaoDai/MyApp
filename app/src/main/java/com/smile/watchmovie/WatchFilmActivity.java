@@ -9,12 +9,18 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
+import android.app.Dialog;
 import android.content.pm.ActivityInfo;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -36,8 +42,10 @@ import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -67,8 +75,9 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
     private EpisodeAdapter mEpisodeAdapter;
     private CollectionReference collectionReference;
     private String idUser;
-    private ImageView imgvFullScreen;
+    private ImageView ivFullScreen;
     private int check = 0;
+    private long timePreviod = 0;
 
     @SuppressLint("SetTextI18n")
     @Override
@@ -103,16 +112,14 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
 
         setUpCustomPlayFilm();
 
-        imgvFullScreen = binding.exoplayerView.findViewById(R.id.scaling);
-        imgvFullScreen.setOnClickListener(v -> {
+        ivFullScreen = binding.exoplayerView.findViewById(R.id.scaling);
+        ivFullScreen.setOnClickListener(v -> {
             if(checkFullScreen){
                 setUpShowNoFullScreen();
 
             }else{
                 setUpShowFilmFullScreen();
-                binding.exoplayerView.findViewById(R.id.iv_back).setOnClickListener(v12 -> {
-                    setUpShowNoFullScreen();
-                });
+                binding.exoplayerView.findViewById(R.id.iv_back).setOnClickListener(v12 -> setUpShowNoFullScreen());
             }
         });
         ivUnlockScreen = binding.exoplayerView.findViewById(R.id.iv_unlock);
@@ -127,24 +134,13 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
             lockScreen(checkLockScreen);
         });
 
-        binding.exoplayerView.findViewById(R.id.iv_back).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-                Map<String, Object> historyWatchFilm = new HashMap<>();
-                historyWatchFilm.put("idFilm", movieMainHome.getId()+"");
-                if(player.getCurrentPosition()>10000 && check == 0){
-                    collectionReference.add(historyWatchFilm);
-                }
-                if(player.isPlaying()){
-                    player.stop();
-                }
-            }
+        binding.exoplayerView.findViewById(R.id.iv_back).setOnClickListener(v -> {
+            backOther();
         });
     }
 
     private void setUpShowFilmFullScreen() {
-        imgvFullScreen.setImageDrawable(ContextCompat.getDrawable(WatchFilmActivity.this,R.drawable.ic_baseline_fullscreen_exit_24));
+        ivFullScreen.setImageDrawable(ContextCompat.getDrawable(WatchFilmActivity.this,R.drawable.ic_baseline_fullscreen_exit_24));
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN
                 | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
                 | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
@@ -159,7 +155,7 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
     }
 
     private void setUpShowNoFullScreen() {
-        imgvFullScreen.setImageDrawable(ContextCompat.getDrawable(WatchFilmActivity.this,R.drawable.fullscreen));
+        ivFullScreen.setImageDrawable(ContextCompat.getDrawable(WatchFilmActivity.this,R.drawable.fullscreen));
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
         if(getSupportActionBar()!=null){
             getSupportActionBar().show();
@@ -207,6 +203,22 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
         }
         binding.rcvEposide.setAdapter(mEpisodeAdapter);
         playVideo(movieMainHome.getSubVideoList().get(0));
+    }
+
+    private void backOther(){
+        finish();
+        Map<String, Object> historyWatchFilm = new HashMap<>();
+        historyWatchFilm.put("idFilm", movieMainHome.getId()+"");
+        historyWatchFilm.put("time", player.getCurrentPosition()+"");
+        if(player.getCurrentPosition() > 1000 && check == 0){
+            collectionReference.add(historyWatchFilm);
+        }
+        else if(check == 1 && timePreviod != player.getCurrentPosition()){
+            updateDataTimeWatchFilm(historyWatchFilm);
+        }
+        if(player.isPlaying()){
+            player.stop();
+        }
     }
 
     private void getIdUser(){
@@ -299,7 +311,7 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
         player.addListener(new Player.Listener() {
             @Override
             public void onPlayerError(@NonNull PlaybackException error) {
-                Toast.makeText(WatchFilmActivity.this, "HistoryFilm Playing Error", Toast.LENGTH_SHORT).show();
+                Toast.makeText(WatchFilmActivity.this, "Film Playing Error", Toast.LENGTH_SHORT).show();
             }
         });
         player.setPlayWhenReady(true);
@@ -310,13 +322,74 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
         super.onBackPressed();
         Map<String, Object> historyWatchFilm = new HashMap<>();
         historyWatchFilm.put("idFilm", movieMainHome.getId()+"");
-        historyWatchFilm.put("position", player.getCurrentPosition()+"");
+        historyWatchFilm.put("time", player.getCurrentPosition()+"");
         if(player.getCurrentPosition()>10000 && check == 0){
             collectionReference.add(historyWatchFilm);
+        }
+        else if(check == 1 && timePreviod != player.getCurrentPosition()){
+            updateDataTimeWatchFilm(historyWatchFilm);
         }
         if(player.isPlaying()){
             player.stop();
         }
+    }
+
+    private void updateDataTimeWatchFilm(Map<String, Object> historyWatchFilm) {
+        collectionReference.whereEqualTo("idFilm", movieMainHome.getId()+"")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if(task.isSuccessful()){
+                            DocumentSnapshot documentSnapshot = task.getResult().getDocuments().get(0);
+                            String documentId = documentSnapshot.getId();
+                            collectionReference.document(documentId)
+                                    .update(historyWatchFilm);
+                        }
+                    }
+                });
+    }
+
+
+    private void openDialogWatchFilmAtTime(long time){
+        final Dialog dialog = new Dialog(this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.layout_dialog_watch_film_from_time);
+        dialog.setCancelable(false);
+
+        Window window = dialog.getWindow();
+        if(window == null){
+            return;
+        }
+
+        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+        WindowManager.LayoutParams windowAttributes = window.getAttributes();
+        windowAttributes.gravity = Gravity.CENTER;
+        window.setAttributes(windowAttributes);
+
+        TextView tv_at_time = dialog.findViewById(R.id.tv_at_time);
+        Button btn_yes = dialog.findViewById(R.id.btn_yes);
+        Button btn_no = dialog.findViewById(R.id.btn_no);
+
+        int hour = (int) (time / 1000 / 3600);
+        int minute = (int) ((time / 1000 - hour * 3600)/60);
+        int second = (int) (time / 1000 - hour * 3600 - minute * 60);
+        String atTime = hour + ":" + minute + ":" + second;
+        tv_at_time.setText("Bạn có muốn xem phim từ " + atTime);
+
+        btn_yes.setOnClickListener(v -> {
+            player.setPlayWhenReady(true);
+            player.seekTo(time);
+            dialog.dismiss();
+        });
+
+        btn_no.setOnClickListener(v ->{
+            player.setPlayWhenReady(true);
+            dialog.dismiss();
+        });
+        dialog.show();
     }
 
     public void historyWatchFilm(){
@@ -328,13 +401,12 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
                     for(QueryDocumentSnapshot doc : snapshot){
                         String idFilm1 = Objects.requireNonNull(doc.get("idFilm")).toString();
                         if(Integer.parseInt(idFilm1) == movieMainHome.getId()){
-                            String position = Objects.requireNonNull(doc.get("position")).toString();
+                            String time = Objects.requireNonNull(doc.get("time")).toString();
                             check = 1;
-                            Toast.makeText(WatchFilmActivity.this, position, Toast.LENGTH_LONG).show();
+                            timePreviod = Long.parseLong(time);
+                            openDialogWatchFilmAtTime(Long.parseLong(time));
+                            player.setPlayWhenReady(false);
                         }
-                    }
-                    if(check == 0){
-
                     }
                 }
             }

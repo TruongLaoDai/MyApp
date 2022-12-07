@@ -27,4 +27,6 @@
     <string name="tv_created">Created: %1$s-%2$s-%3$s</string>
     <string name="tv_star_rating">Star rating: %1$d*</string>
     <string name="tv_at_episode">Tập %1$d</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
