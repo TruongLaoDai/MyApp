@@ -7,6 +7,6 @@
         android:icon="@drawable/ic_baseline_search_24"
         android:title="@string/kham_pha"/>
     <item android:id="@+id/action_person"
-        android:icon="@drawable/ic_baseline_search_24"
+        android:icon="@drawable/ic_baseline_person_24"
         android:title="@string/ca_nhan"/>
 </menu>

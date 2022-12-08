@@ -32,23 +32,22 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.smile.watchmovie.DetailFilmActivity;
-import com.smile.watchmovie.MainActivity;
 import com.smile.watchmovie.R;
-import com.smile.watchmovie.databinding.ItemFilmBinding;
 import com.smile.watchmovie.databinding.ItemFilmFavoriteBinding;
+import com.smile.watchmovie.databinding.ItemFilmHistoryBinding;
 import com.smile.watchmovie.model.MovieMainHome;
 
 import org.json.JSONException;
 
 import java.util.List;
 
-public class FilmFavoriteAdapter extends RecyclerView.Adapter<FilmFavoriteAdapter.FilmFavoriteViewHolder> {
+public class HistoryWatchFilmAdapter extends RecyclerView.Adapter<HistoryWatchFilmAdapter.HistoryWatchFilmViewHolder> {
 
     private List<MovieMainHome> movieMainHomeList;
     private final Context context;
     private String idUser;
 
-    public FilmFavoriteAdapter(Context context) {
+    public HistoryWatchFilmAdapter(Context context) {
         this.context = context;
         getIdUser();
     }
@@ -57,15 +56,40 @@ public class FilmFavoriteAdapter extends RecyclerView.Adapter<FilmFavoriteAdapte
         this.movieMainHomeList = movieMainHomeList;
     }
 
+    private void getIdUser(){
+        GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(context);
+        AccessToken accessToken = AccessToken.getCurrentAccessToken();
+        if(acct != null){
+            this.idUser = acct.getId();
+        }
+        else if(accessToken != null && !accessToken.isExpired()) {
+            GraphRequest request = GraphRequest.newMeRequest(
+                    accessToken,
+                    (object, response) -> {
+                        // Application code
+                        try {
+                            assert object != null;
+                            this.idUser = (String) object.get("id");
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    });
+            Bundle parameters = new Bundle();
+            parameters.putString("fields", "id,name,link");
+            request.setParameters(parameters);
+            request.executeAsync();
+        }
+    }
+
     @NonNull
     @Override
-    public FilmFavoriteViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public HistoryWatchFilmViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        return new FilmFavoriteAdapter.FilmFavoriteViewHolder(ItemFilmFavoriteBinding.inflate(inflater, parent, false));
+        return new HistoryWatchFilmAdapter.HistoryWatchFilmViewHolder(ItemFilmHistoryBinding.inflate(inflater, parent, false));
     }
 
     @Override
-    public void onBindViewHolder(@NonNull FilmFavoriteViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull HistoryWatchFilmViewHolder holder, int position) {
         MovieMainHome movieMainHome = movieMainHomeList.get(position);
         if (movieMainHome == null) {
             return;
@@ -89,7 +113,7 @@ public class FilmFavoriteAdapter extends RecyclerView.Adapter<FilmFavoriteAdapte
             intent.putExtra("id_detail_film", movieMainHome.getId());
             context.startActivity(intent);
         });
-        holder.binding.ivFavorite.setOnClickListener(new View.OnClickListener() {
+        holder.binding.ivDeleteHistory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 final Dialog dialog = new Dialog(context);
@@ -110,12 +134,12 @@ public class FilmFavoriteAdapter extends RecyclerView.Adapter<FilmFavoriteAdapte
                 window.setAttributes(windowAttributes);
 
                 FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
-                CollectionReference collectionReference = firebaseFirestore.collection("film_favorite_"+ idUser);
-                TextView  tv_title = dialog.findViewById(R.id.tv_at_time);
+                CollectionReference collectionReference = firebaseFirestore.collection("history_watch_film_"+ idUser);
+                TextView tv_title = dialog.findViewById(R.id.tv_at_time);
                 Button btn_yes = dialog.findViewById(R.id.btn_yes);
                 Button btn_no = dialog.findViewById(R.id.btn_no);
 
-                tv_title.setText("Bạn có muốn xóa film " + movieMainHome.getName() + " khỏi mục film yêu thích của bạn?");
+                tv_title.setText("Bạn có muốn xóa film " + movieMainHome.getName() + " khỏi lịch sử xem phim của bạn?");
 
 
                 btn_yes.setOnClickListener(new View.OnClickListener() {
@@ -156,44 +180,16 @@ public class FilmFavoriteAdapter extends RecyclerView.Adapter<FilmFavoriteAdapte
 
     @Override
     public int getItemCount() {
-        if (movieMainHomeList != null) {
-            return movieMainHomeList.size();
-        }
         return 0;
     }
 
-    private void getIdUser(){
-        GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(context);
-        AccessToken accessToken = AccessToken.getCurrentAccessToken();
-        if(acct != null){
-            this.idUser = acct.getId();
-        }
-        else if(accessToken != null && !accessToken.isExpired()) {
-            GraphRequest request = GraphRequest.newMeRequest(
-                    accessToken,
-                    (object, response) -> {
-                        // Application code
-                        try {
-                            assert object != null;
-                            this.idUser = (String) object.get("id");
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    });
-            Bundle parameters = new Bundle();
-            parameters.putString("fields", "id,name,link");
-            request.setParameters(parameters);
-            request.executeAsync();
-        }
-    }
+    public static class HistoryWatchFilmViewHolder extends RecyclerView.ViewHolder{
 
-    public static class FilmFavoriteViewHolder extends RecyclerView.ViewHolder {
+        private final ItemFilmHistoryBinding binding;
 
-        private final ItemFilmFavoriteBinding binding;
-
-        public FilmFavoriteViewHolder(ItemFilmFavoriteBinding binding) {
-
+        public HistoryWatchFilmViewHolder(@NonNull ItemFilmHistoryBinding binding) {
             super(binding.getRoot());
+
             this.binding = binding;
         }
     }

@@ -7,42 +7,74 @@
     android:orientation="vertical">
 
     <!-- TODO: Update blank fragment layout -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+    <RelativeLayout
         android:layout_weight="1"
-        android:padding="10dp"
-        android:orientation="vertical">
-        <TextView
+        android:layout_width="match_parent"
+        android:layout_height="0dp">
+        <LinearLayout
+            android:padding="10dp"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:weightSum="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:textColor="@color/black"
+                android:textSize="20sp"
+                android:layout_weight="0.12"
+                android:text="Lịch sử" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:layout_weight="0.88"
+                android:id="@+id/rcv_history_watch_film"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"/>
+        </LinearLayout>
+        <TextView
             android:textColor="@color/black"
             android:textSize="20sp"
-            android:text="Lịch sử xem phim" />
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rcv_history_watch_film"
+            android:layout_centerVertical="true"
+            android:gravity="center"
+            android:text="Danh sách trống"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
-    </LinearLayout>
+    </RelativeLayout>
 
-    <LinearLayout
-        android:padding="10dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+    <RelativeLayout
         android:layout_weight="1"
-        android:orientation="vertical">
-        <TextView
+        android:layout_width="match_parent"
+        android:layout_height="0dp">
+        <LinearLayout
+            android:padding="10dp"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:weightSum="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:textColor="@color/black"
+                android:textSize="20sp"
+                android:layout_weight="0.12"
+                android:text="Phim yêu thích" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:layout_weight="0.88"
+                android:id="@+id/rcv_film_favorite"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"/>
+        </LinearLayout>
+        <TextView
             android:textColor="@color/black"
             android:textSize="20sp"
-            android:text="Danh sách phim yêu thích" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rcv_film_favorite"
+            android:layout_centerVertical="true"
+            android:gravity="center"
+            android:text="Danh sách trống"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
-    </LinearLayout>
-
+    </RelativeLayout>
 
 </LinearLayout>

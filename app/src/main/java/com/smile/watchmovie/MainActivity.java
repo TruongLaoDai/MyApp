@@ -148,11 +148,13 @@ public class MainActivity extends AppCompatActivity {
             public void onPageSelected(int position) {
                 switch (position){
                     case 0:
-                        binding.toolBarHome.setVisibility(View.VISIBLE);
-                        LinearLayout.LayoutParams params1=(LinearLayout.LayoutParams) binding.toolBarHome.getLayoutParams();
-                        params1.width= ViewGroup.LayoutParams.MATCH_PARENT;
-                        params1.height= (int)(65*getApplicationContext().getResources().getDisplayMetrics().density);
-                        binding.toolBarHome.setLayoutParams(params1);
+                        if(binding.toolBarHome.getVisibility() == View.GONE) {
+                            binding.toolBarHome.setVisibility(View.VISIBLE);
+                            LinearLayout.LayoutParams params1 = (LinearLayout.LayoutParams) binding.toolBarHome.getLayoutParams();
+                            params1.width = ViewGroup.LayoutParams.MATCH_PARENT;
+                            params1.height = (int) (65 * getApplicationContext().getResources().getDisplayMetrics().density);
+                            binding.toolBarHome.setLayoutParams(params1);
+                        }
                         mNavigationView.getMenu().findItem(R.id.action_home).setChecked(true);
                         break;
                     case 1:
@@ -164,11 +166,13 @@ public class MainActivity extends AppCompatActivity {
                         mNavigationView.getMenu().findItem(R.id.action_search).setChecked(true);
                         break;
                     case 2:
-                        binding.toolBarHome.setVisibility(View.VISIBLE);
-                        LinearLayout.LayoutParams params2=(LinearLayout.LayoutParams) binding.toolBarHome.getLayoutParams();
-                        params2.width= ViewGroup.LayoutParams.MATCH_PARENT;
-                        params2.height= (int)(65*getApplicationContext().getResources().getDisplayMetrics().density);
-                        binding.toolBarHome.setLayoutParams(params2);
+                        if(binding.toolBarHome.getVisibility() == View.GONE) {
+                            binding.toolBarHome.setVisibility(View.VISIBLE);
+                            LinearLayout.LayoutParams params2 = (LinearLayout.LayoutParams) binding.toolBarHome.getLayoutParams();
+                            params2.width = ViewGroup.LayoutParams.MATCH_PARENT;
+                            params2.height = (int) (65 * getApplicationContext().getResources().getDisplayMetrics().density);
+                            binding.toolBarHome.setLayoutParams(params2);
+                        }
                         mNavigationView.getMenu().findItem(R.id.action_person).setChecked(true);
                         break;
                 }
