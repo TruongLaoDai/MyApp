@@ -41,9 +41,6 @@ import com.google.android.exoplayer2.upstream.DataSource;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -96,17 +93,18 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
         binding.tvDescription.setText(movieMainHome.getDescription());
 
         getIdUser();
-
-        FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
-        collectionReference = firebaseFirestore.collection("history_watch_film_"+ idUser);
+        setUpPlayer();
 
         mEpisodeAdapter = new EpisodeAdapter(this);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, RecyclerView.HORIZONTAL, false);
         binding.rcvEposide.setLayoutManager(layoutManager);
 
-        setUpPlayer();
+        if(!idUser.equals("")) {
+            FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
+            collectionReference = firebaseFirestore.collection("history_watch_film_" + idUser);
 
-        historyWatchFilm();
+            historyWatchFilm();
+        }
 
         playFilmFirst();
 
@@ -134,9 +132,7 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
             lockScreen(checkLockScreen);
         });
 
-        binding.exoplayerView.findViewById(R.id.iv_back).setOnClickListener(v -> {
-            backOther();
-        });
+        binding.exoplayerView.findViewById(R.id.iv_back).setOnClickListener(v -> backOther());
     }
 
     private void setUpShowFilmFullScreen() {
@@ -207,14 +203,15 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
 
     private void backOther(){
         finish();
-        Map<String, Object> historyWatchFilm = new HashMap<>();
-        historyWatchFilm.put("idFilm", movieMainHome.getId()+"");
-        historyWatchFilm.put("time", player.getCurrentPosition()+"");
-        if(player.getCurrentPosition() > 1000 && check == 0){
-            collectionReference.add(historyWatchFilm);
-        }
-        else if(check == 1 && timePreviod != player.getCurrentPosition()){
-            updateDataTimeWatchFilm(historyWatchFilm);
+        if(!idUser.equals("")) {
+            Map<String, Object> historyWatchFilm = new HashMap<>();
+            historyWatchFilm.put("idFilm", movieMainHome.getId() + "");
+            historyWatchFilm.put("time", player.getCurrentPosition() + "");
+            if (player.getCurrentPosition() > 30000 && check == 0) {
+                collectionReference.add(historyWatchFilm);
+            } else if (check == 1) {
+                updateDataTimeWatchFilm(historyWatchFilm);
+            }
         }
         if(player.isPlaying()){
             player.stop();
@@ -225,7 +222,7 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
         GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(this);
         AccessToken accessToken = AccessToken.getCurrentAccessToken();
         if(acct == null && accessToken == null){
-            ///binding.ivNoFavorite.setVisibility(View.INVISIBLE);
+            idUser = "";
         }
         else if(acct != null){
             this.idUser = acct.getId();
@@ -296,8 +293,10 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
         Player.Listener.super.onPlaybackStateChanged(playbackState);
         if(playbackState == Player.STATE_BUFFERING){
             binding.progressBar.setVisibility(View.VISIBLE);
+            binding.exoplayerView.findViewById(R.id.layout_play_stop).setVisibility(View.INVISIBLE);
         }
         else if(playbackState == Player.STATE_READY){
+            binding.exoplayerView.findViewById(R.id.layout_play_stop).setVisibility(View.VISIBLE);
             binding.progressBar.setVisibility(View.INVISIBLE);
         }
     }
@@ -320,14 +319,15 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        Map<String, Object> historyWatchFilm = new HashMap<>();
-        historyWatchFilm.put("idFilm", movieMainHome.getId()+"");
-        historyWatchFilm.put("time", player.getCurrentPosition()+"");
-        if(player.getCurrentPosition()>10000 && check == 0){
-            collectionReference.add(historyWatchFilm);
-        }
-        else if(check == 1 && timePreviod != player.getCurrentPosition()){
-            updateDataTimeWatchFilm(historyWatchFilm);
+        if(!idUser.equals("")) {
+            Map<String, Object> historyWatchFilm = new HashMap<>();
+            historyWatchFilm.put("idFilm", movieMainHome.getId() + "");
+            historyWatchFilm.put("time", player.getCurrentPosition() + "");
+            if (player.getCurrentPosition() > 30000 && check == 0) {
+                collectionReference.add(historyWatchFilm);
+            } else if (check == 1) {
+                updateDataTimeWatchFilm(historyWatchFilm);
+            }
         }
         if(player.isPlaying()){
             player.stop();
@@ -337,20 +337,18 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
     private void updateDataTimeWatchFilm(Map<String, Object> historyWatchFilm) {
         collectionReference.whereEqualTo("idFilm", movieMainHome.getId()+"")
                 .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if(task.isSuccessful()){
-                            DocumentSnapshot documentSnapshot = task.getResult().getDocuments().get(0);
-                            String documentId = documentSnapshot.getId();
-                            collectionReference.document(documentId)
-                                    .update(historyWatchFilm);
-                        }
+                .addOnCompleteListener(task -> {
+                    if(task.isSuccessful()){
+                        DocumentSnapshot documentSnapshot = task.getResult().getDocuments().get(0);
+                        String documentId = documentSnapshot.getId();
+                        collectionReference.document(documentId)
+                                .update(historyWatchFilm);
                     }
                 });
     }
 
 
+    @SuppressLint("SetTextI18n")
     private void openDialogWatchFilmAtTime(long time){
         final Dialog dialog = new Dialog(this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -393,20 +391,17 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
     }
 
     public void historyWatchFilm(){
-        collectionReference.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if(task.isSuccessful()){
-                    QuerySnapshot snapshot = task.getResult();
-                    for(QueryDocumentSnapshot doc : snapshot){
-                        String idFilm1 = Objects.requireNonNull(doc.get("idFilm")).toString();
-                        if(Integer.parseInt(idFilm1) == movieMainHome.getId()){
-                            String time = Objects.requireNonNull(doc.get("time")).toString();
-                            check = 1;
-                            timePreviod = Long.parseLong(time);
-                            openDialogWatchFilmAtTime(Long.parseLong(time));
-                            player.setPlayWhenReady(false);
-                        }
+        collectionReference.get().addOnCompleteListener(task -> {
+            if(task.isSuccessful()){
+                QuerySnapshot snapshot = task.getResult();
+                for(QueryDocumentSnapshot doc : snapshot){
+                    String idFilm1 = Objects.requireNonNull(doc.get("idFilm")).toString();
+                    if(Integer.parseInt(idFilm1) == movieMainHome.getId()){
+                        String time = Objects.requireNonNull(doc.get("time")).toString();
+                        check = 1;
+                        timePreviod = Long.parseLong(time);
+                        openDialogWatchFilmAtTime(Long.parseLong(time));
+                        player.setPlayWhenReady(false);
                     }
                 }
             }

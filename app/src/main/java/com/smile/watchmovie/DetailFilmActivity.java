@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -17,14 +16,11 @@ import com.facebook.AccessToken;
 import com.facebook.GraphRequest;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.google.type.DateTime;
 import com.smile.watchmovie.adapter.BannerAdapter;
 import com.smile.watchmovie.api.ApiService;
 import com.smile.watchmovie.databinding.ActivityDetailFilmBinding;
@@ -33,8 +29,6 @@ import com.smile.watchmovie.model.MovieMainHome;
 import com.smile.watchmovie.model.Banner;
 
 import org.json.JSONException;
-
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -58,7 +52,6 @@ public class DetailFilmActivity extends AppCompatActivity {
     private int idFilm;
     private CollectionReference collectionReference;
     private int changeImage;
-    private MovieMainHome film;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -131,7 +124,6 @@ public class DetailFilmActivity extends AppCompatActivity {
                     binding.layoutPageDetail.setVisibility(View.VISIBLE);
                     MovieMainHome movieMainHome;
                     movieMainHome = cinema.getData();
-                    film = movieMainHome;
                     mBannerList = setPhotoList(movieMainHome.getPoster());
                     mBannerAdapter.setData(mBannerList);
                     binding.vpPoster.setAdapter(mBannerAdapter);
@@ -235,46 +227,40 @@ public class DetailFilmActivity extends AppCompatActivity {
             collectionReference.add(filmFavorite);
         }
         else if(currentImage == R.drawable.ic_baseline_favorite_24 && changeImage == R.drawable.ic_baseline_favorite_border_24){
-            deleteFilmFavortie(filmFavorite);
+            deleteFilmFavorite();
         }
     }
 
-    private void deleteFilmFavortie(Map<String, Object> filmFavorite) {
+    private void deleteFilmFavorite() {
         collectionReference.whereEqualTo("idFilm", idFilm+"")
                 .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if(task.isSuccessful()){
-                            DocumentSnapshot documentSnapshot = task.getResult().getDocuments().get(0);
-                            String documentId = documentSnapshot.getId();
-                            collectionReference.document(documentId)
-                                    .delete();
-                        }
+                .addOnCompleteListener(task -> {
+                    if(task.isSuccessful()){
+                        DocumentSnapshot documentSnapshot = task.getResult().getDocuments().get(0);
+                        String documentId = documentSnapshot.getId();
+                        collectionReference.document(documentId)
+                                .delete();
                     }
                 });
     }
 
     public void isFilmFavorite(){
-        collectionReference.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if(task.isSuccessful()){
-                    int check = 0;
-                    QuerySnapshot snapshot = task.getResult();
-                    for(QueryDocumentSnapshot doc : snapshot){
-                        String idFilm1 = Objects.requireNonNull(doc.get("idFilm")).toString();
-                        if(Integer.parseInt(idFilm1) == idFilm){
-                            check = 1;
-                            changeImage = R.drawable.ic_baseline_favorite_24;
-                            currentImage = R.drawable.ic_baseline_favorite_24;
-                            binding.ivNoFavorite.setImageResource(currentImage);
-                        }
+        collectionReference.get().addOnCompleteListener(task -> {
+            if(task.isSuccessful()){
+                int check = 0;
+                QuerySnapshot snapshot = task.getResult();
+                for(QueryDocumentSnapshot doc : snapshot){
+                    String idFilm1 = Objects.requireNonNull(doc.get("idFilm")).toString();
+                    if(Integer.parseInt(idFilm1) == idFilm){
+                        check = 1;
+                        changeImage = R.drawable.ic_baseline_favorite_24;
+                        currentImage = R.drawable.ic_baseline_favorite_24;
+                        binding.ivNoFavorite.setImageResource(currentImage);
                     }
-                    if(check == 0){
-                        currentImage = R.drawable.ic_baseline_favorite_border_24;
-                        changeImage = R.drawable.ic_baseline_favorite_border_24;
-                    }
+                }
+                if(check == 0){
+                    currentImage = R.drawable.ic_baseline_favorite_border_24;
+                    changeImage = R.drawable.ic_baseline_favorite_border_24;
                 }
             }
         });

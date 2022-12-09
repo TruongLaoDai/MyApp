@@ -1,11 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout_person"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".fragment.PersonFragment"
     android:orientation="vertical">
 
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
     <!-- TODO: Update blank fragment layout -->
     <RelativeLayout
         android:layout_weight="1"
@@ -24,7 +29,7 @@
                 android:textColor="@color/black"
                 android:textSize="20sp"
                 android:layout_weight="0.12"
-                android:text="Lịch sử" />
+                android:text="@string/lich_su" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:layout_weight="0.88"
@@ -33,11 +38,12 @@
                 android:layout_height="0dp"/>
         </LinearLayout>
         <TextView
+            android:id="@+id/tv_size_history"
             android:textColor="@color/black"
             android:textSize="20sp"
             android:layout_centerVertical="true"
             android:gravity="center"
-            android:text="Danh sách trống"
+            android:text="@string/title_size"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
     </RelativeLayout>
@@ -59,7 +65,7 @@
                 android:textColor="@color/black"
                 android:textSize="20sp"
                 android:layout_weight="0.12"
-                android:text="Phim yêu thích" />
+                android:text="@string/fav_film" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:layout_weight="0.88"
@@ -68,13 +74,20 @@
                 android:layout_height="0dp"/>
         </LinearLayout>
         <TextView
+            android:id="@+id/tv_size_favorite"
             android:textColor="@color/black"
             android:textSize="20sp"
             android:layout_centerVertical="true"
             android:gravity="center"
-            android:text="Danh sách trống"
+            android:text="@string/title_size"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
     </RelativeLayout>
+    </LinearLayout>
 
-</LinearLayout>
+    <ProgressBar
+        android:id="@+id/load_person_page"
+        android:layout_centerVertical="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+</RelativeLayout>

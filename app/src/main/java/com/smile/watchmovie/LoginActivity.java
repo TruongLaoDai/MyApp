@@ -102,4 +102,11 @@ public class LoginActivity extends AppCompatActivity {
         intent.putExtra("type", "google");
         startActivity(intent);
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+        startActivity(intent);
+    }
 }

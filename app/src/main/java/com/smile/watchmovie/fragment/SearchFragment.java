@@ -135,7 +135,12 @@ public class SearchFragment extends Fragment {
                 MovieArrayResponse movieArrayResponse = response.body();
                 if (movieArrayResponse != null) {
                     if(!key.equals("")) {
-                        binding.loadSearchPage.setVisibility(View.INVISIBLE);
+                        if(binding.loadSearchPage.getVisibility() == View.VISIBLE){
+                            binding.loadSearchPage.setVisibility(View.INVISIBLE);
+                        }
+                        if(binding.loadMore.getVisibility() == View.VISIBLE) {
+                            binding.loadMore.setVisibility(View.INVISIBLE);
+                        }
                         movieMainHomeList.addAll(movieArrayResponse.getData());
                         if (page == 0) {
                             mFilmAdapter.setData(movieMainHomeList);
@@ -173,8 +178,6 @@ public class SearchFragment extends Fragment {
         handler.postDelayed(() -> {
             mIsLoading=false;
             callApiSearchFilm(key, mCurrentPage);
-            binding.loadSearchPage.setVisibility(View.VISIBLE);
-            binding.loadMore.setVisibility(View.INVISIBLE);
             if(mCurrentPage==mTotalPage){
                 mIsLastPage=true;
             }

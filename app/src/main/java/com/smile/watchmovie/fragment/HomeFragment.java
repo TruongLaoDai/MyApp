@@ -49,7 +49,6 @@ public class HomeFragment extends Fragment {
         binding = FragmentHomeBinding.inflate(inflater, container, false);
 
         mFilmAdapter = new FilmAdapter(mMainActivity);
-        binding.ivMoveToHeadPage.setVisibility(View.INVISIBLE);
         binding.loadMore.setVisibility(View.INVISIBLE);
         movieMainHomeList = new ArrayList<>();
 
@@ -77,7 +76,6 @@ public class HomeFragment extends Fragment {
             }
         });
 
-        binding.ivMoveToHeadPage.setVisibility(View.VISIBLE);
         binding.ivMoveToHeadPage.setOnClickListener(v -> binding.rcvFilm.setAdapter(mFilmAdapter));
 
         callApiGetHomeFilm(0);

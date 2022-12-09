@@ -1,14 +1,9 @@
 package com.smile.watchmovie.api;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.smile.watchmovie.model.MovieArrayResponse;
 import com.smile.watchmovie.model.MovieDetailResponse;
 
-import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Query;

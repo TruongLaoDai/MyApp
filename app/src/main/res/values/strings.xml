@@ -29,4 +29,10 @@
     <string name="tv_at_episode">Tập %1$d</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="lich_su">Lịch sử</string>
+    <string name="title_size">Danh sách trống</string>
+    <string name="fav_film">Phim yêu thích</string>
+    <string name="login">Login</string>
+    <string name="yes">Có</string>
+    <string name="no">Không</string>
 </resources>
