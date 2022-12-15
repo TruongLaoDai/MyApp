@@ -74,7 +74,6 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
     private String idUser;
     private ImageView ivFullScreen;
     private int check = 0;
-    private long timePreviod = 0;
 
     @SuppressLint("SetTextI18n")
     @Override
@@ -91,6 +90,7 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
         binding.tvNameFilm.setText(movieMainHome.getName());
         binding.tvViewNumber.setText(movieMainHome.getViewNumber()+" Lượt xem");
         binding.tvDescription.setText(movieMainHome.getDescription());
+        idUser = "";
 
         getIdUser();
         setUpPlayer();
@@ -102,7 +102,6 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
         if(!idUser.equals("")) {
             FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
             collectionReference = firebaseFirestore.collection("history_watch_film_" + idUser);
-
             historyWatchFilm();
         }
 
@@ -310,6 +309,8 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
         player.addListener(new Player.Listener() {
             @Override
             public void onPlayerError(@NonNull PlaybackException error) {
+                binding.progressBar.setVisibility(View.INVISIBLE);
+                binding.errorWatchFilm.setVisibility(View.VISIBLE);
                 Toast.makeText(WatchFilmActivity.this, "Film Playing Error", Toast.LENGTH_SHORT).show();
             }
         });
@@ -399,7 +400,6 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
                     if(Integer.parseInt(idFilm1) == movieMainHome.getId()){
                         String time = Objects.requireNonNull(doc.get("time")).toString();
                         check = 1;
-                        timePreviod = Long.parseLong(time);
                         openDialogWatchFilmAtTime(Long.parseLong(time));
                         player.setPlayWhenReady(false);
                     }
