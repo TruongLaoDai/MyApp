@@ -7,7 +7,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
-public class MovieMainHome implements Serializable {
+public class FilmMainHome implements Serializable {
 
     @SerializedName("id")
     @Expose
@@ -107,10 +107,10 @@ public class MovieMainHome implements Serializable {
     private int episodesTotal;
     @SerializedName("subVideoList")
     @Expose
-    private List<SubVideo> subVideoList;
+    private List<SubFilm> subVideoList;
     @SerializedName("subTitleList")
     @Expose
-    private List<MovieSubModel> subTitleList;
+    private List<FilmSubModel> subTitleList;
     @SerializedName("redirectLink")
     @Expose
     private String redirectLink;
@@ -379,19 +379,19 @@ public class MovieMainHome implements Serializable {
         this.schedule = schedule;
     }
 
-    public List<SubVideo> getSubVideoList() {
+    public List<SubFilm> getSubVideoList() {
         return subVideoList;
     }
 
-    public void setSubVideoList(List<SubVideo> subVideoList) {
+    public void setSubVideoList(List<SubFilm> subVideoList) {
         this.subVideoList = subVideoList;
     }
 
-    public List<MovieSubModel> getSubTitleList() {
+    public List<FilmSubModel> getSubTitleList() {
         return subTitleList;
     }
 
-    public void setSubTitleList(List<MovieSubModel> subTitleList) {
+    public void setSubTitleList(List<FilmSubModel> subTitleList) {
         this.subTitleList = subTitleList;
     }
 }

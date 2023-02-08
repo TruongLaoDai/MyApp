@@ -32,15 +32,15 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.smile.watchmovie.LoginActivity;
-import com.smile.watchmovie.MainActivity;
+import com.smile.watchmovie.activity.LoginActivity;
+import com.smile.watchmovie.activity.MainActivity;
 import com.smile.watchmovie.R;
 import com.smile.watchmovie.adapter.FilmFavoriteAdapter;
 import com.smile.watchmovie.adapter.HistoryWatchFilmAdapter;
 import com.smile.watchmovie.api.ApiService;
 import com.smile.watchmovie.databinding.FragmentPersonBinding;
-import com.smile.watchmovie.model.MovieDetailResponse;
-import com.smile.watchmovie.model.MovieMainHome;
+import com.smile.watchmovie.model.FilmDetailResponse;
+import com.smile.watchmovie.model.FilmMainHome;
 
 import org.json.JSONException;
 
@@ -59,10 +59,10 @@ public class PersonFragment extends Fragment {
     private MainActivity mMainActivity;
     private CollectionReference collectionReferenceFilmFavorite;
     private String idUser;
-    private List<MovieMainHome> mFilmFavoriteList;
+    private List<FilmMainHome> mFilmFavoriteList;
     private FilmFavoriteAdapter filmFavoriteAdapter;
     private CollectionReference collectionReferenceHistory;
-    private List<MovieMainHome> mHistoryList;
+    private List<FilmMainHome> mHistoryList;
     private HistoryWatchFilmAdapter historyWatchFilmAdapter;
 
     @Override
@@ -105,7 +105,7 @@ public class PersonFragment extends Fragment {
     }
 
     @SuppressLint({"SetTextI18n", "NotifyDataSetChanged"})
-    private void clickDeleteHistory(MovieMainHome movieMainHome){
+    private void clickDeleteHistory(FilmMainHome movieMainHome){
         final Dialog dialog = new Dialog(mMainActivity);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.layout_dialog_watch_film_from_time);
@@ -157,7 +157,7 @@ public class PersonFragment extends Fragment {
     }
 
     @SuppressLint({"SetTextI18n", "NotifyDataSetChanged"})
-    private void clickUnFavoriteFilm(MovieMainHome movieMainHome){
+    private void clickUnFavoriteFilm(FilmMainHome movieMainHome){
         final Dialog dialog = new Dialog(mMainActivity);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.layout_dialog_watch_film_from_time);
@@ -286,11 +286,11 @@ public class PersonFragment extends Fragment {
     }
 
     private void callApiGetHistoryWatchFilm(int idFilm){
-        ApiService.apiService.getFilmDetail("7da353b8a3246f851e0ee436d898a26d", idFilm).enqueue(new Callback<MovieDetailResponse>() {
+        ApiService.apiService.getFilmDetail("7da353b8a3246f851e0ee436d898a26d", idFilm).enqueue(new Callback<FilmDetailResponse>() {
             @SuppressLint({"StringFormatMatches", "NotifyDataSetChanged"})
             @Override
-            public void onResponse(@NonNull Call<MovieDetailResponse> call, @NonNull Response<MovieDetailResponse> response) {
-                MovieDetailResponse cinema = response.body();
+            public void onResponse(@NonNull Call<FilmDetailResponse> call, @NonNull Response<FilmDetailResponse> response) {
+                FilmDetailResponse cinema = response.body();
                 if(cinema != null) {
                     mHistoryList.add(cinema.getData());
                     historyWatchFilmAdapter.notifyDataSetChanged();
@@ -298,7 +298,7 @@ public class PersonFragment extends Fragment {
             }
 
             @Override
-            public void onFailure(@NonNull Call<MovieDetailResponse> call, @NonNull Throwable t) {
+            public void onFailure(@NonNull Call<FilmDetailResponse> call, @NonNull Throwable t) {
                 Toast.makeText(mMainActivity, "Error Get Film", Toast.LENGTH_SHORT).show();
             }
         });
@@ -325,11 +325,11 @@ public class PersonFragment extends Fragment {
     }
 
     private void callApiGetFilmFavorite(int idFilm){
-        ApiService.apiService.getFilmDetail("7da353b8a3246f851e0ee436d898a26d", idFilm).enqueue(new Callback<MovieDetailResponse>() {
+        ApiService.apiService.getFilmDetail("7da353b8a3246f851e0ee436d898a26d", idFilm).enqueue(new Callback<FilmDetailResponse>() {
             @SuppressLint({"StringFormatMatches", "NotifyDataSetChanged"})
             @Override
-            public void onResponse(@NonNull Call<MovieDetailResponse> call, @NonNull Response<MovieDetailResponse> response) {
-                MovieDetailResponse cinema = response.body();
+            public void onResponse(@NonNull Call<FilmDetailResponse> call, @NonNull Response<FilmDetailResponse> response) {
+                FilmDetailResponse cinema = response.body();
                 if(cinema != null) {
                     mFilmFavoriteList.add(cinema.getData());
                     filmFavoriteAdapter.notifyDataSetChanged();
@@ -337,7 +337,7 @@ public class PersonFragment extends Fragment {
             }
 
             @Override
-            public void onFailure(@NonNull Call<MovieDetailResponse> call, @NonNull Throwable t) {
+            public void onFailure(@NonNull Call<FilmDetailResponse> call, @NonNull Throwable t) {
                 Toast.makeText(mMainActivity, "Error Get Film", Toast.LENGTH_SHORT).show();
             }
         });

@@ -9,17 +9,17 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.smile.watchmovie.DetailFilmActivity;
+import com.smile.watchmovie.activity.DetailFilmActivity;
 import com.smile.watchmovie.R;
 import com.smile.watchmovie.databinding.ItemFilmHistoryBinding;
-import com.smile.watchmovie.model.MovieMainHome;
+import com.smile.watchmovie.model.FilmMainHome;
 import com.smile.watchmovie.my_interface.IClickItemDeleteHistoryListener;
 
 import java.util.List;
 
 public class HistoryWatchFilmAdapter extends RecyclerView.Adapter<HistoryWatchFilmAdapter.HistoryWatchFilmViewHolder> {
 
-    private List<MovieMainHome> movieMainHomeList;
+    private List<FilmMainHome> movieMainHomeList;
     private final Context context;
     private final IClickItemDeleteHistoryListener itemDeleteHistoryListener;
 
@@ -28,7 +28,7 @@ public class HistoryWatchFilmAdapter extends RecyclerView.Adapter<HistoryWatchFi
         this.itemDeleteHistoryListener = itemDeleteHistoryListener;
     }
 
-    public void setData(List<MovieMainHome> movieMainHomeList) {
+    public void setData(List<FilmMainHome> movieMainHomeList) {
         this.movieMainHomeList = movieMainHomeList;
     }
 
@@ -41,14 +41,14 @@ public class HistoryWatchFilmAdapter extends RecyclerView.Adapter<HistoryWatchFi
 
     @Override
     public void onBindViewHolder(@NonNull HistoryWatchFilmViewHolder holder, int position) {
-        MovieMainHome movieMainHome = movieMainHomeList.get(position);
+        FilmMainHome movieMainHome = movieMainHomeList.get(position);
         if (movieMainHome == null) {
             return;
         }
 
         Glide.with(context).load(movieMainHome.getAvatar())
                 .error(R.drawable.ic_baseline_broken_image_24)
-                .placeholder(R.drawable.ic_baseline_image_24)
+                .placeholder(R.drawable.ic_baseline_image_gray)
                 .into(holder.binding.ivImageFilm);
         int episodesTotal = movieMainHome.getEpisodesTotal();
         if (episodesTotal == 0) {

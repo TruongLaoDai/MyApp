@@ -1,4 +1,4 @@
-package com.smile.watchmovie;
+package com.smile.watchmovie.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentStatePagerAdapter;
@@ -7,6 +7,7 @@ import androidx.viewpager.widget.ViewPager;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -22,7 +23,9 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.smile.watchmovie.R;
 import com.smile.watchmovie.adapter.ViewPagerAdapter;
+import com.smile.watchmovie.custom.CustomViewPager;
 import com.smile.watchmovie.databinding.ActivityMainBinding;
 
 import org.json.JSONException;
@@ -33,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
     private GoogleSignInClient gsc;
     public ActivityMainBinding binding;
     private BottomNavigationView mNavigationView;
-    private ViewPager mViewPager;
+    private CustomViewPager mViewPager;
     private TextView tvUser;
     private String mTypeLogin;
     public ImageView ivLogoApp;
@@ -137,7 +140,7 @@ public class MainActivity extends AppCompatActivity {
     private void setUpViewPager() {
         ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager(), FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
         mViewPager.setAdapter(viewPagerAdapter);
-
+        mViewPager.setPageScrollEnabled(false);
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {

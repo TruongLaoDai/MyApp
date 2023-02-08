@@ -4,12 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#2196F3">
+    android:background="@color/white">
 
     <RelativeLayout
         android:id="@+id/layout_film"
         android:layout_width="match_parent"
         android:layout_height="230dp"
+        android:background="@color/black"
         android:gravity="center">
 
         <com.google.android.exoplayer2.ui.PlayerView
@@ -36,98 +37,24 @@
         </com.google.android.exoplayer2.ui.PlayerView>
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/error_watch_film"
-            android:visibility="invisible"
+            android:visibility="gone"
+            android:scaleType="centerCrop"
             android:src="@drawable/ic_baseline_broken_image_24"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
     </RelativeLayout>
 
-    <LinearLayout
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tab_layout"
         android:layout_below="@+id/layout_film"
-        android:id="@+id/layout_infomationt"
+        app:tabMode="scrollable"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:weightSum="10">
+        android:layout_height="wrap_content"/>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_marginStart="10dp"
-            android:layout_weight="4"
-            android:orientation="vertical"
-            android:weightSum="5.5">
-
-            <TextView
-                android:id="@+id/tv_name_film"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                tools:text="Học viện siêu anh hùng"
-                android:textColor="@color/black"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                tools:ignore="NestedWeights" />
-
-            <TextView
-                android:id="@+id/tv_view_number"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="0.8"
-                tools:text="3 lượt xem" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_gravity="center"
-                android:layout_weight="1.5"
-                android:paddingTop="10dp"
-                android:text="@string/tap"
-                android:textColor="@color/black"
-                android:textSize="20sp" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rcv_eposide"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="2" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/layout_description"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_marginStart="5dp"
-            android:layout_marginTop="5dp"
-            android:layout_weight="6"
-            android:background="#2196F3"
-            android:orientation="vertical"
-            android:weightSum="10">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_margin="5dp"
-                android:layout_weight="1.6"
-                android:text="@string/description"
-                android:textColor="@color/white"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                tools:ignore="NestedWeights" />
-
-            <ScrollView
-                android:layout_weight="8.4"
-                android:layout_width="match_parent"
-                android:layout_height="0dp">
-            <TextView
-                android:id="@+id/tv_description"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_margin="5dp"
-                tools:text="Một trong những trận chiến lớn nhất của One Piece đang không có lợi cho Luffy và các Siêu Tân Tinh. Mặc dù rất cố gắng, họ vẫn chưa thể đánh bại Kaido và Big Mom."
-                android:textColor="@color/white"
-                android:textSize="15sp" />
-            </ScrollView>
-        </LinearLayout>
-    </LinearLayout>
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/view_watch_file_pager"
+        android:layout_marginTop="5dp"
+        android:layout_below="@+id/tab_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 </RelativeLayout>

@@ -9,24 +9,27 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.smile.watchmovie.R;
-import com.smile.watchmovie.WatchFilmActivity;
+import com.smile.watchmovie.activity.WatchFilmActivity;
 import com.smile.watchmovie.databinding.ItemEpisodeBinding;
-import com.smile.watchmovie.model.SubVideo;
+import com.smile.watchmovie.fragment.IntroduceFilmFragment;
+import com.smile.watchmovie.model.SubFilm;
 
 import java.util.List;
 
 public class EpisodeAdapter extends RecyclerView.Adapter<EpisodeAdapter.EpisodeViewHolder> {
 
-    public List<SubVideo> subVideoList;
+    public List<SubFilm> subFilmList;
     public final WatchFilmActivity mWatchFilmActivity;
+    public final IntroduceFilmFragment mIntroduceFilmFragment;
 
-    public EpisodeAdapter(WatchFilmActivity watchFilmActivity) {
+    public EpisodeAdapter(WatchFilmActivity watchFilmActivity, IntroduceFilmFragment mIntroduceFilmFragment) {
         this.mWatchFilmActivity = watchFilmActivity;
+        this.mIntroduceFilmFragment = mIntroduceFilmFragment;
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    public void setData(List<SubVideo> subVideoList) {
-        this.subVideoList = subVideoList;
+    public void setData(List<SubFilm> subVideoList) {
+        this.subFilmList = subVideoList;
         notifyDataSetChanged();
     }
 
@@ -40,14 +43,18 @@ public class EpisodeAdapter extends RecyclerView.Adapter<EpisodeAdapter.EpisodeV
     @SuppressLint({"NotifyDataSetChanged", "SetTextI18n"})
     @Override
     public void onBindViewHolder(@NonNull EpisodeViewHolder holder, @SuppressLint("RecyclerView") int position) {
-        SubVideo subVideo = subVideoList.get(position);
-        if (subVideo == null) {
+        SubFilm subFilm = subFilmList.get(position);
+        if (subFilm == null) {
             return;
         }
-        holder.itemEpisodeBinding.tvEpisode.setText(mWatchFilmActivity.getString(R.string.episode_film, subVideo.getEpisode()));
-        holder.itemEpisodeBinding.layoutEpisode.setOnClickListener(v -> mWatchFilmActivity.playVideo(subVideo));
-        if(subVideo.getIsWatching()){
-            holder.itemEpisodeBinding.tvEpisode.setTextColor(Color.parseColor("#F44336"));
+        holder.itemEpisodeBinding.tvEpisode.setText(mWatchFilmActivity.getString(R.string.episode_film, subFilm.getEpisode()));
+        holder.itemEpisodeBinding.layoutEpisode.setOnClickListener(v ->{
+            mIntroduceFilmFragment.episodeFilmPlaying(subFilm);
+            mWatchFilmActivity.playVideo(subFilm);
+        });
+        if(subFilm.getIsWatching()){
+            holder.itemEpisodeBinding.tvEpisode.setBackgroundResource(R.drawable.botron_background_click);
+            holder.itemEpisodeBinding.tvEpisode.setTextColor(Color.parseColor("#1877F2"));
         }
         else{
             holder.itemEpisodeBinding.tvEpisode.setTextColor(Color.parseColor("#000000"));
@@ -56,8 +63,8 @@ public class EpisodeAdapter extends RecyclerView.Adapter<EpisodeAdapter.EpisodeV
 
     @Override
     public int getItemCount() {
-        if (subVideoList != null)
-            return subVideoList.size();
+        if (subFilmList != null)
+            return subFilmList.size();
         return 0;
     }
 

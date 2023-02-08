@@ -1,24 +1,25 @@
-package com.smile.watchmovie;
+package com.smile.watchmovie.custom;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 public abstract class PaginationScrollListener extends RecyclerView.OnScrollListener {
 
-    private final GridLayoutManager gridLayoutManager;
+    private final LinearLayoutManager linearLayoutManager;
 
-    public PaginationScrollListener(GridLayoutManager gridLayoutManager){
-        this.gridLayoutManager=gridLayoutManager;
+    public PaginationScrollListener(LinearLayoutManager linearLayoutManager){
+        this.linearLayoutManager=linearLayoutManager;
     }
 
     @Override
     public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
         super.onScrolled(recyclerView, dx, dy);
 
-        int visibleItemCount=gridLayoutManager.getChildCount();
-        int totalItemCount=gridLayoutManager.getItemCount();
-        int firstVisibleItemPosition=gridLayoutManager.findFirstVisibleItemPosition();
+        int visibleItemCount=linearLayoutManager.getChildCount();
+        int totalItemCount=linearLayoutManager.getItemCount();
+        int firstVisibleItemPosition=linearLayoutManager.findFirstVisibleItemPosition();
 
         if(isLoading() || isLastPage()){
             return;

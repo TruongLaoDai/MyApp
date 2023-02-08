@@ -1,12 +1,9 @@
-package com.smile.watchmovie;
-
-import static android.net.Uri.parse;
+package com.smile.watchmovie.activity;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+import androidx.fragment.app.FragmentStatePagerAdapter;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
@@ -46,10 +43,11 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.smile.watchmovie.adapter.EpisodeAdapter;
+import com.smile.watchmovie.R;
+import com.smile.watchmovie.adapter.WatchFilmViewPagerAdapter;
 import com.smile.watchmovie.databinding.ActivityWatchFilmBinding;
-import com.smile.watchmovie.model.MovieMainHome;
-import com.smile.watchmovie.model.SubVideo;
+import com.smile.watchmovie.model.FilmMainHome;
+import com.smile.watchmovie.model.SubFilm;
 
 import org.json.JSONException;
 
@@ -60,7 +58,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-public class WatchFilmActivity extends AppCompatActivity implements Player.Listener{
+public class WatchFilmActivity extends AppCompatActivity implements Player.Listener {
 
     private ActivityWatchFilmBinding binding;
     private ExoPlayer player;
@@ -68,8 +66,7 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
     private boolean checkLockScreen = false;
     private ImageView ivUnlockScreen;
     private TextView tvAtEpisode;
-    private MovieMainHome movieMainHome;
-    private EpisodeAdapter mEpisodeAdapter;
+    private FilmMainHome filmMainHome;
     private CollectionReference collectionReference;
     private String idUser;
     private ImageView ivFullScreen;
@@ -84,98 +81,103 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
         binding = ActivityWatchFilmBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        movieMainHome = new MovieMainHome();
-        movieMainHome = (MovieMainHome) getIntent().getSerializableExtra("movie");
-
-        binding.tvNameFilm.setText(movieMainHome.getName());
-        binding.tvViewNumber.setText(movieMainHome.getViewNumber()+" Lượt xem");
-        binding.tvDescription.setText(movieMainHome.getDescription());
+        filmMainHome = new FilmMainHome();
+        filmMainHome = (FilmMainHome) getIntent().getSerializableExtra("movie");
         idUser = "";
+        if(filmMainHome != null) {
+            WatchFilmViewPagerAdapter mWatchFilmViewPagerAdapter = new WatchFilmViewPagerAdapter(getSupportFragmentManager(), FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
+            binding.viewWatchFilePager.setAdapter(mWatchFilmViewPagerAdapter);
+            binding.tabLayout.setupWithViewPager(binding.viewWatchFilePager);
 
-        getIdUser();
-        setUpPlayer();
+            getIdUser();
+            setUpPlayer();
 
-        mEpisodeAdapter = new EpisodeAdapter(this);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this, RecyclerView.HORIZONTAL, false);
-        binding.rcvEposide.setLayoutManager(layoutManager);
+            if (!idUser.equals("")) {
+                FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
+                collectionReference = firebaseFirestore.collection("history_watch_film_" + idUser);
+                historyWatchFilm();
+            }
 
-        if(!idUser.equals("")) {
-            FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
-            collectionReference = firebaseFirestore.collection("history_watch_film_" + idUser);
-            historyWatchFilm();
+            playFilmFirst();
+
+            setUpCustomPlayFilm();
+
+            ivFullScreen = binding.exoplayerView.findViewById(R.id.scaling);
+            ivFullScreen.setOnClickListener(v -> {
+                if (checkFullScreen) {
+                    setUpShowNoFullScreen();
+
+                } else {
+                    setUpShowFilmFullScreen();
+                    binding.exoplayerView.findViewById(R.id.iv_back).setOnClickListener(v12 -> setUpShowNoFullScreen());
+                }
+            });
+            ivUnlockScreen = binding.exoplayerView.findViewById(R.id.iv_unlock);
+            ivUnlockScreen.setOnClickListener(v -> {
+                if (!checkLockScreen) {
+                    ivUnlockScreen.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_baseline_lock_24));
+                } else {
+                    ivUnlockScreen.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_round_lock_open_24));
+                }
+                checkLockScreen = !checkLockScreen;
+                lockScreen(checkLockScreen);
+            });
+
         }
-
-        playFilmFirst();
-
-        setUpCustomPlayFilm();
-
-        ivFullScreen = binding.exoplayerView.findViewById(R.id.scaling);
-        ivFullScreen.setOnClickListener(v -> {
-            if(checkFullScreen){
-                setUpShowNoFullScreen();
-
-            }else{
-                setUpShowFilmFullScreen();
-                binding.exoplayerView.findViewById(R.id.iv_back).setOnClickListener(v12 -> setUpShowNoFullScreen());
-            }
-        });
-        ivUnlockScreen = binding.exoplayerView.findViewById(R.id.iv_unlock);
-        ivUnlockScreen.setOnClickListener(v -> {
-            if(!checkLockScreen){
-                ivUnlockScreen.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_baseline_lock_24));
-            }
-            else{
-                ivUnlockScreen.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_round_lock_open_24));
-            }
-            checkLockScreen = !checkLockScreen;
-            lockScreen(checkLockScreen);
-        });
-
         binding.exoplayerView.findViewById(R.id.iv_back).setOnClickListener(v -> backOther());
     }
 
     private void setUpShowFilmFullScreen() {
-        ivFullScreen.setImageDrawable(ContextCompat.getDrawable(WatchFilmActivity.this,R.drawable.ic_baseline_fullscreen_exit_24));
+        if (filmMainHome.getSubVideoList() != null) {
+            binding.exoplayerView.findViewById(R.id.iv_episode_pre).setVisibility(View.VISIBLE);
+            binding.exoplayerView.findViewById(R.id.iv_episode_next).setVisibility(View.VISIBLE);
+        }
+        binding.exoplayerView.findViewById(R.id.back10s).setVisibility(View.VISIBLE);
+        binding.exoplayerView.findViewById(R.id.next10s).setVisibility(View.VISIBLE);
+        ivFullScreen.setImageDrawable(ContextCompat.getDrawable(WatchFilmActivity.this, R.drawable.ic_baseline_fullscreen_exit_24));
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN
                 | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
                 | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
                 | Window.FEATURE_ACTION_BAR_OVERLAY);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-        RelativeLayout.LayoutParams params=(RelativeLayout.LayoutParams) binding.layoutFilm.getLayoutParams();
-
-        params.width= ViewGroup.LayoutParams.MATCH_PARENT;
-        params.height= ViewGroup.LayoutParams.MATCH_PARENT;
+        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) binding.layoutFilm.getLayoutParams();
+        params.width = ViewGroup.LayoutParams.MATCH_PARENT;
+        params.height = ViewGroup.LayoutParams.MATCH_PARENT;
         binding.layoutFilm.setLayoutParams(params);
-        checkFullScreen=true;
+        checkFullScreen = true;
     }
 
     private void setUpShowNoFullScreen() {
-        ivFullScreen.setImageDrawable(ContextCompat.getDrawable(WatchFilmActivity.this,R.drawable.fullscreen));
+        binding.exoplayerView.findViewById(R.id.iv_episode_pre).setVisibility(View.GONE);
+        binding.exoplayerView.findViewById(R.id.iv_episode_next).setVisibility(View.GONE);
+        binding.exoplayerView.findViewById(R.id.back10s).setVisibility(View.GONE);
+        binding.exoplayerView.findViewById(R.id.next10s).setVisibility(View.GONE);
+        ivFullScreen.setImageDrawable(ContextCompat.getDrawable(WatchFilmActivity.this, R.drawable.fullscreen));
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
-        if(getSupportActionBar()!=null){
+        if (getSupportActionBar() != null) {
             getSupportActionBar().show();
         }
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
-        RelativeLayout.LayoutParams params=(RelativeLayout.LayoutParams) binding.layoutFilm.getLayoutParams();
-        params.width= ViewGroup.LayoutParams.MATCH_PARENT;
-        params.height=(int)(230*getApplicationContext().getResources().getDisplayMetrics().density);
+        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) binding.layoutFilm.getLayoutParams();
+        params.width = ViewGroup.LayoutParams.MATCH_PARENT;
+        params.height = (int) (230 * getApplicationContext().getResources().getDisplayMetrics().density);
         binding.layoutFilm.setLayoutParams(params);
         binding.exoplayerView.findViewById(R.id.iv_back).setOnClickListener(v1 -> finish());
-        checkFullScreen=false;
+        checkFullScreen = false;
     }
 
     private void setUpCustomPlayFilm() {
-        MovieMainHome finalMovieMainHome = movieMainHome;
+        FilmMainHome finalMovieMainHome = filmMainHome;
         binding.exoplayerView.findViewById(R.id.iv_episode_pre).setOnClickListener(v -> {
-            int episode = Integer.parseInt(tvAtEpisode.getText().toString().substring(4, tvAtEpisode.getText().length()))-1;
-            if(episode>0){
-                playVideo(finalMovieMainHome.getSubVideoList().get(episode-1));
+            int episode = Integer.parseInt(tvAtEpisode.getText().toString().substring(4, tvAtEpisode.getText().length())) - 1;
+            if (episode > 0) {
+                playVideo(finalMovieMainHome.getSubVideoList().get(episode - 1));
             }
         });
         binding.exoplayerView.findViewById(R.id.iv_episode_next).setOnClickListener(v -> {
-            int episode = Integer.parseInt(tvAtEpisode.getText().toString().substring(4, tvAtEpisode.getText().length()))-1;
-            if(episode+1< finalMovieMainHome.getSubVideoList().size()){
-                playVideo(finalMovieMainHome.getSubVideoList().get(episode+1));
+            int episode = Integer.parseInt(tvAtEpisode.getText().toString().substring(4, tvAtEpisode.getText().length())) - 1;
+            if (episode + 1 < finalMovieMainHome.getSubVideoList().size()) {
+                playVideo(finalMovieMainHome.getSubVideoList().get(episode + 1));
             }
         });
         binding.exoplayerView.findViewById(R.id.next10s).setOnClickListener(v -> player.seekTo(player.getCurrentPosition() + 10000));
@@ -183,28 +185,24 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
     }
 
     private void playFilmFirst() {
-        if(movieMainHome.getSubVideoList()!=null) {
-            Collections.sort(movieMainHome.getSubVideoList());
-            mEpisodeAdapter.setData(movieMainHome.getSubVideoList());
+        if (filmMainHome.getSubVideoList() != null) {
+            Collections.sort(filmMainHome.getSubVideoList());
+        } else {
+            List<SubFilm> subVideoList = new ArrayList<>();
+            SubFilm subFilm = new SubFilm();
+            subFilm.setEpisode(1);
+            subFilm.setLink(filmMainHome.getLink());
+            subVideoList.add(subFilm);
+            filmMainHome.setSubVideoList(subVideoList);
         }
-        else{
-            List<SubVideo> subVideoList = new ArrayList<>();
-            SubVideo subVideo = new SubVideo();
-            subVideo.setEpisode(1);
-            subVideo.setLink(movieMainHome.getLink());
-            subVideoList.add(subVideo);
-            movieMainHome.setSubVideoList(subVideoList);
-            mEpisodeAdapter.setData(subVideoList);
-        }
-        binding.rcvEposide.setAdapter(mEpisodeAdapter);
-        playVideo(movieMainHome.getSubVideoList().get(0));
+        playVideo(filmMainHome.getSubVideoList().get(0));
     }
 
-    private void backOther(){
+    private void backOther() {
         finish();
-        if(!idUser.equals("")) {
+        if (!idUser.equals("")) {
             Map<String, Object> historyWatchFilm = new HashMap<>();
-            historyWatchFilm.put("idFilm", movieMainHome.getId() + "");
+            historyWatchFilm.put("idFilm", filmMainHome.getId() + "");
             historyWatchFilm.put("time", player.getCurrentPosition() + "");
             if (player.getCurrentPosition() > 30000 && check == 0) {
                 collectionReference.add(historyWatchFilm);
@@ -212,21 +210,19 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
                 updateDataTimeWatchFilm(historyWatchFilm);
             }
         }
-        if(player.isPlaying()){
+        if (player.isPlaying()) {
             player.stop();
         }
     }
 
-    private void getIdUser(){
+    private void getIdUser() {
         GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(this);
         AccessToken accessToken = AccessToken.getCurrentAccessToken();
-        if(acct == null && accessToken == null){
+        if (acct == null && accessToken == null) {
             idUser = "";
-        }
-        else if(acct != null){
+        } else if (acct != null) {
             this.idUser = acct.getId();
-        }
-        else if(!accessToken.isExpired()) {
+        } else if (!accessToken.isExpired()) {
             GraphRequest request = GraphRequest.newMeRequest(
                     accessToken,
                     (object, response) -> {
@@ -245,8 +241,8 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
         }
     }
 
-    private void setUpPlayer(){
-        player=(new ExoPlayer.Builder(this)).build();
+    private void setUpPlayer() {
+        player = (new ExoPlayer.Builder(this)).build();
         PlayerView mPlayerView = binding.exoplayerView;
         mPlayerView.setPlayer(player);
         player.addListener(this);
@@ -256,28 +252,24 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
         LinearLayout ll_play_stop_film = binding.exoplayerView.findViewById(R.id.layout_play_stop);
         RelativeLayout rl_root_layout = binding.exoplayerView.findViewById(R.id.rl_root_layout);
         LinearLayout ll_title = binding.exoplayerView.findViewById(R.id.ll_title);
-        if(check_lock_screen){
+        if (check_lock_screen) {
             ll_play_stop_film.setVisibility(View.INVISIBLE);
             rl_root_layout.setVisibility(View.INVISIBLE);
             ll_title.setVisibility(View.INVISIBLE);
-        }
-        else{
+        } else {
             ll_play_stop_film.setVisibility(View.VISIBLE);
             rl_root_layout.setVisibility(View.VISIBLE);
             ll_title.setVisibility(View.VISIBLE);
         }
     }
 
-    @SuppressLint({"NotifyDataSetChanged", "SetTextI18n"})
-    public void playVideo(SubVideo subVideo){
-        for(SubVideo subVideo1 : movieMainHome.getSubVideoList()){
-            subVideo1.setWatching(subVideo1.getId() == subVideo.getId());
-        }
-        mEpisodeAdapter.setData(movieMainHome.getSubVideoList());
+    public void playVideo(SubFilm subVideo) {
+        binding.exoplayerView.setVisibility(View.VISIBLE);
+        binding.errorWatchFilm.setVisibility(View.GONE);
         String path = subVideo.getLink();
-        Uri uri= parse(path);
+        Uri uri= Uri.parse(path);
         tvAtEpisode = binding.exoplayerView.findViewById(R.id.tv_at_episode);
-        tvAtEpisode.setText(getString(R.string.tv_at_episode,subVideo.getEpisode()));
+        tvAtEpisode.setText(getString(R.string.tv_at_episode, subVideo.getEpisode()));
         ConcatenatingMediaSource concatenatingMediaSource = new ConcatenatingMediaSource();
         MediaSource mediaSource=buildMediaSource(uri);
         concatenatingMediaSource.addMediaSource(mediaSource);
@@ -290,11 +282,10 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
     @Override
     public void onPlaybackStateChanged(int playbackState) {
         Player.Listener.super.onPlaybackStateChanged(playbackState);
-        if(playbackState == Player.STATE_BUFFERING){
+        if (playbackState == Player.STATE_BUFFERING) {
             binding.progressBar.setVisibility(View.VISIBLE);
             binding.exoplayerView.findViewById(R.id.layout_play_stop).setVisibility(View.INVISIBLE);
-        }
-        else if(playbackState == Player.STATE_READY){
+        } else if (playbackState == Player.STATE_READY) {
             binding.exoplayerView.findViewById(R.id.layout_play_stop).setVisibility(View.VISIBLE);
             binding.progressBar.setVisibility(View.INVISIBLE);
         }
@@ -305,10 +296,11 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
         return new HlsMediaSource.Factory(dataSourceFactory).createMediaSource(MediaItem.fromUri(uri));
     }
 
-    private  void playError(){
+    private void playError() {
         player.addListener(new Player.Listener() {
             @Override
             public void onPlayerError(@NonNull PlaybackException error) {
+                binding.exoplayerView.setVisibility(View.GONE);
                 binding.progressBar.setVisibility(View.INVISIBLE);
                 binding.errorWatchFilm.setVisibility(View.VISIBLE);
                 Toast.makeText(WatchFilmActivity.this, "Film Playing Error", Toast.LENGTH_SHORT).show();
@@ -320,9 +312,9 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        if(!idUser.equals("")) {
+        if (!idUser.equals("")) {
             Map<String, Object> historyWatchFilm = new HashMap<>();
-            historyWatchFilm.put("idFilm", movieMainHome.getId() + "");
+            historyWatchFilm.put("idFilm", filmMainHome.getId() + "");
             historyWatchFilm.put("time", player.getCurrentPosition() + "");
             if (player.getCurrentPosition() > 30000 && check == 0) {
                 collectionReference.add(historyWatchFilm);
@@ -330,16 +322,16 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
                 updateDataTimeWatchFilm(historyWatchFilm);
             }
         }
-        if(player.isPlaying()){
+        if (player.isPlaying()) {
             player.stop();
         }
     }
 
     private void updateDataTimeWatchFilm(Map<String, Object> historyWatchFilm) {
-        collectionReference.whereEqualTo("idFilm", movieMainHome.getId()+"")
+        collectionReference.whereEqualTo("idFilm", filmMainHome.getId() + "")
                 .get()
                 .addOnCompleteListener(task -> {
-                    if(task.isSuccessful()){
+                    if (task.isSuccessful()) {
                         DocumentSnapshot documentSnapshot = task.getResult().getDocuments().get(0);
                         String documentId = documentSnapshot.getId();
                         collectionReference.document(documentId)
@@ -350,14 +342,14 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
 
 
     @SuppressLint("SetTextI18n")
-    private void openDialogWatchFilmAtTime(long time){
+    private void openDialogWatchFilmAtTime(long time) {
         final Dialog dialog = new Dialog(this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.layout_dialog_watch_film_from_time);
         dialog.setCancelable(false);
 
         Window window = dialog.getWindow();
-        if(window == null){
+        if (window == null) {
             return;
         }
 
@@ -373,7 +365,7 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
         Button btn_no = dialog.findViewById(R.id.btn_no);
 
         int hour = (int) (time / 1000 / 3600);
-        int minute = (int) ((time / 1000 - hour * 3600)/60);
+        int minute = (int) ((time / 1000 - hour * 3600) / 60);
         int second = (int) (time / 1000 - hour * 3600 - minute * 60);
         String atTime = hour + ":" + minute + ":" + second;
         tv_at_time.setText("Bạn có muốn xem phim từ " + atTime);
@@ -384,20 +376,20 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
             dialog.dismiss();
         });
 
-        btn_no.setOnClickListener(v ->{
+        btn_no.setOnClickListener(v -> {
             player.setPlayWhenReady(true);
             dialog.dismiss();
         });
         dialog.show();
     }
 
-    public void historyWatchFilm(){
+    public void historyWatchFilm() {
         collectionReference.get().addOnCompleteListener(task -> {
-            if(task.isSuccessful()){
+            if (task.isSuccessful()) {
                 QuerySnapshot snapshot = task.getResult();
-                for(QueryDocumentSnapshot doc : snapshot){
+                for (QueryDocumentSnapshot doc : snapshot) {
                     String idFilm1 = Objects.requireNonNull(doc.get("idFilm")).toString();
-                    if(Integer.parseInt(idFilm1) == movieMainHome.getId()){
+                    if (Integer.parseInt(idFilm1) == filmMainHome.getId()) {
                         String time = Objects.requireNonNull(doc.get("time")).toString();
                         check = 1;
                         openDialogWatchFilmAtTime(Long.parseLong(time));

@@ -37,7 +37,7 @@ public class BannerAdapter extends PagerAdapter {
         if(photo != null){
             Glide.with(mContext).load(photo.getUrl())
                     .error(R.drawable.ic_baseline_broken_image_24)
-                    .placeholder(R.drawable.ic_baseline_image_24)
+                    .placeholder(R.drawable.ic_baseline_image_gray)
                     .into(iv_photo);
         }
         container.addView(view);

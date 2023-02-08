@@ -1,7 +1,7 @@
 package com.smile.watchmovie.api;
 
-import com.smile.watchmovie.model.MovieArrayResponse;
-import com.smile.watchmovie.model.MovieDetailResponse;
+import com.smile.watchmovie.model.FilmArrayResponse;
+import com.smile.watchmovie.model.FilmDetailResponse;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
@@ -12,22 +12,28 @@ public interface ApiService {
     //http://cinema.tl/api/v1/get-home-films?msisdn=094555566&page=3&size=10
     //http://cinema.tl/api/v1/search-films?keySearch=esi
     //http://cinema.tl/api/v1/get-film-detail?filmId=105
+    //http://cinema.tl/api/v1/get-films-by-category?msisdn=094555566&page=0&size=10&categoryId=13
     ApiService apiService = ApiConfig.getClient("http://cinema.tl/")
             .create(ApiService.class);
 
     @GET("api/v1/get-home-films")
-    Call<MovieArrayResponse> getDataHomeFilms(@Header("wsToken") String header,
-                                              @Query("msisdn") String msisdn,
-                                              @Query("page") int page);
+    Call<FilmArrayResponse> getDataHomeFilms(@Header("wsToken") String header,
+                                             @Query("msisdn") String msisdn,
+                                             @Query("page") int page);
 
     @GET("api/v1/search-films")
-    Call<MovieArrayResponse> searchFilms(@Header("wsToken") String header,
-                                         @Query("keySearch") String keySearch,
-                                         @Query("page") int page,
-                                         @Query("size") int size);
+    Call<FilmArrayResponse> searchFilms(@Header("wsToken") String header,
+                                        @Query("keySearch") String keySearch,
+                                        @Query("page") int page,
+                                        @Query("size") int size);
 
     @GET("api/v1/get-film-detail")
-    Call<MovieDetailResponse> getFilmDetail(@Header("wsToken") String header,
-                                            @Query("filmId") int filmId);
+    Call<FilmDetailResponse> getFilmDetail(@Header("wsToken") String header,
+                                           @Query("filmId") int filmId);
 
+    @GET("api/v1/get-films-by-category")
+    Call<FilmArrayResponse> getFilmByCategory(@Header("wsToken") String header,
+                                              @Query("categoryId") int categoryId,
+                                              @Query("page") int page,
+                                              @Query("size") int size);
 }

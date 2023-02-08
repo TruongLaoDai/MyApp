@@ -1,14 +1,16 @@
 package com.smile.watchmovie.model;
-
 import com.google.gson.annotations.SerializedName;
 
-public class MovieDetailResponse {
+import java.util.List;
+
+public class FilmArrayResponse {
+
     @SerializedName("errorCode")
     private String errorCode;
     @SerializedName("message")
     private String message;
     @SerializedName("data")
-    private MovieMainHome data = null;
+    private List<FilmMainHome> data = null;
 
     public String getErrorCode() {
         return errorCode;
@@ -26,11 +28,12 @@ public class MovieDetailResponse {
         this.message = message;
     }
 
-    public MovieMainHome getData() {
+    public List<FilmMainHome> getData() {
         return data;
     }
 
-    public void setData(MovieMainHome data) {
+    public void setData(List<FilmMainHome> data) {
         this.data = data;
     }
 }
+

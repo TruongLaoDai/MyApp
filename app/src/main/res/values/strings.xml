@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">WatchMovie</string>
+    <string name="app_name">Kakoak</string>
     <string name="facebook_app_id">820005722423714</string>
     <string name="fb_login_protocol_scheme">fb820005722423714</string>
     <string name="facebook_client_token">4db1dd7b95804ee77a1c83b7c9793c46</string>
@@ -19,13 +19,16 @@
     <string name="text_gt_login">Đăng nhập để trải nghiệm tốt hơn</string>
     <string name="login_google">Đăng nhập bằng Google</string>
     <string name="tap">Tập</string>
+    <string name="dexuat">Đề xuất cho bạn</string>
     <string name="trang_chu">Trang chủ</string>
+    <string name="download">Tải xuống</string>
+    <string name="favorite">Yêu thích</string>
     <string name="kham_pha">Khám phá</string>
     <string name="ca_nhan">Cá nhân</string>
     <string name="tv_duration">%1$s / tập</string>
-    <string name="tv_view_number">View number: %1$d</string>
-    <string name="tv_created">Created: %1$s-%2$s-%3$s</string>
-    <string name="tv_star_rating">Star rating: %1$d*</string>
+    <string name="tv_view_number">%1$d Lượt xem</string>
+    <string name="tv_created">Ngày tạo: %1$s-%2$s-%3$s</string>
+    <string name="tv_star_rating">Đánh giá: %1$d*</string>
     <string name="tv_at_episode">Tập %1$d</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
@@ -35,4 +38,15 @@
     <string name="login">Login</string>
     <string name="yes">Có</string>
     <string name="no">Không</string>
+
+    <string-array name="categorys">
+        <item>Phim mới</item>
+        <item>Hoạt hình</item>
+        <item>Hành động</item>
+        <item>Kinh dị</item>
+        <item>Trinh thám</item>
+        <item>Hài kịch</item>
+        <item>Lãng mạn</item>
+        <item>Phiêu lưu</item>
+    </string-array>
 </resources>

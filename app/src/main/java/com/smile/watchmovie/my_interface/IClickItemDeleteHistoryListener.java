@@ -1,8 +1,8 @@
 package com.smile.watchmovie.my_interface;
 
-import com.smile.watchmovie.model.MovieMainHome;
+import com.smile.watchmovie.model.FilmMainHome;
 
 public interface IClickItemDeleteHistoryListener {
 
-    void onClickDeleteHistoryListener(MovieMainHome movieMainHome);
+    void onClickDeleteHistoryListener(FilmMainHome movieMainHome);
 }

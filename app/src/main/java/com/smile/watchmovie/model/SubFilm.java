@@ -7,7 +7,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
-public class SubVideo implements Serializable, Comparable<SubVideo>{
+public class SubFilm implements Serializable, Comparable<SubFilm>{
 
     @SerializedName("id")
     @Expose
@@ -35,7 +35,7 @@ public class SubVideo implements Serializable, Comparable<SubVideo>{
     private String schedule;
     @SerializedName("subTitleList")
     @Expose
-    private List<MovieSubModel> subTitleList = null;
+    private List<FilmSubModel> subTitleList = null;
     @SerializedName("redirectLink")
     @Expose
     private String redirectLink;
@@ -114,11 +114,11 @@ public class SubVideo implements Serializable, Comparable<SubVideo>{
         this.schedule = schedule;
     }
 
-    public List<MovieSubModel> getSubTitleList() {
+    public List<FilmSubModel> getSubTitleList() {
         return subTitleList;
     }
 
-    public void setSubTitleList(List<MovieSubModel> subTitleList) {
+    public void setSubTitleList(List<FilmSubModel> subTitleList) {
         this.subTitleList = subTitleList;
     }
 
@@ -128,7 +128,7 @@ public class SubVideo implements Serializable, Comparable<SubVideo>{
 
     public boolean getIsWatching(){ return isWatching;}
     @Override
-    public int compareTo(SubVideo o) {
+    public int compareTo(SubFilm o) {
         return this.getEpisode() > o.episode ? 1 : -1 ;
     }
 }

@@ -1,4 +1,4 @@
-package com.smile.watchmovie;
+package com.smile.watchmovie.activity;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -21,11 +21,12 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.smile.watchmovie.R;
 import com.smile.watchmovie.adapter.BannerAdapter;
 import com.smile.watchmovie.api.ApiService;
 import com.smile.watchmovie.databinding.ActivityDetailFilmBinding;
-import com.smile.watchmovie.model.MovieDetailResponse;
-import com.smile.watchmovie.model.MovieMainHome;
+import com.smile.watchmovie.model.FilmDetailResponse;
+import com.smile.watchmovie.model.FilmMainHome;
 import com.smile.watchmovie.model.Banner;
 
 import org.json.JSONException;
@@ -114,15 +115,15 @@ public class DetailFilmActivity extends AppCompatActivity {
     }
 
     private void callApiGetDetailFilm(int id_film) {
-        ApiService.apiService.getFilmDetail("7da353b8a3246f851e0ee436d898a26d", id_film).enqueue(new Callback<MovieDetailResponse>() {
+        ApiService.apiService.getFilmDetail("7da353b8a3246f851e0ee436d898a26d", id_film).enqueue(new Callback<FilmDetailResponse>() {
             @SuppressLint("StringFormatMatches")
             @Override
-            public void onResponse(@NonNull Call<MovieDetailResponse> call, @NonNull Response<MovieDetailResponse> response) {
-                MovieDetailResponse cinema = response.body();
+            public void onResponse(@NonNull Call<FilmDetailResponse> call, @NonNull Response<FilmDetailResponse> response) {
+                FilmDetailResponse cinema = response.body();
                 if (cinema != null) {
                     binding.loadPageDetail.setVisibility(View.INVISIBLE);
                     binding.layoutPageDetail.setVisibility(View.VISIBLE);
-                    MovieMainHome movieMainHome;
+                    FilmMainHome movieMainHome;
                     movieMainHome = cinema.getData();
                     mBannerList = setPhotoList(movieMainHome.getPoster());
                     mBannerAdapter.setData(mBannerList);
@@ -156,7 +157,7 @@ public class DetailFilmActivity extends AppCompatActivity {
                     binding.ciPoster.setViewPager(binding.vpPoster);
                     mBannerAdapter.registerDataSetObserver(binding.ciPoster.getDataSetObserver());
 
-                    binding.layoutWatchFilm.setOnClickListener(v -> {
+                    binding.btnWatchFilm.setOnClickListener(v -> {
                         Intent intent = new Intent(DetailFilmActivity.this, WatchFilmActivity.class);
                         intent.putExtra("movie", movieMainHome);
                         startActivity(intent);
@@ -165,7 +166,7 @@ public class DetailFilmActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(@NonNull Call<MovieDetailResponse> call, @NonNull Throwable t) {
+            public void onFailure(@NonNull Call<FilmDetailResponse> call, @NonNull Throwable t) {
                 Toast.makeText(DetailFilmActivity.this, "Error Get Video", Toast.LENGTH_SHORT).show();
 
             }

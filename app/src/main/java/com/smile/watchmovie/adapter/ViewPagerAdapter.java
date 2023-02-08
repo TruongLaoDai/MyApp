@@ -18,13 +18,15 @@ public class ViewPagerAdapter extends FragmentStatePagerAdapter {
     @NonNull
     @Override
     public Fragment getItem(int position) {
-        if (position == 1) {
-            return new SearchFragment();
+        switch(position){
+            case 1:
+                return new SearchFragment();
+            case 2:
+                return new PersonFragment();
+            case 0:
+            default:
+                return new HomeFragment();
         }
-        else if (position == 2){
-            return new PersonFragment();
-        }
-        return new HomeFragment();
     }
 
     @Override

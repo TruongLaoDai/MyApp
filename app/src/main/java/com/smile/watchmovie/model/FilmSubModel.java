@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 
-public class MovieSubModel implements Serializable {
+public class FilmSubModel implements Serializable {
     @SerializedName("id")
     @Expose
     private int id;
