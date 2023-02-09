@@ -3,10 +3,12 @@ package com.smile.watchmovie.activity;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -46,6 +48,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.smile.watchmovie.R;
 import com.smile.watchmovie.adapter.WatchFilmViewPagerAdapter;
 import com.smile.watchmovie.databinding.ActivityWatchFilmBinding;
+import com.smile.watchmovie.fragment.IntroduceFilmFragment;
 import com.smile.watchmovie.model.FilmMainHome;
 import com.smile.watchmovie.model.SubFilm;
 
@@ -66,9 +69,9 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
     private boolean checkLockScreen = false;
     private ImageView ivUnlockScreen;
     private TextView tvAtEpisode;
-    private FilmMainHome filmMainHome;
+    public FilmMainHome filmMainHome;
     private CollectionReference collectionReference;
-    private String idUser;
+    public String idUser;
     private ImageView ivFullScreen;
     private int check = 0;
 
@@ -131,6 +134,7 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
         if (filmMainHome.getSubVideoList() != null) {
             binding.exoplayerView.findViewById(R.id.iv_episode_pre).setVisibility(View.VISIBLE);
             binding.exoplayerView.findViewById(R.id.iv_episode_next).setVisibility(View.VISIBLE);
+            ivUnlockScreen.setVisibility(View.VISIBLE);
         }
         binding.exoplayerView.findViewById(R.id.back10s).setVisibility(View.VISIBLE);
         binding.exoplayerView.findViewById(R.id.next10s).setVisibility(View.VISIBLE);
@@ -150,9 +154,10 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
     private void setUpShowNoFullScreen() {
         binding.exoplayerView.findViewById(R.id.iv_episode_pre).setVisibility(View.GONE);
         binding.exoplayerView.findViewById(R.id.iv_episode_next).setVisibility(View.GONE);
+        ivUnlockScreen.setVisibility(View.GONE);
         binding.exoplayerView.findViewById(R.id.back10s).setVisibility(View.GONE);
         binding.exoplayerView.findViewById(R.id.next10s).setVisibility(View.GONE);
-        ivFullScreen.setImageDrawable(ContextCompat.getDrawable(WatchFilmActivity.this, R.drawable.fullscreen));
+        ivFullScreen.setImageDrawable(ContextCompat.getDrawable(WatchFilmActivity.this, R.drawable.ic_fullscreen));
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
         if (getSupportActionBar() != null) {
             getSupportActionBar().show();
@@ -263,13 +268,16 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
         }
     }
 
-    public void playVideo(SubFilm subVideo) {
+    public void playVideo(SubFilm subFilm) {
+        for (SubFilm subVideo1 : filmMainHome.getSubVideoList()) {
+            subVideo1.setWatching(subVideo1.getId() == subFilm.getId());
+        }
         binding.exoplayerView.setVisibility(View.VISIBLE);
         binding.errorWatchFilm.setVisibility(View.GONE);
-        String path = subVideo.getLink();
+        String path = subFilm.getLink();
         Uri uri= Uri.parse(path);
         tvAtEpisode = binding.exoplayerView.findViewById(R.id.tv_at_episode);
-        tvAtEpisode.setText(getString(R.string.tv_at_episode, subVideo.getEpisode()));
+        tvAtEpisode.setText(getString(R.string.tv_at_episode, subFilm.getEpisode()));
         ConcatenatingMediaSource concatenatingMediaSource = new ConcatenatingMediaSource();
         MediaSource mediaSource=buildMediaSource(uri);
         concatenatingMediaSource.addMediaSource(mediaSource);
@@ -325,6 +333,8 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
         if (player.isPlaying()) {
             player.stop();
         }
+        Intent intent = new Intent(WatchFilmActivity.this, MainActivity.class);
+        startActivity(intent);
     }
 
     private void updateDataTimeWatchFilm(Map<String, Object> historyWatchFilm) {

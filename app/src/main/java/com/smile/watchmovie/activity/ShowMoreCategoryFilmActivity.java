@@ -15,7 +15,6 @@ import android.widget.Toast;
 import com.smile.watchmovie.R;
 import com.smile.watchmovie.adapter.FilmSearchAdapter;
 import com.smile.watchmovie.api.ApiService;
-import com.smile.watchmovie.custom.PaginationScrollListener;
 import com.smile.watchmovie.databinding.ActivityShowMoreCategoryFilmBinding;
 import com.smile.watchmovie.model.FilmArrayResponse;
 import com.smile.watchmovie.model.FilmMainHome;
@@ -31,12 +30,11 @@ public class ShowMoreCategoryFilmActivity extends AppCompatActivity {
 
     private ActivityShowMoreCategoryFilmBinding binding;
     private FilmSearchAdapter mFilmSearchAdapter;
-    private boolean mIsLoading;
-    private boolean mIsLastPage;
-    private int mCurrentPage=0;
-    private final int mTotalPage=20;
+    private boolean mIsLoading = false;
+    private int mCurrentPage = 0;
     private int categoryId;
     private List<FilmMainHome> mFilmList;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,40 +47,35 @@ public class ShowMoreCategoryFilmActivity extends AppCompatActivity {
 
         mFilmSearchAdapter = new FilmSearchAdapter(this);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, RecyclerView.VERTICAL, false);
-        RecyclerView.ItemDecoration itemDecoration=new DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
+        RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
         binding.rcvFilmCategory.setLayoutManager(linearLayoutManager);
         binding.rcvFilmCategory.addItemDecoration(itemDecoration);
-        binding.loadMore.setVisibility(View.VISIBLE);
 
         categoryId = getIntent().getIntExtra("categoryId", 0);
 
         setupToolBar();
 
-        binding.rcvFilmCategory.addOnScrollListener(new PaginationScrollListener(linearLayoutManager) {
+        binding.rcvFilmCategory.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
-            public void loadMoreItems() {
-                mIsLoading=true;
-                binding.loadMore.setVisibility(View.VISIBLE);
-                mCurrentPage+=1;
-                loadNextPage(categoryId);
-            }
-
-            @Override
-            public boolean isLoading() {
-                return mIsLoading;
-            }
-
-            @Override
-            public boolean isLastPage() {
-                return mIsLastPage;
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if (!mIsLoading) {
+                    LinearLayoutManager linearLayoutManager1 = (LinearLayoutManager) binding.rcvFilmCategory.getLayoutManager();
+                    if (linearLayoutManager1 != null && linearLayoutManager1.findLastCompletelyVisibleItemPosition() == mFilmList.size() - 1) {
+                        mIsLoading = true;
+                        binding.loadMore.setVisibility(View.VISIBLE);
+                        mCurrentPage += 1;
+                        loadNextPage(categoryId);
+                    }
+                }
             }
         });
 
         callApiGetByCategoryListMovie(categoryId, 0);
     }
 
-    private void setupToolBar(){
-        switch(categoryId){
+    private void setupToolBar() {
+        switch (categoryId) {
             case 14:
                 binding.toolBar.setTitle("Hoạt hình");
                 break;
@@ -116,16 +109,15 @@ public class ShowMoreCategoryFilmActivity extends AppCompatActivity {
             public void onResponse(@NonNull Call<FilmArrayResponse> call, @NonNull Response<FilmArrayResponse> response) {
                 FilmArrayResponse movieArrayResponse = response.body();
                 if (movieArrayResponse != null) {
-                    if(binding.loadHomePage.getVisibility() == View.VISIBLE){
+                    if (binding.loadHomePage.getVisibility() == View.VISIBLE) {
                         binding.loadHomePage.setVisibility(View.INVISIBLE);
                     }
-                    if(binding.loadMore.getVisibility() == View.VISIBLE) {
+                    if (binding.loadMore.getVisibility() == View.VISIBLE) {
                         binding.loadMore.setVisibility(View.INVISIBLE);
                     }
-                    if(movieArrayResponse.getData() != null) {
+                    if (movieArrayResponse.getData() != null) {
                         mFilmList.addAll(movieArrayResponse.getData());
-                    }else{
-                        mIsLastPage = true;
+                    } else {
                         Toast.makeText(ShowMoreCategoryFilmActivity.this, "Đã hiển thị hết film", Toast.LENGTH_LONG).show();
                     }
                     if (page == 0) {
@@ -134,11 +126,9 @@ public class ShowMoreCategoryFilmActivity extends AppCompatActivity {
                     }
                     mFilmSearchAdapter.notifyDataSetChanged();
                     if (mFilmList.size() > 0 && movieArrayResponse.getData().size() == 0) {
-                        mIsLastPage = true;
                         Toast.makeText(ShowMoreCategoryFilmActivity.this, "Đã hiển thị hết film", Toast.LENGTH_LONG).show();
                     }
-                } else{
-                    mIsLastPage = true;
+                } else {
                     Toast.makeText(ShowMoreCategoryFilmActivity.this, "Đã hiển thị hết film", Toast.LENGTH_LONG).show();
                 }
             }
@@ -151,14 +141,11 @@ public class ShowMoreCategoryFilmActivity extends AppCompatActivity {
         });
     }
 
-    private void loadNextPage(int categoryId){
-        Handler handler=new Handler();
+    private void loadNextPage(int categoryId) {
+        Handler handler = new Handler();
         handler.postDelayed(() -> {
-            mIsLoading=false;
+            mIsLoading = false;
             callApiGetByCategoryListMovie(categoryId, mCurrentPage);
-            if(mCurrentPage==mTotalPage){
-                mIsLastPage=true;
-            }
-        },3500);
+        }, 3500);
     }
 }

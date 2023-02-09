@@ -49,14 +49,15 @@ public class EpisodeAdapter extends RecyclerView.Adapter<EpisodeAdapter.EpisodeV
         }
         holder.itemEpisodeBinding.tvEpisode.setText(mWatchFilmActivity.getString(R.string.episode_film, subFilm.getEpisode()));
         holder.itemEpisodeBinding.layoutEpisode.setOnClickListener(v ->{
-            mIntroduceFilmFragment.episodeFilmPlaying(subFilm);
             mWatchFilmActivity.playVideo(subFilm);
+            mIntroduceFilmFragment.episodeFilmPlaying(subFilm);
         });
         if(subFilm.getIsWatching()){
             holder.itemEpisodeBinding.tvEpisode.setBackgroundResource(R.drawable.botron_background_click);
             holder.itemEpisodeBinding.tvEpisode.setTextColor(Color.parseColor("#1877F2"));
         }
         else{
+            holder.itemEpisodeBinding.tvEpisode.setBackgroundResource(R.drawable.botron_background);
             holder.itemEpisodeBinding.tvEpisode.setTextColor(Color.parseColor("#000000"));
         }
     }

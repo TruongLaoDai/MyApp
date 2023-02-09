@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Kakoak</string>
+    <string name="app_name">WatchMovie</string>
     <string name="facebook_app_id">820005722423714</string>
     <string name="fb_login_protocol_scheme">fb820005722423714</string>
     <string name="facebook_client_token">4db1dd7b95804ee77a1c83b7c9793c46</string>
@@ -38,6 +38,17 @@
     <string name="login">Login</string>
     <string name="yes">Có</string>
     <string name="no">Không</string>
+    <string name="add_film_favorite">Đã thêm vào Mục yêu thích</string>
+    <string name="add_film_like">Đã like film</string>
+    <string name="remove_film_like">Đã bỏ like film</string>
+    <string name="remove_film_favorite">Đã xóa khỏi Mục yêu thích</string>
+    <string name="downloaded_film">Đã tải xuống</string>
+    <string name="cancel_download_film">Dừng tải xuống</string>
+    <string name="downloading_film">Đang tải xuống</string>
+    <string name="show_all_film">Đã hiển thị hết film</string>
+    <string name="number">%1$d</string>
+    <string name="like">Thích</string>
+    <string name="dislike">Không thích</string>
 
     <string-array name="categorys">
         <item>Phim mới</item>
