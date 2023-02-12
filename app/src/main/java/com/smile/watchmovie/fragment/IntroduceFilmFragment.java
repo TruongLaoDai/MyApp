@@ -1,16 +1,24 @@
 package com.smile.watchmovie.fragment;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.DownloadManager;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Handler;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,20 +39,20 @@ import com.smile.watchmovie.model.FilmArrayResponse;
 import com.smile.watchmovie.model.FilmMainHome;
 import com.smile.watchmovie.model.SubFilm;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.UUID;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-
 public class IntroduceFilmFragment extends Fragment {
-
     private FragmentIntroduceFilmBinding binding;
     private WatchFilmActivity mWatchFilmActivity;
     private FilmSearchAdapter mFilmSearchAdapter;
@@ -58,7 +66,6 @@ public class IntroduceFilmFragment extends Fragment {
     private CollectionReference collectionReferenceFilmFavorite;
     private CollectionReference collectionReferenceFilmLike;
     private CollectionReference collectionReferenceFilmDislike;
-    private CollectionReference collectionReferenceFilmDownloaded;
 
     private int changeImageFavoriteFilm;
     private int currentLike;
@@ -92,76 +99,81 @@ public class IntroduceFilmFragment extends Fragment {
                 collectionReferenceFilmFavorite = firebaseFirestore.collection("film_favorited_" + idUser);
                 collectionReferenceFilmLike = firebaseFirestore.collection("film_liked_" + filmMainHome.getId());
                 collectionReferenceFilmDislike = firebaseFirestore.collection("film_disliked_" + filmMainHome.getId());
-                collectionReferenceFilmDislike = firebaseFirestore.collection("film_downloaded_" + filmMainHome.getId());
 
                 isFilmFavorite();
                 isFilmLike();
                 isFilmDislike();
 
-                binding.loutFavorite.setOnClickListener(v -> {
-                    if (changeImageFavoriteFilm == R.drawable.ic_add_favorite) {
-                        changeImageFavoriteFilm = R.drawable.ic_added_favorite;
-                        binding.tvFavorite.setTextColor(Color.parseColor("#2A48E8"));
-                        binding.ivAddFavorite.setImageResource(changeImageFavoriteFilm);
-                        addFilmFavorite();
-                        Toast.makeText(mWatchFilmActivity, mWatchFilmActivity.getString(R.string.add_film_favorite), Toast.LENGTH_LONG).show();
-                    } else if (changeImageFavoriteFilm == R.drawable.ic_added_favorite) {
-                        changeImageFavoriteFilm = R.drawable.ic_add_favorite;
-                        binding.tvFavorite.setTextColor(Color.parseColor("#777776"));
-                        binding.ivAddFavorite.setImageResource(changeImageFavoriteFilm);
-                        deleteFilmFavorite();
-                        Toast.makeText(mWatchFilmActivity, mWatchFilmActivity.getString(R.string.remove_film_favorite), Toast.LENGTH_LONG).show();
-                    }
-                });
+                if(changeImageDislikeFilm != R.drawable.ic_disliked) {
+                    binding.loutFavorite.setOnClickListener(v -> {
+                        if (changeImageFavoriteFilm == R.drawable.ic_add_favorite) {
+                            changeImageFavoriteFilm = R.drawable.ic_added_favorite;
+                            binding.tvFavorite.setTextColor(Color.parseColor("#2A48E8"));
+                            binding.ivAddFavorite.setImageResource(changeImageFavoriteFilm);
+                            addFilmFavorite();
+                            Toast.makeText(mWatchFilmActivity, mWatchFilmActivity.getString(R.string.add_film_favorite), Toast.LENGTH_LONG).show();
+                        } else if (changeImageFavoriteFilm == R.drawable.ic_added_favorite) {
+                            changeImageFavoriteFilm = R.drawable.ic_add_favorite;
+                            binding.tvFavorite.setTextColor(Color.parseColor("#777776"));
+                            binding.ivAddFavorite.setImageResource(changeImageFavoriteFilm);
+                            deleteFilmFavorite();
+                            Toast.makeText(mWatchFilmActivity, mWatchFilmActivity.getString(R.string.remove_film_favorite), Toast.LENGTH_LONG).show();
+                        }
+                    });
 
-                binding.loutLike.setOnClickListener(v -> {
-                    if (changeImageLikeFilm == R.drawable.ic_like_film) {
-                        changeImageLikeFilm = R.drawable.ic_liked_film;
-                        binding.tvLikeNumber.setTextColor(Color.parseColor("#2A48E8"));
-                        currentLike += 1;
-                        binding.tvLikeNumber.setText(mWatchFilmActivity.getString(R.string.number, currentLike));
-                        addFilmLike();
-                        Toast.makeText(mWatchFilmActivity, mWatchFilmActivity.getString(R.string.add_film_favorite), Toast.LENGTH_LONG).show();
-                    } else if (changeImageLikeFilm == R.drawable.ic_liked_film) {
-                        changeImageLikeFilm = R.drawable.ic_like_film;
-                        binding.tvLikeNumber.setTextColor(Color.parseColor("#777776"));
-                        currentLike -= 1;
-                        if(currentLike == 0){
-                            binding.tvLikeNumber.setText(mWatchFilmActivity.getString(R.string.like));
-                        }else {
+                    binding.loutLike.setOnClickListener(v -> {
+                        if (changeImageLikeFilm == R.drawable.ic_like_film) {
+                            changeImageLikeFilm = R.drawable.ic_liked_film;
+                            binding.tvLikeNumber.setTextColor(Color.parseColor("#2A48E8"));
+                            currentLike += 1;
                             binding.tvLikeNumber.setText(mWatchFilmActivity.getString(R.string.number, currentLike));
+                            addFilmLike();
+                            Toast.makeText(mWatchFilmActivity, mWatchFilmActivity.getString(R.string.add_film_like), Toast.LENGTH_LONG).show();
+                        } else if (changeImageLikeFilm == R.drawable.ic_liked_film) {
+                            changeImageLikeFilm = R.drawable.ic_like_film;
+                            binding.tvLikeNumber.setTextColor(Color.parseColor("#777776"));
+                            currentLike -= 1;
+                            if (currentLike == 0) {
+                                binding.tvLikeNumber.setText(mWatchFilmActivity.getString(R.string.like));
+                            } else {
+                                binding.tvLikeNumber.setText(mWatchFilmActivity.getString(R.string.number, currentLike));
+                            }
+                            deleteFilmLike();
+                            Toast.makeText(mWatchFilmActivity, mWatchFilmActivity.getString(R.string.remove_film_like), Toast.LENGTH_LONG).show();
                         }
-                        deleteFilmLike();
-                        Toast.makeText(mWatchFilmActivity, mWatchFilmActivity.getString(R.string.remove_film_favorite), Toast.LENGTH_LONG).show();
-                    }
-                    binding.ivLike.setImageResource(changeImageLikeFilm);
-                });
+                        binding.ivLike.setImageResource(changeImageLikeFilm);
+                    });
+                }
 
-                binding.loutDislike.setOnClickListener(v -> {
-                    if (changeImageDislikeFilm == R.drawable.ic_dislike) {
-                        changeImageDislikeFilm = R.drawable.ic_disliked;
-                        binding.tvDislikeNumber.setTextColor(Color.parseColor("#2A48E8"));
-                        currentDislike += 1;
-                        binding.tvDislikeNumber.setText(mWatchFilmActivity.getString(R.string.number, currentDislike));
-                        addFilmDislike();
-                        Toast.makeText(mWatchFilmActivity, mWatchFilmActivity.getString(R.string.add_film_like), Toast.LENGTH_LONG).show();
-                    } else if (changeImageDislikeFilm == R.drawable.ic_disliked) {
-                        changeImageDislikeFilm = R.drawable.ic_dislike;
-                        binding.tvDislikeNumber.setTextColor(Color.parseColor("#777776"));
-                        currentDislike -= 1;
-                        if(currentDislike == 0){
-                            binding.tvDislikeNumber.setText(mWatchFilmActivity.getString(R.string.dislike));
-                        }else {
+                if(changeImageLikeFilm != R.drawable.ic_like_film) {
+                    binding.loutDislike.setOnClickListener(v -> {
+                        if (changeImageDislikeFilm == R.drawable.ic_dislike) {
+                            changeImageDislikeFilm = R.drawable.ic_disliked;
+                            binding.tvDislikeNumber.setTextColor(Color.parseColor("#2A48E8"));
+                            currentDislike += 1;
                             binding.tvDislikeNumber.setText(mWatchFilmActivity.getString(R.string.number, currentDislike));
+                            addFilmDislike();
+                            Toast.makeText(mWatchFilmActivity, mWatchFilmActivity.getString(R.string.add_film_dislike), Toast.LENGTH_LONG).show();
+                        } else if (changeImageDislikeFilm == R.drawable.ic_disliked) {
+                            changeImageDislikeFilm = R.drawable.ic_dislike;
+                            binding.tvDislikeNumber.setTextColor(Color.parseColor("#777776"));
+                            currentDislike -= 1;
+                            if (currentDislike == 0) {
+                                binding.tvDislikeNumber.setText(mWatchFilmActivity.getString(R.string.dislike));
+                            } else {
+                                binding.tvDislikeNumber.setText(mWatchFilmActivity.getString(R.string.number, currentDislike));
+                            }
+                            deleteFilmDislike();
+                            Toast.makeText(mWatchFilmActivity, mWatchFilmActivity.getString(R.string.remove_film_dislike), Toast.LENGTH_LONG).show();
                         }
-                        deleteFilmDislike();
-                        Toast.makeText(mWatchFilmActivity, mWatchFilmActivity.getString(R.string.remove_film_like), Toast.LENGTH_LONG).show();
-                    }
-                    binding.ivDislike.setImageResource(changeImageDislikeFilm);
-                });
+                        binding.ivDislike.setImageResource(changeImageDislikeFilm);
+                    });
+                }
 
+                changeImageDownloadFilm = R.drawable.ic_download_film;
                 binding.loutDownload.setOnClickListener(v -> {
                     if (changeImageDownloadFilm == R.drawable.ic_download_film) {
+                        downloadFilm(filmMainHome.getLink());
                         changeImageDownloadFilm = R.drawable.ic_film_downloaded;
                         binding.tvDislikeNumber.setTextColor(Color.parseColor("#2A48E8"));
                         Toast.makeText(mWatchFilmActivity, mWatchFilmActivity.getString(R.string.downloading_film), Toast.LENGTH_LONG).show();
@@ -170,7 +182,7 @@ public class IntroduceFilmFragment extends Fragment {
                         binding.tvDislikeNumber.setTextColor(Color.parseColor("#777776"));
                         Toast.makeText(mWatchFilmActivity, mWatchFilmActivity.getString(R.string.cancel_download_film), Toast.LENGTH_LONG).show();
                     }
-                    binding.ivDislike.setImageResource(changeImageDownloadFilm);
+                    binding.ivDownload.setImageResource(changeImageDownloadFilm);
                 });
             }
 
@@ -404,5 +416,52 @@ public class IntroduceFilmFragment extends Fragment {
                                 .delete();
                     }
                 });
+    }
+
+    private final ActivityResultLauncher<String> requestPermissionLauncher =
+            registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
+                if (isGranted) {
+                    downloadFilm(mWatchFilmActivity.idUser);
+                } else {
+                    Toast.makeText(mWatchFilmActivity, mWatchFilmActivity.getString(R.string.ms_permission_denied), Toast.LENGTH_LONG).show();
+                }
+            });
+
+    private void downloadFilm(String downloadUrl){
+        if (ContextCompat.checkSelfPermission(
+                mWatchFilmActivity, Manifest.permission.WRITE_EXTERNAL_STORAGE) ==
+                PackageManager.PERMISSION_GRANTED) {
+            startDownloadFilm(downloadUrl);
+        } else {
+            requestPermissionLauncher.launch(
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        }
+    }
+
+    private void startDownloadFilm(String downloadUrl){
+        String mBaseFolderPath = android.os.Environment
+                .getExternalStorageDirectory()
+                + File.separator
+                + "FolderName" + File.separator;
+        if (!new File(mBaseFolderPath).exists()) {
+            new File(mBaseFolderPath).mkdir();
+        }
+
+        if (downloadUrl == null || TextUtils.isEmpty(downloadUrl)) {
+            return;
+        }
+
+        Uri downloadUri = Uri.parse(downloadUrl.trim());
+        if (downloadUri == null) {
+            return;
+        }
+
+        String mFilePath = "file://" + mBaseFolderPath + "/" + UUID.randomUUID().toString();
+        DownloadManager.Request req = new DownloadManager.Request(downloadUri);
+        req.setDestinationUri(Uri.parse(mFilePath));
+        req.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+        DownloadManager dm = (DownloadManager) requireActivity().getSystemService(getActivity().DOWNLOAD_SERVICE);
+        dm.enqueue(req);
+
     }
 }

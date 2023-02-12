@@ -78,16 +78,18 @@
 
                     <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/iv_like"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
                         android:src="@drawable/ic_like_film" />
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/tv_like_number"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textColor="@color/gray"
+                        android:layout_gravity="center"
+                        android:gravity="center"
                         android:text="@string/like"
                         android:textSize="14sp"
                         android:textStyle="bold" />
@@ -110,15 +112,17 @@
 
                     <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/iv_dislike"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
                         android:src="@drawable/ic_dislike" />
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/tv_dislike_number"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:gravity="center"
                         android:textColor="@color/gray"
                         android:text="@string/dislike"
                         android:textSize="14sp"

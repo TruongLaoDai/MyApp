@@ -39,8 +39,10 @@
     <string name="yes">Có</string>
     <string name="no">Không</string>
     <string name="add_film_favorite">Đã thêm vào Mục yêu thích</string>
-    <string name="add_film_like">Đã like film</string>
-    <string name="remove_film_like">Đã bỏ like film</string>
+    <string name="add_film_like">Đã thích film</string>
+    <string name="remove_film_like">Đã bỏ thích film</string>
+    <string name="add_film_dislike">Đã không thích film</string>
+    <string name="remove_film_dislike">Đã bỏ không thích film</string>
     <string name="remove_film_favorite">Đã xóa khỏi Mục yêu thích</string>
     <string name="downloaded_film">Đã tải xuống</string>
     <string name="cancel_download_film">Dừng tải xuống</string>
@@ -49,6 +51,7 @@
     <string name="number">%1$d</string>
     <string name="like">Thích</string>
     <string name="dislike">Không thích</string>
+    <string name="ms_permission_denied">Không thể thực thi tính năng này vì quyền cần thiết cho tính năng này đã bị từ chối</string>
 
     <string-array name="categorys">
         <item>Phim mới</item>
