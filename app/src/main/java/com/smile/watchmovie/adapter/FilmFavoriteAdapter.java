@@ -17,7 +17,7 @@ import com.smile.watchmovie.api.ApiService;
 import com.smile.watchmovie.databinding.ItemFilmFavoriteBinding;
 import com.smile.watchmovie.model.FilmDetailResponse;
 import com.smile.watchmovie.model.FilmMainHome;
-import com.smile.watchmovie.my_interface.IClickItemUnFavoriteListener;
+import com.smile.watchmovie.listener.IClickItemUnFavoriteListener;
 
 import java.util.List;
 

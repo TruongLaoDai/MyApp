@@ -49,7 +49,7 @@ public class EpisodeAdapter extends RecyclerView.Adapter<EpisodeAdapter.EpisodeV
         }
         holder.itemEpisodeBinding.tvEpisode.setText(mWatchFilmActivity.getString(R.string.episode_film, subFilm.getEpisode()));
         holder.itemEpisodeBinding.layoutEpisode.setOnClickListener(v ->{
-            mWatchFilmActivity.playVideo(subFilm);
+            mWatchFilmActivity.playFilm(subFilm);
             mIntroduceFilmFragment.episodeFilmPlaying(subFilm);
         });
         if(subFilm.getIsWatching()){

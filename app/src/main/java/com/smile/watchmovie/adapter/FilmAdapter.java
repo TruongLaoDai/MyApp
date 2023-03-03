@@ -70,7 +70,7 @@ public class FilmAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                                 FilmMainHome filmPlay;
                                 filmPlay = cinema.getData();
                                 Intent intent = new Intent(context, WatchFilmActivity.class);
-                                intent.putExtra("movie", filmPlay);
+                                intent.putExtra("film", filmPlay);
                                 context.startActivity(intent);
                             }
                         }

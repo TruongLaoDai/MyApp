@@ -169,13 +169,11 @@ public class MainActivity extends AppCompatActivity {
                         mNavigationView.getMenu().findItem(R.id.action_search).setChecked(true);
                         break;
                     case 2:
-                        if(binding.toolBarHome.getVisibility() == View.GONE) {
-                            binding.toolBarHome.setVisibility(View.VISIBLE);
-                            LinearLayout.LayoutParams params2 = (LinearLayout.LayoutParams) binding.toolBarHome.getLayoutParams();
-                            params2.width = ViewGroup.LayoutParams.MATCH_PARENT;
-                            params2.height = (int) (65 * getApplicationContext().getResources().getDisplayMetrics().density);
-                            binding.toolBarHome.setLayoutParams(params2);
-                        }
+                        binding.toolBarHome.setVisibility(View.GONE);
+                        LinearLayout.LayoutParams paramsFragmentPerson=(LinearLayout.LayoutParams) binding.viewPager.getLayoutParams();
+                        paramsFragmentPerson.width= ViewGroup.LayoutParams.MATCH_PARENT;
+                        paramsFragmentPerson.height= ViewGroup.LayoutParams.MATCH_PARENT;
+                        binding.viewPager.setLayoutParams(paramsFragmentPerson);
                         mNavigationView.getMenu().findItem(R.id.action_person).setChecked(true);
                         break;
                 }

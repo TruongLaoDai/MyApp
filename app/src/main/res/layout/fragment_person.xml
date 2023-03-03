@@ -4,90 +4,94 @@
     android:id="@+id/layout_person"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragment.PersonFragment"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:context=".fragment.PersonFragment">
 
     <LinearLayout
-        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-    <!-- TODO: Update blank fragment layout -->
-    <RelativeLayout
-        android:layout_weight="1"
-        android:layout_width="match_parent"
-        android:layout_height="0dp">
-        <LinearLayout
-            android:padding="10dp"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <!-- TODO: Update blank fragment layout -->
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:weightSum="1"
-            android:orientation="vertical">
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:padding="10dp"
+                android:weightSum="1">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="0.12"
+                    android:text="@string/lich_su"
+                    android:textColor="@color/black"
+                    android:textSize="20sp" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rcv_history_watch_film"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="0.88" />
+            </LinearLayout>
 
             <TextView
+                android:id="@+id/tv_size_history"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:gravity="center"
+                android:text="@string/title_size"
                 android:textColor="@color/black"
-                android:textSize="20sp"
-                android:layout_weight="0.12"
-                android:text="@string/lich_su" />
+                android:textSize="20sp" />
+        </RelativeLayout>
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:layout_weight="0.88"
-                android:id="@+id/rcv_history_watch_film"
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="0dp"/>
-        </LinearLayout>
-        <TextView
-            android:id="@+id/tv_size_history"
-            android:textColor="@color/black"
-            android:textSize="20sp"
-            android:layout_centerVertical="true"
-            android:gravity="center"
-            android:text="@string/title_size"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-    </RelativeLayout>
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:padding="10dp"
+                android:weightSum="1">
 
-    <RelativeLayout
-        android:layout_weight="1"
-        android:layout_width="match_parent"
-        android:layout_height="0dp">
-        <LinearLayout
-            android:padding="10dp"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:weightSum="1"
-            android:orientation="vertical">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="0.12"
+                    android:text="@string/fav_film"
+                    android:textColor="@color/black"
+                    android:textSize="20sp" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rcv_film_favorite"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="0.88" />
+            </LinearLayout>
 
             <TextView
+                android:id="@+id/tv_size_favorite"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:gravity="center"
+                android:text="@string/title_size"
                 android:textColor="@color/black"
-                android:textSize="20sp"
-                android:layout_weight="0.12"
-                android:text="@string/fav_film" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:layout_weight="0.88"
-                android:id="@+id/rcv_film_favorite"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"/>
-        </LinearLayout>
-        <TextView
-            android:id="@+id/tv_size_favorite"
-            android:textColor="@color/black"
-            android:textSize="20sp"
-            android:layout_centerVertical="true"
-            android:gravity="center"
-            android:text="@string/title_size"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-    </RelativeLayout>
+                android:textSize="20sp" />
+        </RelativeLayout>
     </LinearLayout>
 
     <ProgressBar
         android:id="@+id/load_person_page"
-        android:layout_centerVertical="true"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true" />
 </RelativeLayout>

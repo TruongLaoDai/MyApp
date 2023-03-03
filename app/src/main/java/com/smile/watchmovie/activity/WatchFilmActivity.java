@@ -1,20 +1,33 @@
 package com.smile.watchmovie.activity;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.PictureInPictureParams;
+import android.content.ContentResolver;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.media.AudioManager;
+import android.media.MediaMetadataRetriever;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
+import android.util.DisplayMetrics;
+import android.util.Rational;
 import android.view.Gravity;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -22,6 +35,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,7 +44,9 @@ import com.facebook.AccessToken;
 import com.facebook.GraphRequest;
 import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.MediaItem;
+import com.google.android.exoplayer2.MetadataRetriever;
 import com.google.android.exoplayer2.PlaybackException;
+import com.google.android.exoplayer2.PlaybackParameters;
 import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.source.ConcatenatingMediaSource;
 import com.google.android.exoplayer2.source.MediaSource;
@@ -38,6 +54,7 @@ import com.google.android.exoplayer2.source.hls.HlsMediaSource;
 import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.exoplayer2.upstream.DataSource;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
+import com.google.android.exoplayer2.util.Util;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.firebase.firestore.CollectionReference;
@@ -48,7 +65,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.smile.watchmovie.R;
 import com.smile.watchmovie.adapter.WatchFilmViewPagerAdapter;
 import com.smile.watchmovie.databinding.ActivityWatchFilmBinding;
-import com.smile.watchmovie.fragment.IntroduceFilmFragment;
+import com.smile.watchmovie.listener.OnSwipeTouchListener;
 import com.smile.watchmovie.model.FilmMainHome;
 import com.smile.watchmovie.model.SubFilm;
 
@@ -63,6 +80,7 @@ import java.util.Objects;
 
 public class WatchFilmActivity extends AppCompatActivity implements Player.Listener {
 
+    private static final int MINIUM_DISTANCE = 100;
     private ActivityWatchFilmBinding binding;
     private ExoPlayer player;
     private boolean checkFullScreen = false;
@@ -75,6 +93,27 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
     private ImageView ivFullScreen;
     private int check = 0;
 
+    private PictureInPictureParams.Builder piBuilder;
+    private boolean isInPictureInPictureMode = false;
+
+    private int device_width, device_height, brightness, media_volume;
+    private boolean start, left, right = false;
+    private float baseX, baseY;
+    private boolean swipe_move = false;
+    private long diffX, diffY;
+    private boolean success = false;
+
+    private AudioManager adAudioManager;
+    private ContentResolver mContentResolver;
+    private Window window;
+
+    private ProgressBar brt_progress, vol_progress;
+    private ImageView brt_icon, vol_icon;
+    private TextView brt_text, vol_text;
+    private boolean singleTap = false;
+    private float speed;
+    private PlaybackParameters playbackParameters;
+
     @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,13 +124,19 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
         setContentView(binding.getRoot());
 
         filmMainHome = new FilmMainHome();
-        filmMainHome = (FilmMainHome) getIntent().getSerializableExtra("movie");
+        filmMainHome = (FilmMainHome) getIntent().getSerializableExtra("film");
         idUser = "";
-        if(filmMainHome != null) {
+
+        initViewForTouchExoplayer();
+
+        if (filmMainHome != null) {
             WatchFilmViewPagerAdapter mWatchFilmViewPagerAdapter = new WatchFilmViewPagerAdapter(getSupportFragmentManager(), FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
             binding.viewWatchFilePager.setAdapter(mWatchFilmViewPagerAdapter);
             binding.tabLayout.setupWithViewPager(binding.viewWatchFilePager);
 
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                piBuilder = new PictureInPictureParams.Builder();
+            }
             getIdUser();
             setUpPlayer();
 
@@ -127,7 +172,172 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
             });
 
         }
-        binding.exoplayerView.findViewById(R.id.iv_back).setOnClickListener(v -> backOther());
+        binding.exoplayerView.findViewById(R.id.iv_back).setOnClickListener(v -> onBackPressed());
+
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+
+        device_width = displayMetrics.widthPixels;
+        device_height = displayMetrics.heightPixels;
+
+        setOnTouchExoplayer();
+    }
+
+    private void initViewForTouchExoplayer(){
+        adAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        brt_progress = binding.exoplayerView.findViewById(R.id.brt_progress);
+        brt_icon = binding.exoplayerView.findViewById(R.id.brt_icon);
+        brt_text = binding.exoplayerView.findViewById(R.id.brt_text);
+        vol_progress = binding.exoplayerView.findViewById(R.id.vol_progress);
+        vol_icon = binding.exoplayerView.findViewById(R.id.vol_icon);
+        vol_text = binding.exoplayerView.findViewById(R.id.vol_text);
+    }
+
+    private void setOnTouchExoplayer() {
+        binding.exoplayerView.setOnTouchListener(new OnSwipeTouchListener(this) {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        start = true;
+                        if (event.getX() < ((double) device_width / 2)) {
+                            left = true;
+                            right = false;
+                        } else if (event.getX() > ((double) device_width / 2)) {
+                            left = false;
+                            right = true;
+                        }
+                        baseX = event.getX();
+                        baseY = event.getY();
+                        break;
+                    case MotionEvent.ACTION_MOVE:
+                        swipe_move = true;
+                        diffX = (long) Math.ceil(event.getX() - baseX);
+                        diffY = (long) Math.ceil(event.getY() - baseY);
+
+                        double brightnessSpeed = 0.01;
+                        if (Math.abs(diffY) > MINIUM_DISTANCE) {
+                            start = true;
+                            if (Math.abs(diffY) > Math.abs(diffX)) {
+                                boolean value;
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                    value = Settings.System.canWrite(getApplicationContext());
+                                    if (value) {
+                                        if (left) {
+                                            mContentResolver = getContentResolver();
+                                            window = getWindow();
+                                            try {
+                                                Settings.System.putInt(mContentResolver, Settings.System.SCREEN_BRIGHTNESS_MODE, Settings.System.SCREEN_BRIGHTNESS_MODE_MANUAL);
+                                                brightness = Settings.System.getInt(mContentResolver, Settings.System.SCREEN_BRIGHTNESS);
+                                            } catch (Settings.SettingNotFoundException e) {
+                                                throw new RuntimeException(e);
+                                            }
+                                            int new_brightness = (int) (brightness - (diffY * brightnessSpeed));
+                                            if (new_brightness > 250) {
+                                                new_brightness = 250;
+                                            } else if (new_brightness < 1) {
+                                                new_brightness = 1;
+                                            }
+                                            double brt_percentage = Math.ceil(((double) new_brightness / (double) 250) * 100);
+                                            binding.exoplayerView.findViewById(R.id.brt_progress_container).setVisibility(View.VISIBLE);
+                                            binding.exoplayerView.findViewById(R.id.brt_text_container).setVisibility(View.VISIBLE);
+                                            brt_progress.setProgress((int) brt_percentage);
+
+                                            if (brt_percentage < 30) {
+                                                brt_icon.setImageResource(R.drawable.ic_brightness_low);
+                                            } else if (brt_percentage >= 30 && brt_percentage < 80) {
+                                                brt_icon.setImageResource(R.drawable.ic_brightness_half);
+                                            } else if (brt_percentage >= 80) {
+                                                brt_icon.setImageResource(R.drawable.ic_brightness);
+                                            }
+                                            String brightness_level = (int) brt_percentage + "%";
+                                            brt_text.setText(brightness_level);
+                                            Settings.System.putInt(mContentResolver, Settings.System.SCREEN_BRIGHTNESS, new_brightness);
+                                            WindowManager.LayoutParams layoutParams = window.getAttributes();
+
+                                            layoutParams.screenBrightness = brightness / (float) 255;
+                                            window.setAttributes(layoutParams);
+                                        } else if (right) {
+                                            binding.exoplayerView.findViewById(R.id.vol_text_container).setVisibility(View.VISIBLE);
+                                            media_volume = adAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
+                                            int maxVol = adAudioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
+                                            double cal = (double) diffY * ((double) maxVol / ((double) (device_height * 2) - brightnessSpeed));
+                                            int newMediaVolume = media_volume - (int) cal;
+                                            if (newMediaVolume > maxVol) {
+                                                newMediaVolume = maxVol;
+                                            } else if (newMediaVolume < 1) {
+                                                newMediaVolume = 0;
+                                            }
+                                            adAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, newMediaVolume, 0);
+                                            double volPer = Math.ceil(((double) newMediaVolume / (double) maxVol) * 100);
+                                            String volume_level = (int) volPer + "%";
+                                            vol_text.setText(volume_level);
+                                            if (volPer < 1) {
+                                                vol_icon.setImageResource(R.drawable.ic_volume_off);
+                                                vol_text.setVisibility(View.VISIBLE);
+                                                vol_text.setText(getString(R.string.off));
+                                            } else if (volPer >= 1) {
+                                                vol_icon.setImageResource(R.drawable.ic_volume);
+                                                vol_text.setVisibility(View.VISIBLE);
+                                            }
+                                            binding.exoplayerView.findViewById(R.id.vol_progress_container).setVisibility(View.VISIBLE);
+                                            vol_progress.setProgress((int) volPer);
+                                        }
+                                        success = true;
+                                    } else {
+                                        Toast.makeText(getApplicationContext(), "Allow write settings for swipe controls", Toast.LENGTH_SHORT).show();
+                                        Intent intent = new Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS);
+                                        intent.setData(Uri.parse("package:" + getPackageName()));
+                                        startActivityForResult(intent, 111);
+                                    }
+                                }
+                            }
+                        }
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        swipe_move = false;
+                        start = false;
+                        binding.exoplayerView.findViewById(R.id.vol_progress_container).setVisibility(View.GONE);
+                        binding.exoplayerView.findViewById(R.id.brt_progress_container).setVisibility(View.GONE);
+                        binding.exoplayerView.findViewById(R.id.vol_text_container).setVisibility(View.GONE);
+                        binding.exoplayerView.findViewById(R.id.brt_text_container).setVisibility(View.GONE);
+                        break;
+                }
+                return super.onTouch(v, event);
+            }
+        });
+    }
+
+    public void playSpeedFilm(){
+        AlertDialog.Builder alBuilder = new AlertDialog.Builder(WatchFilmActivity.this);
+        alBuilder.setTitle("Select playback speed").setPositiveButton("OK", null);
+        String[] items = {"0.5x", "1x Normal Speed", "1,25x", "1.75x", "2x"};
+        int checkedItem = -1;
+        alBuilder.setSingleChoiceItems(items, checkedItem, (dialog, which) -> {
+            switch (which){
+                case 0:
+                    speed = 0.5f;
+                    break;
+                case 1:
+                    speed = 1f;
+                    break;
+                case 2:
+                    speed = 1.25f;
+                    break;
+                case 3:
+                    speed = 1.5f;
+                    break;
+                case 4:
+                    speed = 2f;
+                    break;
+                default:
+                    break;
+            }
+            playbackParameters = new PlaybackParameters(speed);
+            player.setPlaybackParameters(playbackParameters);
+        });
+        AlertDialog alertDialog = alBuilder.create();
+        alertDialog.show();
     }
 
     private void setUpShowFilmFullScreen() {
@@ -167,7 +377,7 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
         params.width = ViewGroup.LayoutParams.MATCH_PARENT;
         params.height = (int) (230 * getApplicationContext().getResources().getDisplayMetrics().density);
         binding.layoutFilm.setLayoutParams(params);
-        binding.exoplayerView.findViewById(R.id.iv_back).setOnClickListener(v1 -> finish());
+        binding.exoplayerView.findViewById(R.id.iv_back).setOnClickListener(v1 -> onBackPressed());
         checkFullScreen = false;
     }
 
@@ -176,13 +386,13 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
         binding.exoplayerView.findViewById(R.id.iv_episode_pre).setOnClickListener(v -> {
             int episode = Integer.parseInt(tvAtEpisode.getText().toString().substring(4, tvAtEpisode.getText().length())) - 1;
             if (episode > 0) {
-                playVideo(finalMovieMainHome.getSubVideoList().get(episode - 1));
+                playFilm(finalMovieMainHome.getSubVideoList().get(episode - 1));
             }
         });
         binding.exoplayerView.findViewById(R.id.iv_episode_next).setOnClickListener(v -> {
             int episode = Integer.parseInt(tvAtEpisode.getText().toString().substring(4, tvAtEpisode.getText().length())) - 1;
             if (episode + 1 < finalMovieMainHome.getSubVideoList().size()) {
-                playVideo(finalMovieMainHome.getSubVideoList().get(episode + 1));
+                playFilm(finalMovieMainHome.getSubVideoList().get(episode + 1));
             }
         });
         binding.exoplayerView.findViewById(R.id.next10s).setOnClickListener(v -> player.seekTo(player.getCurrentPosition() + 10000));
@@ -200,24 +410,7 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
             subVideoList.add(subFilm);
             filmMainHome.setSubVideoList(subVideoList);
         }
-        playVideo(filmMainHome.getSubVideoList().get(0));
-    }
-
-    private void backOther() {
-        finish();
-        if (!idUser.equals("")) {
-            Map<String, Object> historyWatchFilm = new HashMap<>();
-            historyWatchFilm.put("idFilm", filmMainHome.getId() + "");
-            historyWatchFilm.put("time", player.getCurrentPosition() + "");
-            if (player.getCurrentPosition() > 30000 && check == 0) {
-                collectionReference.add(historyWatchFilm);
-            } else if (check == 1) {
-                updateDataTimeWatchFilm(historyWatchFilm);
-            }
-        }
-        if (player.isPlaying()) {
-            player.stop();
-        }
+        playFilm(filmMainHome.getSubVideoList().get(0));
     }
 
     private void getIdUser() {
@@ -268,21 +461,22 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
         }
     }
 
-    public void playVideo(SubFilm subFilm) {
+    public void playFilm(SubFilm subFilm) {
         for (SubFilm subVideo1 : filmMainHome.getSubVideoList()) {
             subVideo1.setWatching(subVideo1.getId() == subFilm.getId());
         }
         binding.exoplayerView.setVisibility(View.VISIBLE);
         binding.errorWatchFilm.setVisibility(View.GONE);
         String path = subFilm.getLink();
-        Uri uri= Uri.parse(path);
+        Uri uri = Uri.parse(path);
         tvAtEpisode = binding.exoplayerView.findViewById(R.id.tv_at_episode);
         tvAtEpisode.setText(getString(R.string.tv_at_episode, subFilm.getEpisode()));
         ConcatenatingMediaSource concatenatingMediaSource = new ConcatenatingMediaSource();
-        MediaSource mediaSource=buildMediaSource(uri);
+        MediaSource mediaSource = buildMediaSource(uri);
         concatenatingMediaSource.addMediaSource(mediaSource);
         binding.exoplayerView.setPlayer(player);
         binding.exoplayerView.setKeepScreenOn(true);
+        player.setPlaybackParameters(playbackParameters);
         player.prepare(concatenatingMediaSource);
         playError();
     }
@@ -300,7 +494,7 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
     }
 
     private MediaSource buildMediaSource(Uri uri) {
-        DataSource.Factory dataSourceFactory = new DefaultDataSourceFactory(this, "Watch Movie");
+        DataSource.Factory dataSourceFactory = new DefaultDataSourceFactory(this, Util.getUserAgent(this, "Watch Movie"));
         return new HlsMediaSource.Factory(dataSourceFactory).createMediaSource(MediaItem.fromUri(uri));
     }
 
@@ -333,8 +527,27 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
         if (player.isPlaying()) {
             player.stop();
         }
-        Intent intent = new Intent(WatchFilmActivity.this, MainActivity.class);
-        startActivity(intent);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            Rational asRational = new Rational(16, 9);
+            piBuilder.setAspectRatio(asRational);
+            enterPictureInPictureMode(piBuilder.build());
+        }
+        Intent intentBackToMain = new Intent(WatchFilmActivity.this, MainActivity.class);
+        intentBackToMain.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+        intentBackToMain.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intentBackToMain);
+        finish();
+    }
+
+    @Override
+    public void onPictureInPictureModeChanged(boolean isInPictureInPictureMode) {
+        super.onPictureInPictureModeChanged(isInPictureInPictureMode);
+        this.isInPictureInPictureMode = isInPictureInPictureMode;
+        if (isInPictureInPictureMode) {
+            binding.exoplayerView.hideController();
+        } else {
+            binding.exoplayerView.showController();
+        }
     }
 
     private void updateDataTimeWatchFilm(Map<String, Object> historyWatchFilm) {
@@ -415,6 +628,15 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
         super.onPause();
         player.setPlayWhenReady(false);
         player.getPlaybackState();
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            if (isInPictureInPictureMode()) {
+                player.setPlayWhenReady(true);
+            } else {
+                player.setPlayWhenReady(false);
+                player.getPlaybackState();
+            }
+        }
     }
 
     @Override
@@ -427,6 +649,24 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
     @Override
     protected void onStop() {
         super.onStop();
-        player.release();
+        if (isInPictureInPictureMode) {
+            player.release();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 111) {
+            boolean value;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                value = Settings.System.canWrite(getApplicationContext());
+                if (value) {
+                    success = true;
+                } else {
+                    Toast.makeText(getApplicationContext(), "Not Granted", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
     }
 }

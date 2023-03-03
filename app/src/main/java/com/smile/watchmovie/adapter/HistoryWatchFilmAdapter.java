@@ -17,7 +17,7 @@ import com.smile.watchmovie.api.ApiService;
 import com.smile.watchmovie.databinding.ItemFilmHistoryBinding;
 import com.smile.watchmovie.model.FilmDetailResponse;
 import com.smile.watchmovie.model.FilmMainHome;
-import com.smile.watchmovie.my_interface.IClickItemDeleteHistoryListener;
+import com.smile.watchmovie.listener.IClickItemDeleteHistoryListener;
 
 import java.util.List;
 

@@ -10,7 +10,9 @@
     <string name="image_logo_app">logo_app</string>
     <string name="image_play_film">image_play_film</string>
     <string name="xem_phim">Xem phim</string>
-    <string name="description">Description</string>
+    <string name="description">Giới thiệu</string>
+    <string name="directors">Đạo diễn </string>
+    <string name="detail">Chi tiết</string>
     <string name="image_film">Image Film</string>
     <string name="tb_edit_text">Bạn hãy nhập tên phim cần tìm!</string>
     <string name="hint">Tên phim…</string>
@@ -52,6 +54,11 @@
     <string name="like">Thích</string>
     <string name="dislike">Không thích</string>
     <string name="ms_permission_denied">Không thể thực thi tính năng này vì quyền cần thiết cho tính năng này đã bị từ chối</string>
+    <string name="volume">Âm lượng: </string>
+    <string name="bright">Độ sáng: </string>
+    <string name="brightness">%1$d%</string>
+    <string name="volumelevel">%1$d%</string>
+    <string name="off">Off</string>
 
     <string-array name="categorys">
         <item>Phim mới</item>
