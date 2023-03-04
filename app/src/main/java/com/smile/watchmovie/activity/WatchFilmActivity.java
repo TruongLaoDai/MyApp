@@ -12,14 +12,11 @@ import android.app.Dialog;
 import android.app.PictureInPictureParams;
 import android.content.ContentResolver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.media.AudioManager;
-import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -44,7 +41,6 @@ import com.facebook.AccessToken;
 import com.facebook.GraphRequest;
 import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.MediaItem;
-import com.google.android.exoplayer2.MetadataRetriever;
 import com.google.android.exoplayer2.PlaybackException;
 import com.google.android.exoplayer2.PlaybackParameters;
 import com.google.android.exoplayer2.Player;
@@ -130,47 +126,7 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
         initViewForTouchExoplayer();
 
         if (filmMainHome != null) {
-            WatchFilmViewPagerAdapter mWatchFilmViewPagerAdapter = new WatchFilmViewPagerAdapter(getSupportFragmentManager(), FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
-            binding.viewWatchFilePager.setAdapter(mWatchFilmViewPagerAdapter);
-            binding.tabLayout.setupWithViewPager(binding.viewWatchFilePager);
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                piBuilder = new PictureInPictureParams.Builder();
-            }
-            getIdUser();
-            setUpPlayer();
-
-            if (!idUser.equals("")) {
-                FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
-                collectionReference = firebaseFirestore.collection("history_watch_film_" + idUser);
-                historyWatchFilm();
-            }
-
-            playFilmFirst();
-
-            setUpCustomPlayFilm();
-
-            ivFullScreen = binding.exoplayerView.findViewById(R.id.scaling);
-            ivFullScreen.setOnClickListener(v -> {
-                if (checkFullScreen) {
-                    setUpShowNoFullScreen();
-
-                } else {
-                    setUpShowFilmFullScreen();
-                    binding.exoplayerView.findViewById(R.id.iv_back).setOnClickListener(v12 -> setUpShowNoFullScreen());
-                }
-            });
-            ivUnlockScreen = binding.exoplayerView.findViewById(R.id.iv_unlock);
-            ivUnlockScreen.setOnClickListener(v -> {
-                if (!checkLockScreen) {
-                    ivUnlockScreen.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_baseline_lock_24));
-                } else {
-                    ivUnlockScreen.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_round_lock_open_24));
-                }
-                checkLockScreen = !checkLockScreen;
-                lockScreen(checkLockScreen);
-            });
-
+            setUpView();
         }
         binding.exoplayerView.findViewById(R.id.iv_back).setOnClickListener(v -> onBackPressed());
 
@@ -183,7 +139,51 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
         setOnTouchExoplayer();
     }
 
-    private void initViewForTouchExoplayer(){
+    private void setUpView() {
+        WatchFilmViewPagerAdapter mWatchFilmViewPagerAdapter = new WatchFilmViewPagerAdapter(getSupportFragmentManager(), FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
+        binding.viewWatchFilePager.setAdapter(mWatchFilmViewPagerAdapter);
+        binding.tabLayout.setupWithViewPager(binding.viewWatchFilePager);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            piBuilder = new PictureInPictureParams.Builder();
+        }
+        getIdUser();
+        setUpPlayer();
+
+        if (!idUser.equals("")) {
+            FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
+            collectionReference = firebaseFirestore.collection("history_watch_film_" + idUser);
+            historyWatchFilm();
+        }
+
+        playFilmFirst();
+
+        setUpCustomPlayFilm();
+
+        ivFullScreen = binding.exoplayerView.findViewById(R.id.scaling);
+        ivFullScreen.setOnClickListener(v -> {
+            if (checkFullScreen) {
+                setUpShowNoFullScreen();
+
+            } else {
+                setUpShowFilmFullScreen();
+                binding.exoplayerView.findViewById(R.id.iv_back).setOnClickListener(v12 -> setUpShowNoFullScreen());
+            }
+        });
+        ivUnlockScreen = binding.exoplayerView.findViewById(R.id.iv_unlock);
+        ivUnlockScreen.setOnClickListener(v -> {
+            if (!checkLockScreen) {
+                ivUnlockScreen.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_baseline_lock_24));
+            } else {
+                ivUnlockScreen.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_round_lock_open_24));
+            }
+            checkLockScreen = !checkLockScreen;
+            lockScreen(checkLockScreen);
+        });
+
+    }
+
+    private void initViewForTouchExoplayer() {
         adAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         brt_progress = binding.exoplayerView.findViewById(R.id.brt_progress);
         brt_icon = binding.exoplayerView.findViewById(R.id.brt_icon);
@@ -308,13 +308,13 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
         });
     }
 
-    public void playSpeedFilm(){
+    public void playSpeedFilm() {
         AlertDialog.Builder alBuilder = new AlertDialog.Builder(WatchFilmActivity.this);
         alBuilder.setTitle("Select playback speed").setPositiveButton("OK", null);
         String[] items = {"0.5x", "1x Normal Speed", "1,25x", "1.75x", "2x"};
         int checkedItem = -1;
         alBuilder.setSingleChoiceItems(items, checkedItem, (dialog, which) -> {
-            switch (which){
+            switch (which) {
                 case 0:
                     speed = 0.5f;
                     break;

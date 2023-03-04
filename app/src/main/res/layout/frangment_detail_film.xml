@@ -6,34 +6,34 @@
     android:layout_height="match_parent">
 
     <RelativeLayout
-        android:padding="10dp"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:padding="10dp">
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_title_dialog"
-            android:textColor="@color/black"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textStyle="bold"
-            android:textSize="15sp"
+            android:layout_marginTop="10dp"
             android:text="@string/detail"
-            android:layout_marginTop="10dp" />
+            android:textColor="@color/black"
+            android:textSize="15sp"
+            android:textStyle="bold" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/iv_close"
-            android:src="@drawable/ic_close"
-            android:layout_alignParentEnd="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp" />
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="12dp"
+            android:src="@drawable/ic_close" />
 
         <LinearLayout
             android:id="@+id/lout_detail_film1"
-            android:layout_marginTop="10dp"
-            android:layout_below="@+id/tv_title_dialog"
             android:layout_width="match_parent"
             android:layout_height="150dp"
+            android:layout_below="@+id/tv_title_dialog"
+            android:layout_marginTop="10dp"
             android:baselineAligned="false"
             android:orientation="horizontal"
             android:weightSum="10">
@@ -97,40 +97,40 @@
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_title_directors"
-            android:text="@string/directors"
-            android:textColor="@color/black"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/lout_detail_film1"
-            android:layout_marginTop="20dp" />
+            android:layout_marginTop="20dp"
+            android:text="@string/directors"
+            android:textColor="@color/black" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_directors"
-            android:textColor="@color/black"
-            android:layout_marginStart="10dp"
             android:layout_width="match_parent"
-            tools:text="@string/directors"
             android:layout_height="wrap_content"
             android:layout_below="@+id/lout_detail_film1"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="20dp"
             android:layout_toEndOf="@+id/tv_title_directors"
-            android:layout_marginTop="20dp" />
+            android:textColor="@color/black"
+            tools:text="@string/directors" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_title_description"
-            android:textColor="@color/black"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/description"
             android:layout_below="@+id/tv_directors"
-            android:layout_marginTop="30dp" />
+            android:layout_marginTop="30dp"
+            android:text="@string/description"
+            android:textColor="@color/black" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_description"
-            android:textColor="@color/gray"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            tools:text="@string/description"
             android:layout_below="@+id/tv_title_description"
-            android:layout_marginTop="20dp" />
+            android:layout_marginTop="20dp"
+            android:textColor="@color/gray"
+            tools:text="@string/description" />
     </RelativeLayout>
 </androidx.core.widget.NestedScrollView>

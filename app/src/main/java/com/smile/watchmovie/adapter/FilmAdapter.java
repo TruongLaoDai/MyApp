@@ -34,7 +34,7 @@ public class FilmAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    public void setData(List<FilmMainHome> filmMainHomeList){
+    public void setData(List<FilmMainHome> filmMainHomeList) {
         this.filmMainHomeList = filmMainHomeList;
         notifyDataSetChanged();
     }
@@ -48,7 +48,7 @@ public class FilmAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        if(holder instanceof FilmViewHolder){
+        if (holder instanceof FilmViewHolder) {
             FilmMainHome filmMainHome = filmMainHomeList.get(position);
             if (filmMainHome == null) {
                 return;
@@ -61,43 +61,43 @@ public class FilmAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
             ((FilmViewHolder) holder).itemFilmBinding.tvNameFilm.setText(filmMainHome.getName());
             ((FilmViewHolder) holder).itemFilmBinding.layoutFilm.setOnClickListener(view -> {
-                    ApiService.apiService.getFilmDetail("7da353b8a3246f851e0ee436d898a26d", filmMainHome.getId()).enqueue(new Callback<FilmDetailResponse>() {
-                        @SuppressLint("StringFormatMatches")
-                        @Override
-                        public void onResponse(@NonNull Call<FilmDetailResponse> call, @NonNull Response<FilmDetailResponse> response) {
-                            FilmDetailResponse cinema = response.body();
-                            if (cinema != null) {
-                                FilmMainHome filmPlay;
-                                filmPlay = cinema.getData();
-                                Intent intent = new Intent(context, WatchFilmActivity.class);
-                                intent.putExtra("film", filmPlay);
-                                context.startActivity(intent);
-                            }
+                ApiService.apiService.getFilmDetail("7da353b8a3246f851e0ee436d898a26d", filmMainHome.getId()).enqueue(new Callback<FilmDetailResponse>() {
+                    @SuppressLint("StringFormatMatches")
+                    @Override
+                    public void onResponse(@NonNull Call<FilmDetailResponse> call, @NonNull Response<FilmDetailResponse> response) {
+                        FilmDetailResponse cinema = response.body();
+                        if (cinema != null) {
+                            FilmMainHome filmPlay;
+                            filmPlay = cinema.getData();
+                            Intent intent = new Intent(context, WatchFilmActivity.class);
+                            intent.putExtra("film", filmPlay);
+                            context.startActivity(intent);
                         }
+                    }
 
-                        @Override
-                        public void onFailure(@NonNull Call<FilmDetailResponse> call, @NonNull Throwable t) {
-                            Toast.makeText(context, "Error Get Film", Toast.LENGTH_SHORT).show();
+                    @Override
+                    public void onFailure(@NonNull Call<FilmDetailResponse> call, @NonNull Throwable t) {
+                        Toast.makeText(context, "Error Get Film", Toast.LENGTH_SHORT).show();
 
-                        }
-                    });
+                    }
+                });
             });
         }
     }
 
     @Override
     public int getItemCount() {
-        if(filmMainHomeList != null){
+        if (filmMainHomeList != null) {
             return filmMainHomeList.size();
         }
         return 0;
     }
 
-    public static class FilmViewHolder extends RecyclerView.ViewHolder{
+    public static class FilmViewHolder extends RecyclerView.ViewHolder {
 
         private final ItemFilmBinding itemFilmBinding;
 
-        public FilmViewHolder(@NonNull ItemFilmBinding itemFilmBinding){
+        public FilmViewHolder(@NonNull ItemFilmBinding itemFilmBinding) {
             super(itemFilmBinding.getRoot());
             this.itemFilmBinding = itemFilmBinding;
         }
