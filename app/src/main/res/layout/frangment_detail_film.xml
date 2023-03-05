@@ -26,6 +26,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_marginTop="12dp"
+            android:layout_marginEnd="10dp"
             android:src="@drawable/ic_close" />
 
         <LinearLayout
@@ -120,7 +121,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/tv_directors"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="20dp"
             android:text="@string/description"
             android:textColor="@color/black" />
 
@@ -129,7 +130,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/tv_title_description"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="10dp"
             android:textColor="@color/gray"
             tools:text="@string/description" />
     </RelativeLayout>

@@ -36,7 +36,7 @@ public class MyBottomSheetFragment extends BottomSheetDialogFragment {
         bottomSheetDialog.setContentView(view);
 
         TextView tvNameFilm, tvCategory, tvCreated, tvDirectors, tvDescription;
-        ImageView ivLogoFilm;
+        ImageView ivLogoFilm, iv_close;
 
         tvNameFilm = view.findViewById(R.id.tv_name_film);
         tvCategory = view.findViewById(R.id.tv_category);
@@ -44,6 +44,7 @@ public class MyBottomSheetFragment extends BottomSheetDialogFragment {
         tvDirectors = view.findViewById(R.id.tv_directors);
         tvDescription = view.findViewById(R.id.tv_description);
         ivLogoFilm = view.findViewById(R.id.img_logo_film);
+        iv_close = view.findViewById(R.id.iv_close);
 
         tvNameFilm.setText(filmDetail.getName());
         tvCreated.setText(filmDetail.getCreated());
@@ -52,6 +53,7 @@ public class MyBottomSheetFragment extends BottomSheetDialogFragment {
                 .error(R.drawable.ic_baseline_broken_image_gray)
                 .placeholder(R.drawable.ic_baseline_image_gray)
                 .into(ivLogoFilm);
+        iv_close.setOnClickListener(v -> dismiss());
         //tvCategory
         return bottomSheetDialog;
     }

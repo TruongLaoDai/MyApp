@@ -14,6 +14,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.media.AudioManager;
@@ -24,6 +25,7 @@ import android.provider.Settings;
 import android.util.DisplayMetrics;
 import android.util.Rational;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -81,12 +83,11 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
     private ExoPlayer player;
     private boolean checkFullScreen = false;
     private boolean checkLockScreen = false;
-    private ImageView ivUnlockScreen;
-    private TextView tvAtEpisode;
+    private ImageView ivUnlockScreen, brt_icon, vol_icon, ivFullScreen;
+    private TextView tvAtEpisode, brt_text, vol_text;
     public FilmMainHome filmMainHome;
     private CollectionReference collectionReference;
     public String idUser;
-    private ImageView ivFullScreen;
     private int check = 0;
 
     private PictureInPictureParams.Builder piBuilder;
@@ -104,8 +105,6 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
     private Window window;
 
     private ProgressBar brt_progress, vol_progress;
-    private ImageView brt_icon, vol_icon;
-    private TextView brt_text, vol_text;
     private boolean singleTap = false;
     private float speed;
     private PlaybackParameters playbackParameters;
@@ -123,10 +122,9 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
         filmMainHome = (FilmMainHome) getIntent().getSerializableExtra("film");
         idUser = "";
 
-        initViewForTouchExoplayer();
-
         if (filmMainHome != null) {
             setUpView();
+            initViewForTouchExoplayer();
         }
         binding.exoplayerView.findViewById(R.id.iv_back).setOnClickListener(v -> onBackPressed());
 
@@ -135,8 +133,6 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
 
         device_width = displayMetrics.widthPixels;
         device_height = displayMetrics.heightPixels;
-
-        setOnTouchExoplayer();
     }
 
     private void setUpView() {
@@ -164,9 +160,9 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
         ivFullScreen.setOnClickListener(v -> {
             if (checkFullScreen) {
                 setUpShowNoFullScreen();
-
             } else {
                 setUpShowFilmFullScreen();
+                setOnTouchExoplayer();
                 binding.exoplayerView.findViewById(R.id.iv_back).setOnClickListener(v12 -> setUpShowNoFullScreen());
             }
         });
@@ -181,6 +177,9 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
             lockScreen(checkLockScreen);
         });
 
+        binding.exoplayerView.findViewById(R.id.iv_speed_play_vertical).setOnClickListener(v -> playSpeedFilm());
+
+        binding.exoplayerView.findViewById(R.id.tv_speed_play_vertical).setOnClickListener(v -> playSpeedFilm());
     }
 
     private void initViewForTouchExoplayer() {
@@ -309,28 +308,69 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
     }
 
     public void playSpeedFilm() {
+        Toast toast = new Toast(this);
+        LayoutInflater inflater = getLayoutInflater();
+        View view = inflater.inflate(R.layout.lout_custom_toast, (ViewGroup) findViewById(R.id.lout_toast));
+        toast.setView(view);
+        toast.setGravity(Gravity.LEFT|Gravity.TOP, 30, 350);
+        toast.setDuration(Toast.LENGTH_SHORT);
+        TextView tvToast = view.findViewById(R.id.tv_toast);
+
+        TextView tvSpeed = binding.exoplayerView.findViewById(R.id.tv_speed_play_vertical);
+
         AlertDialog.Builder alBuilder = new AlertDialog.Builder(WatchFilmActivity.this);
-        alBuilder.setTitle("Select playback speed").setPositiveButton("OK", null);
-        String[] items = {"0.5x", "1x Normal Speed", "1,25x", "1.75x", "2x"};
+        alBuilder.setTitle("Select playback speed");
+        String[] items = {"0.5x", "1x Normal Speed", "1,25x", "1.5x", "2x"};
         int checkedItem = -1;
         alBuilder.setSingleChoiceItems(items, checkedItem, (dialog, which) -> {
             switch (which) {
                 case 0:
                     speed = 0.5f;
+                    tvToast.setText("0.5x");
+                    toast.show();
+                    binding.exoplayerView.findViewById(R.id.iv_speed_play_vertical).setVisibility(View.GONE);
+                    tvSpeed.setVisibility(View.VISIBLE);
+                    tvSpeed.setText("0.5x");
+                    dialog.dismiss();
                     break;
                 case 1:
                     speed = 1f;
+                    tvToast.setText("1x");
+                    toast.show();
+                    binding.exoplayerView.findViewById(R.id.iv_speed_play_vertical).setVisibility(View.GONE);
+                    tvSpeed.setVisibility(View.VISIBLE);
+                    tvSpeed.setText("1x");
+                    dialog.dismiss();
                     break;
                 case 2:
                     speed = 1.25f;
+                    tvToast.setText("1.25x");
+                    toast.show();
+                    binding.exoplayerView.findViewById(R.id.iv_speed_play_vertical).setVisibility(View.GONE);
+                    tvSpeed.setVisibility(View.VISIBLE);
+                    tvSpeed.setText("1.25x");
+                    dialog.dismiss();
                     break;
                 case 3:
                     speed = 1.5f;
+                    tvToast.setText("1.5x");
+                    toast.show();
+                    binding.exoplayerView.findViewById(R.id.iv_speed_play_vertical).setVisibility(View.GONE);
+                    tvSpeed.setVisibility(View.VISIBLE);
+                    tvSpeed.setText("1.5x");
+                    dialog.dismiss();
                     break;
                 case 4:
                     speed = 2f;
+                    tvToast.setText("2x");
+                    toast.show();
+                    binding.exoplayerView.findViewById(R.id.iv_speed_play_vertical).setVisibility(View.GONE);
+                    tvSpeed.setVisibility(View.VISIBLE);
+                    tvSpeed.setText("2x");
+                    dialog.dismiss();
                     break;
                 default:
+                    dialog.dismiss();
                     break;
             }
             playbackParameters = new PlaybackParameters(speed);
@@ -341,11 +381,11 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
     }
 
     private void setUpShowFilmFullScreen() {
-        if (filmMainHome.getSubVideoList() != null) {
-            binding.exoplayerView.findViewById(R.id.iv_episode_pre).setVisibility(View.VISIBLE);
-            binding.exoplayerView.findViewById(R.id.iv_episode_next).setVisibility(View.VISIBLE);
-            ivUnlockScreen.setVisibility(View.VISIBLE);
-        }
+        binding.exoplayerView.findViewById(R.id.iv_episode_pre).setVisibility(View.VISIBLE);
+        binding.exoplayerView.findViewById(R.id.iv_episode_next).setVisibility(View.VISIBLE);
+        ivUnlockScreen.setVisibility(View.VISIBLE);
+        binding.exoplayerView.findViewById(R.id.iv_speed_play_vertical).setVisibility(View.GONE);
+        binding.exoplayerView.findViewById(R.id.tv_speed_play_vertical).setVisibility(View.GONE);
         binding.exoplayerView.findViewById(R.id.back10s).setVisibility(View.VISIBLE);
         binding.exoplayerView.findViewById(R.id.next10s).setVisibility(View.VISIBLE);
         ivFullScreen.setImageDrawable(ContextCompat.getDrawable(WatchFilmActivity.this, R.drawable.ic_baseline_fullscreen_exit_24));
@@ -365,6 +405,12 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
         binding.exoplayerView.findViewById(R.id.iv_episode_pre).setVisibility(View.GONE);
         binding.exoplayerView.findViewById(R.id.iv_episode_next).setVisibility(View.GONE);
         ivUnlockScreen.setVisibility(View.GONE);
+        TextView tv_speed = binding.exoplayerView.findViewById(R.id.tv_speed_play_vertical);
+        if(tv_speed.getText().length() == 0) {
+            binding.exoplayerView.findViewById(R.id.iv_speed_play_vertical).setVisibility(View.VISIBLE);
+        } else {
+            tv_speed.setVisibility(View.VISIBLE);
+        }
         binding.exoplayerView.findViewById(R.id.back10s).setVisibility(View.GONE);
         binding.exoplayerView.findViewById(R.id.next10s).setVisibility(View.GONE);
         ivFullScreen.setImageDrawable(ContextCompat.getDrawable(WatchFilmActivity.this, R.drawable.ic_fullscreen));
@@ -624,6 +670,18 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        Configuration configuration = getResources().getConfiguration();
+
+        if (configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
+            setUpShowNoFullScreen();
+        } else if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            setUpShowFilmFullScreen();
+        }
+    }
+
+    @Override
     protected void onPause() {
         super.onPause();
         player.setPlayWhenReady(false);
@@ -651,6 +709,16 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
         super.onStop();
         if (isInPictureInPictureMode) {
             player.release();
+        }
+    }
+
+    @Override
+    public void onConfigurationChanged(@NonNull Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            setUpShowFilmFullScreen();
+        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
+            setUpShowNoFullScreen();
         }
     }
 

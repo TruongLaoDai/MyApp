@@ -11,7 +11,7 @@
     <string name="image_play_film">image_play_film</string>
     <string name="xem_phim">Xem phim</string>
     <string name="description">Giới thiệu</string>
-    <string name="directors">Đạo diễn </string>
+    <string name="directors">Đạo diễn: </string>
     <string name="detail">Chi tiết</string>
     <string name="image_film">Image Film</string>
     <string name="tb_edit_text">Bạn hãy nhập tên phim cần tìm!</string>
