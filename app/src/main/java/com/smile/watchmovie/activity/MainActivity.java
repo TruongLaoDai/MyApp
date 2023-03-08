@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
                 gsc = GoogleSignIn.getClient(this, gso);
 
                 if(acct!=null) {
-                    tvUser.setText(acct.getDisplayName());
+                    tvUser.setText("Chào " + acct.getDisplayName());
                     Toast.makeText(this, "Wellcome " + acct.getDisplayName(), Toast.LENGTH_SHORT).show();
                 }
             }else {
@@ -87,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
                                 try {
                                     assert object != null;
                                     String fullname = (String) object.get("name");
-                                    tvUser.setText(fullname);
+                                    tvUser.setText("Chào" + fullname);
                                     Toast.makeText(MainActivity.this, "Wellcome " + fullname, Toast.LENGTH_SHORT).show();
                                 } catch (JSONException e) {
                                     e.printStackTrace();

@@ -34,7 +34,7 @@
     <string name="tv_at_episode">Tập %1$d</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="lich_su">Lịch sử</string>
+    <string name="history">Lịch sử</string>
     <string name="title_size">Danh sách trống</string>
     <string name="fav_film">Phim yêu thích</string>
     <string name="login">Login</string>
@@ -47,6 +47,7 @@
     <string name="remove_film_dislike">Đã bỏ không thích film</string>
     <string name="remove_film_favorite">Đã xóa khỏi Mục yêu thích</string>
     <string name="downloaded_film">Đã tải xuống</string>
+    <string name="film_favorite">Mục yêu thích</string>
     <string name="cancel_download_film">Dừng tải xuống</string>
     <string name="downloading_film">Đang tải xuống</string>
     <string name="show_all_film">Đã hiển thị hết film</string>
@@ -59,6 +60,9 @@
     <string name="brightness">%1$d%</string>
     <string name="volumelevel">%1$d%</string>
     <string name="off">Off</string>
+    <string name="setting">Cài đặt</string>
+    <string name="help">Trợ giúp</string>
+    <string name="feedback">Phản hồi</string>
 
     <string-array name="categorys">
         <item>Phim mới</item>
