@@ -70,6 +70,11 @@
     <string name="info_account">Thông tin cá nhân</string>
     <string name="setting_watch">Cài đặt phát</string>
     <string name="logout">Đăng xuất</string>
+    <string name="name">Tên</string>
+    <string name="birth_day">Ngày sinh</string>
+    <string name="story">Tiểu sử</string>
+    <string name="manage_link">Quản lý thông tin liên kết</string>
+    <string name="uid">UID</string>
 
     <string-array name="categorys">
         <item>Phim mới</item>

@@ -3,6 +3,7 @@ package com.smile.watchmovie.fragment;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.DownloadManager;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.net.Uri;
@@ -24,7 +25,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -91,25 +91,17 @@ public class IntroduceFilmFragment extends Fragment {
                 setUpFireBase();
 
                 if (changeImageDislikeFilm != R.drawable.ic_disliked) {
-                    binding.loutFavorite.setOnClickListener(v -> {
-                        setUpViewFavoriteFilm();
-                    });
+                    binding.loutFavorite.setOnClickListener(v -> setUpViewFavoriteFilm());
 
-                    binding.loutLike.setOnClickListener(v -> {
-                        setUpViewLikeFilm();
-                    });
+                    binding.loutLike.setOnClickListener(v -> setUpViewLikeFilm());
                 }
 
                 if (changeImageLikeFilm != R.drawable.ic_like_film) {
-                    binding.loutDislike.setOnClickListener(v -> {
-                        setUpViewDislikeFilm();
-                    });
+                    binding.loutDislike.setOnClickListener(v -> setUpViewDislikeFilm());
                 }
 
                 changeImageDownloadFilm = R.drawable.ic_download_film;
-                binding.loutDownload.setOnClickListener(v -> {
-                    setUpViewDownloadFilm();
-                });
+                binding.loutDownload.setOnClickListener(v -> setUpViewDownloadFilm());
             }
 
             playFilmFirst();
@@ -156,12 +148,7 @@ public class IntroduceFilmFragment extends Fragment {
             }
         });
 
-        binding.loutIntro.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                clickOpenDetailFilm();
-            }
-        });
+        binding.loutIntro.setOnClickListener(v -> clickOpenDetailFilm());
 
         callApiGetByCategoryListMovie(filmMainHome.getCategoryId(), 0);
     }
@@ -503,7 +490,7 @@ public class IntroduceFilmFragment extends Fragment {
         DownloadManager.Request req = new DownloadManager.Request(downloadUri);
         req.setDestinationUri(Uri.parse(mFilePath));
         req.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
-        DownloadManager dm = (DownloadManager) requireActivity().getSystemService(getActivity().DOWNLOAD_SERVICE);
+        DownloadManager dm = (DownloadManager) requireActivity().getSystemService(Context.DOWNLOAD_SERVICE);
         dm.enqueue(req);
 
     }

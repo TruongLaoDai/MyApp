@@ -1,6 +1,248 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/tool_bar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:background="@color/purple_500"
+        app:titleTextColor="@color/white"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/iv_account"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:src="@drawable/ic_account_default"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tool_bar"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <androidx.cardview.widget.CardView
+        app:layout_constraintTop_toTopOf="@+id/iv_account"
+        app:layout_constraintBottom_toBottomOf="@+id/iv_account"
+        app:layout_constraintEnd_toEndOf="@+id/iv_account"
+        android:layout_marginTop="35dp"
+        app:cardCornerRadius="15dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+    <androidx.appcompat.widget.AppCompatImageView
+        android:padding="3dp"
+        android:background="@color/gray"
+        android:src="@drawable/ic_camera"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    </androidx.cardview.widget.CardView>
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/title_name"
+        android:layout_marginTop="50dp"
+        android:layout_marginStart="10dp"
+        android:textColor="@color/black"
+        android:padding="10dp"
+        android:textSize="15sp"
+        android:text="@string/name"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/iv_account"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_name"
+        android:padding="10dp"
+        android:textSize="15sp"
+        tools:text="@string/name"
+        android:maxWidth="200dp"
+        app:layout_constraintEnd_toStartOf="@+id/iv_change_name"
+        app:layout_constraintTop_toTopOf="@+id/title_name"
+        app:layout_constraintBottom_toBottomOf="@+id/title_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/iv_change_name"
+        app:layout_constraintTop_toTopOf="@+id/title_name"
+        app:layout_constraintBottom_toBottomOf="@+id/title_name"
+        android:layout_marginEnd="5dp"
+        android:src="@drawable/ic_arrow_right_more_category"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <View
+        app:layout_constraintTop_toBottomOf="@+id/title_name"
+        android:background="@color/gray_light"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"/>
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/title_birth"
+        android:layout_marginStart="10dp"
+        android:textColor="@color/black"
+        android:padding="10dp"
+        android:textSize="15sp"
+        android:text="@string/birth_day"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/title_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_birth_day"
+        android:padding="10dp"
+        android:textSize="15sp"
+        tools:text="@string/name"
+        android:maxWidth="200dp"
+        app:layout_constraintEnd_toStartOf="@+id/iv_change_birthday"
+        app:layout_constraintTop_toTopOf="@+id/title_birth"
+        app:layout_constraintBottom_toBottomOf="@+id/title_birth"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/iv_change_birthday"
+        app:layout_constraintTop_toTopOf="@+id/title_birth"
+        app:layout_constraintBottom_toBottomOf="@+id/title_birth"
+        android:layout_marginEnd="5dp"
+        android:src="@drawable/ic_arrow_right_more_category"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <View
+        app:layout_constraintTop_toBottomOf="@+id/title_birth"
+        android:background="@color/gray_light"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"/>
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/title_story"
+        android:layout_marginStart="10dp"
+        android:textColor="@color/black"
+        android:padding="10dp"
+        android:textSize="15sp"
+        android:text="@string/story"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/title_birth"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_story"
+        android:padding="10dp"
+        android:textSize="15sp"
+        tools:text="@string/name"
+        android:maxWidth="200dp"
+        app:layout_constraintEnd_toStartOf="@+id/iv_change_story"
+        app:layout_constraintTop_toTopOf="@+id/title_story"
+        app:layout_constraintBottom_toBottomOf="@+id/title_story"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/iv_change_story"
+        app:layout_constraintTop_toTopOf="@+id/title_story"
+        app:layout_constraintBottom_toBottomOf="@+id/title_story"
+        android:layout_marginEnd="5dp"
+        android:src="@drawable/ic_arrow_right_more_category"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <View
+        app:layout_constraintTop_toBottomOf="@+id/title_story"
+        android:background="@color/gray_light"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"/>
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/title_uid"
+        android:layout_marginStart="10dp"
+        android:textColor="@color/black"
+        android:padding="10dp"
+        android:textSize="15sp"
+        android:text="@string/uid"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/title_story"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_uid"
+        android:padding="10dp"
+        android:layout_marginEnd="3dp"
+        android:textSize="15sp"
+        tools:text="@string/uid"
+        android:maxWidth="200dp"
+        app:layout_constraintEnd_toStartOf="@+id/iv_copy_uid"
+        app:layout_constraintTop_toTopOf="@+id/title_uid"
+        app:layout_constraintBottom_toBottomOf="@+id/title_uid"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/iv_copy_uid"
+        app:layout_constraintTop_toTopOf="@+id/title_uid"
+        app:layout_constraintBottom_toBottomOf="@+id/title_uid"
+        android:layout_marginEnd="5dp"
+        android:src="@drawable/ic_copy"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <View
+        app:layout_constraintTop_toBottomOf="@+id/title_uid"
+        android:background="@color/gray_light"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"/>
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/title_link"
+        android:layout_marginStart="10dp"
+        android:textColor="@color/black"
+        android:padding="10dp"
+        android:textSize="15sp"
+        android:text="@string/manage_link"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/title_uid"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/iv_more_link"
+        app:layout_constraintTop_toTopOf="@+id/title_link"
+        app:layout_constraintBottom_toBottomOf="@+id/title_link"
+        android:layout_marginEnd="5dp"
+        android:src="@drawable/ic_arrow_right_more_category"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <View
+        app:layout_constraintTop_toBottomOf="@+id/title_link"
+        android:background="@color/gray_light"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"/>
+
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:textColor="@color/teal_700"
+        android:background="@drawable/bg_white_arrow"
+        android:backgroundTint="@color/gray_light"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginEnd="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginBottom="50dp"
+        android:text="@string/logout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
