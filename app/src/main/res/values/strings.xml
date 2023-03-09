@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">WatchMovie</string>
+    <string name="app_name">WatchFilm</string>
     <string name="facebook_app_id">820005722423714</string>
     <string name="fb_login_protocol_scheme">fb820005722423714</string>
     <string name="facebook_client_token">4db1dd7b95804ee77a1c83b7c9793c46</string>
@@ -17,9 +17,13 @@
     <string name="tb_edit_text">Bạn hãy nhập tên phim cần tìm!</string>
     <string name="hint">Tên phim…</string>
     <string name="login_facebook">Đăng nhập bằng Facebook</string>
-    <string name="title_login">Đăng nhập vào App</string>
-    <string name="text_gt_login">Đăng nhập để trải nghiệm tốt hơn</string>
+    <string name="title_login">Đăng nhập vào WatchFilm</string>
+    <string name="text_gt_login">Đăng nhập để trải nghiệm film tốt hơn</string>
     <string name="login_google">Đăng nhập bằng Google</string>
+    <string name="login_orther">hoặc đăng nhập bằng</string>
+    <string name="twitter">Twitter</string>
+    <string name="Email">Email</string>
+    <string name="phone">Điện thoại</string>
     <string name="tap">Tập</string>
     <string name="dexuat">Đề xuất cho bạn</string>
     <string name="trang_chu">Trang chủ</string>
@@ -63,6 +67,9 @@
     <string name="setting">Cài đặt</string>
     <string name="help">Trợ giúp</string>
     <string name="feedback">Phản hồi</string>
+    <string name="info_account">Thông tin cá nhân</string>
+    <string name="setting_watch">Cài đặt phát</string>
+    <string name="logout">Đăng xuất</string>
 
     <string-array name="categorys">
         <item>Phim mới</item>

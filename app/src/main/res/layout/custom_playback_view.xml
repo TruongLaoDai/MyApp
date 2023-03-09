@@ -27,7 +27,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1.2"
                 android:gravity="center"
-                android:src="@drawable/ic_baseline_arrow_back_ios_new_24"
+                android:src="@drawable/ic_arrow_back_white"
                 tools:ignore="NestedWeights" />
 
             <TextView
