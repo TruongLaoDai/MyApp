@@ -71,6 +71,8 @@ public class FilmAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                             filmPlay = cinema.getData();
                             Intent intent = new Intent(context, WatchFilmActivity.class);
                             intent.putExtra("film", filmPlay);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                             context.startActivity(intent);
                         }
                     }

@@ -65,7 +65,7 @@ public class HistoryWatchFilmAdapter extends RecyclerView.Adapter<HistoryWatchFi
             holder.binding.tvEpisodesTotal.setText(context.getString(R.string.episode_total, filmMainHome.getEpisodesTotal()));
         }
 
-        holder.binding.tvStar.setText(context.getString(R.string.film_start, filmMainHome.getStar()));
+        //holder.binding.tvStar.setText(context.getString(R.string.film_start, filmMainHome.getStar()));
         holder.binding.tvNameFilm.setText(filmMainHome.getName());
         holder.binding.layoutFilm.setOnClickListener(view -> {
             ApiService.apiService.getFilmDetail("7da353b8a3246f851e0ee436d898a26d", filmMainHome.getId()).enqueue(new Callback<FilmDetailResponse>() {

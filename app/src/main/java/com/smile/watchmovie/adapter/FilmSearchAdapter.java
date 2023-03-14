@@ -76,7 +76,9 @@ public class FilmSearchAdapter extends RecyclerView.Adapter<FilmSearchAdapter.Fi
                         FilmMainHome filmPlay;
                         filmPlay = cinema.getData();
                         Intent intent = new Intent(context, WatchFilmActivity.class);
-                        intent.putExtra("movie", filmPlay);
+                        intent.putExtra("film", filmPlay);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         context.startActivity(intent);
                     }
                 }

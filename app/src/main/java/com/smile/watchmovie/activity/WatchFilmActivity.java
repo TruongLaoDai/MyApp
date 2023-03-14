@@ -578,10 +578,6 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
             piBuilder.setAspectRatio(asRational);
             enterPictureInPictureMode(piBuilder.build());
         }
-        Intent intentBackToMain = new Intent(WatchFilmActivity.this, MainActivity.class);
-        intentBackToMain.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-        intentBackToMain.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intentBackToMain);
         finish();
     }
 

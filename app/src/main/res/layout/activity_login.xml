@@ -76,7 +76,7 @@
             tools:ignore="NestedWeights" />
 
         <TextView
-            android:id="@+id/edittext_username"
+            android:id="@+id/tv_signin_with_face"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_gravity="center"
@@ -112,7 +112,7 @@
             tools:ignore="NestedWeights" />
 
         <TextView
-            android:id="@+id/edittext_username"
+            android:id="@+id/tv_signin_with_google"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_gravity="center"
@@ -145,7 +145,7 @@
             android:padding="10dp" />
 
         <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/edittext_username"
+            android:id="@+id/tv_signin_with_other"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_gravity="center"
@@ -228,7 +228,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
         <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/login_with_twitter"
+            android:id="@+id/login_with_phone"
             android:src="@drawable/ic_phone"
             android:layout_width="30dp"
             android:layout_height="30dp"/>
@@ -237,7 +237,7 @@
             android:text="@string/phone"
             android:layout_marginTop="5dp"
             android:textColor="@color/black"
-            android:layout_below="@id/login_with_twitter"
+            android:layout_below="@id/login_with_phone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
     </LinearLayout>

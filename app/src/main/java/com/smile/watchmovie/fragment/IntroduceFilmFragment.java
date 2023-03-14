@@ -291,6 +291,7 @@ public class IntroduceFilmFragment extends Fragment {
                     }
                     if (movieArrayResponse.getData() != null) {
                         mFilmList.addAll(movieArrayResponse.getData());
+                        mFilmList.removeIf(filmMainHome1 -> filmMainHome1.getId() == filmMainHome.getId());
                     } else {
                         Toast.makeText(mWatchFilmActivity, "Đã hiển thị hết film", Toast.LENGTH_LONG).show();
                     }

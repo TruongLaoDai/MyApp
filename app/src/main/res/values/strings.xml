@@ -75,6 +75,8 @@
     <string name="story">Tiểu sử</string>
     <string name="manage_link">Quản lý thông tin liên kết</string>
     <string name="uid">UID</string>
+    <string name="auto_play">Tự động phát chiếu</string>
+    <string name="auto_play_full_screen">Tự động toàn màn hình</string>
 
     <string-array name="categorys">
         <item>Phim mới</item>
