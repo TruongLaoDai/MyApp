@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">WatchFilm</string>
+    <string name="nameOwner">LÊ VĂN CÔNG</string>
     <string name="facebook_app_id">820005722423714</string>
     <string name="fb_login_protocol_scheme">fb820005722423714</string>
     <string name="facebook_client_token">4db1dd7b95804ee77a1c83b7c9793c46</string>

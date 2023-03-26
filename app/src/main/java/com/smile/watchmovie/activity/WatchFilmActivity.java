@@ -13,6 +13,7 @@ import android.app.PictureInPictureParams;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.graphics.Color;
@@ -92,20 +93,15 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
 
     private PictureInPictureParams.Builder piBuilder;
     private boolean isInPictureInPictureMode = false;
-
-    private int device_width, device_height, brightness, media_volume;
-    private boolean start, left, right = false;
+    private int device_width;
+    private int device_height;
+    private boolean left = false;
+    private boolean right = false;
     private float baseX, baseY;
-    private boolean swipe_move = false;
-    private long diffX, diffY;
-    private boolean success = false;
 
     private AudioManager adAudioManager;
-    private ContentResolver mContentResolver;
-    private Window window;
 
     private ProgressBar brt_progress, vol_progress;
-    private boolean singleTap = false;
     private float speed;
     private PlaybackParameters playbackParameters;
 
@@ -120,7 +116,8 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
 
         filmMainHome = new FilmMainHome();
         filmMainHome = (FilmMainHome) getIntent().getSerializableExtra("film");
-        idUser = "";
+        SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+        idUser = sharedPreferences.getString("idUser", "");;
 
         if (filmMainHome != null) {
             setUpView();
@@ -143,7 +140,6 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             piBuilder = new PictureInPictureParams.Builder();
         }
-        getIdUser();
         setUpPlayer();
 
         if (!idUser.equals("")) {
@@ -156,13 +152,14 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
 
         setUpCustomPlayFilm();
 
+        setOnTouchExoplayer();
+
         ivFullScreen = binding.exoplayerView.findViewById(R.id.scaling);
         ivFullScreen.setOnClickListener(v -> {
             if (checkFullScreen) {
                 setUpShowNoFullScreen();
             } else {
                 setUpShowFilmFullScreen();
-                setOnTouchExoplayer();
                 binding.exoplayerView.findViewById(R.id.iv_back).setOnClickListener(v12 -> setUpShowNoFullScreen());
             }
         });
@@ -194,11 +191,11 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
 
     private void setOnTouchExoplayer() {
         binding.exoplayerView.setOnTouchListener(new OnSwipeTouchListener(this) {
+            @SuppressLint("ClickableViewAccessibility")
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
-                        start = true;
                         if (event.getX() < ((double) device_width / 2)) {
                             left = true;
                             right = false;
@@ -210,92 +207,11 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
                         baseY = event.getY();
                         break;
                     case MotionEvent.ACTION_MOVE:
-                        swipe_move = true;
-                        diffX = (long) Math.ceil(event.getX() - baseX);
-                        diffY = (long) Math.ceil(event.getY() - baseY);
-
-                        double brightnessSpeed = 0.01;
-                        if (Math.abs(diffY) > MINIUM_DISTANCE) {
-                            start = true;
-                            if (Math.abs(diffY) > Math.abs(diffX)) {
-                                boolean value;
-                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                                    value = Settings.System.canWrite(getApplicationContext());
-                                    if (value) {
-                                        if (left) {
-                                            mContentResolver = getContentResolver();
-                                            window = getWindow();
-                                            try {
-                                                Settings.System.putInt(mContentResolver, Settings.System.SCREEN_BRIGHTNESS_MODE, Settings.System.SCREEN_BRIGHTNESS_MODE_MANUAL);
-                                                brightness = Settings.System.getInt(mContentResolver, Settings.System.SCREEN_BRIGHTNESS);
-                                            } catch (Settings.SettingNotFoundException e) {
-                                                throw new RuntimeException(e);
-                                            }
-                                            int new_brightness = (int) (brightness - (diffY * brightnessSpeed));
-                                            if (new_brightness > 250) {
-                                                new_brightness = 250;
-                                            } else if (new_brightness < 1) {
-                                                new_brightness = 1;
-                                            }
-                                            double brt_percentage = Math.ceil(((double) new_brightness / (double) 250) * 100);
-                                            binding.exoplayerView.findViewById(R.id.brt_progress_container).setVisibility(View.VISIBLE);
-                                            binding.exoplayerView.findViewById(R.id.brt_text_container).setVisibility(View.VISIBLE);
-                                            brt_progress.setProgress((int) brt_percentage);
-
-                                            if (brt_percentage < 30) {
-                                                brt_icon.setImageResource(R.drawable.ic_brightness_low);
-                                            } else if (brt_percentage >= 30 && brt_percentage < 80) {
-                                                brt_icon.setImageResource(R.drawable.ic_brightness_half);
-                                            } else if (brt_percentage >= 80) {
-                                                brt_icon.setImageResource(R.drawable.ic_brightness);
-                                            }
-                                            String brightness_level = (int) brt_percentage + "%";
-                                            brt_text.setText(brightness_level);
-                                            Settings.System.putInt(mContentResolver, Settings.System.SCREEN_BRIGHTNESS, new_brightness);
-                                            WindowManager.LayoutParams layoutParams = window.getAttributes();
-
-                                            layoutParams.screenBrightness = brightness / (float) 255;
-                                            window.setAttributes(layoutParams);
-                                        } else if (right) {
-                                            binding.exoplayerView.findViewById(R.id.vol_text_container).setVisibility(View.VISIBLE);
-                                            media_volume = adAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
-                                            int maxVol = adAudioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
-                                            double cal = (double) diffY * ((double) maxVol / ((double) (device_height * 2) - brightnessSpeed));
-                                            int newMediaVolume = media_volume - (int) cal;
-                                            if (newMediaVolume > maxVol) {
-                                                newMediaVolume = maxVol;
-                                            } else if (newMediaVolume < 1) {
-                                                newMediaVolume = 0;
-                                            }
-                                            adAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, newMediaVolume, 0);
-                                            double volPer = Math.ceil(((double) newMediaVolume / (double) maxVol) * 100);
-                                            String volume_level = (int) volPer + "%";
-                                            vol_text.setText(volume_level);
-                                            if (volPer < 1) {
-                                                vol_icon.setImageResource(R.drawable.ic_volume_off);
-                                                vol_text.setVisibility(View.VISIBLE);
-                                                vol_text.setText(getString(R.string.off));
-                                            } else if (volPer >= 1) {
-                                                vol_icon.setImageResource(R.drawable.ic_volume);
-                                                vol_text.setVisibility(View.VISIBLE);
-                                            }
-                                            binding.exoplayerView.findViewById(R.id.vol_progress_container).setVisibility(View.VISIBLE);
-                                            vol_progress.setProgress((int) volPer);
-                                        }
-                                        success = true;
-                                    } else {
-                                        Toast.makeText(getApplicationContext(), "Allow write settings for swipe controls", Toast.LENGTH_SHORT).show();
-                                        Intent intent = new Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS);
-                                        intent.setData(Uri.parse("package:" + getPackageName()));
-                                        startActivityForResult(intent, 111);
-                                    }
-                                }
-                            }
+                        if(checkFullScreen){
+                            setSwipeWhenFullScreen(event);
                         }
                         break;
                     case MotionEvent.ACTION_UP:
-                        swipe_move = false;
-                        start = false;
                         binding.exoplayerView.findViewById(R.id.vol_progress_container).setVisibility(View.GONE);
                         binding.exoplayerView.findViewById(R.id.brt_progress_container).setVisibility(View.GONE);
                         binding.exoplayerView.findViewById(R.id.vol_text_container).setVisibility(View.GONE);
@@ -307,10 +223,94 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
         });
     }
 
+    private void setSwipeWhenFullScreen(MotionEvent event){
+        long diffX = (long) Math.ceil(event.getX() - baseX);
+        long diffY = (long) Math.ceil(event.getY() - baseY);
+
+        double brightnessSpeed = 0.01;
+        if (Math.abs(diffY) > MINIUM_DISTANCE) {
+            if (Math.abs(diffY) > Math.abs(diffX)) {
+                boolean value;
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    value = Settings.System.canWrite(getApplicationContext());
+                    if (value) {
+                        if (left) {
+                            ContentResolver mContentResolver = getContentResolver();
+                            Window window = getWindow();
+                            int brightness;
+                            try {
+                                Settings.System.putInt(mContentResolver, Settings.System.SCREEN_BRIGHTNESS_MODE, Settings.System.SCREEN_BRIGHTNESS_MODE_MANUAL);
+                                brightness = Settings.System.getInt(mContentResolver, Settings.System.SCREEN_BRIGHTNESS);
+                            } catch (Settings.SettingNotFoundException e) {
+                                throw new RuntimeException(e);
+                            }
+                            int new_brightness = (int) (brightness - (diffY * brightnessSpeed));
+                            if (new_brightness > 250) {
+                                new_brightness = 250;
+                            } else if (new_brightness < 1) {
+                                new_brightness = 1;
+                            }
+                            double brt_percentage = Math.ceil(((double) new_brightness / (double) 250) * 100);
+                            binding.exoplayerView.findViewById(R.id.brt_progress_container).setVisibility(View.VISIBLE);
+                            binding.exoplayerView.findViewById(R.id.brt_text_container).setVisibility(View.VISIBLE);
+                            brt_progress.setProgress((int) brt_percentage);
+
+                            if (brt_percentage < 30) {
+                                brt_icon.setImageResource(R.drawable.ic_brightness_low);
+                            } else if (brt_percentage >= 30 && brt_percentage < 80) {
+                                brt_icon.setImageResource(R.drawable.ic_brightness_half);
+                            } else if (brt_percentage >= 80) {
+                                brt_icon.setImageResource(R.drawable.ic_brightness);
+                            }
+                            String brightness_level = (int) brt_percentage + "%";
+                            brt_text.setText(brightness_level);
+                            Settings.System.putInt(mContentResolver, Settings.System.SCREEN_BRIGHTNESS, new_brightness);
+                            WindowManager.LayoutParams layoutParams = window.getAttributes();
+
+                            layoutParams.screenBrightness = brightness / (float) 255;
+                            window.setAttributes(layoutParams);
+                        } else if (right) {
+                            binding.exoplayerView.findViewById(R.id.vol_text_container).setVisibility(View.VISIBLE);
+                            binding.exoplayerView.findViewById(R.id.vol_progress_container).setVisibility(View.VISIBLE);
+                            int media_volume = adAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
+                            int maxVol = adAudioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
+                            double cal = (double) diffY * ((double) maxVol / ((double) (device_height * 2) - brightnessSpeed));
+                            int newMediaVolume = media_volume - (int) cal;
+                            if (newMediaVolume > maxVol) {
+                                newMediaVolume = maxVol;
+                            } else if (newMediaVolume < 1) {
+                                newMediaVolume = 0;
+                            }
+                            adAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, newMediaVolume, AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
+                            double volPer = Math.ceil(((double) newMediaVolume / (double) maxVol) * 100);
+                            String volume_level = (int) volPer + "%";
+                            vol_text.setText(volume_level);
+                            if (volPer < 1) {
+                                vol_icon.setImageResource(R.drawable.ic_volume_off);
+                                vol_text.setVisibility(View.VISIBLE);
+                                vol_text.setText(getString(R.string.off));
+                            } else if (volPer >= 1) {
+                                vol_icon.setImageResource(R.drawable.ic_volume);
+                                vol_text.setVisibility(View.VISIBLE);
+                            }
+                            vol_progress.setProgress((int) volPer);
+                        }
+                    } else {
+                        Toast.makeText(getApplicationContext(), "Allow write settings for swipe controls", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS);
+                        intent.setData(Uri.parse("package:" + getPackageName()));
+                        startActivityForResult(intent, 111);
+                    }
+                }
+            }
+        }
+    }
+
+    @SuppressLint({"RtlHardcoded", "SetTextI18n"})
     public void playSpeedFilm() {
         Toast toast = new Toast(this);
         LayoutInflater inflater = getLayoutInflater();
-        View view = inflater.inflate(R.layout.lout_custom_toast, (ViewGroup) findViewById(R.id.lout_toast));
+        View view = inflater.inflate(R.layout.lout_custom_toast, findViewById(R.id.lout_toast));
         toast.setView(view);
         toast.setGravity(Gravity.LEFT|Gravity.TOP, 30, 350);
         toast.setDuration(Toast.LENGTH_SHORT);
@@ -457,32 +457,6 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
             filmMainHome.setSubVideoList(subVideoList);
         }
         playFilm(filmMainHome.getSubVideoList().get(0));
-    }
-
-    private void getIdUser() {
-        GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(this);
-        AccessToken accessToken = AccessToken.getCurrentAccessToken();
-        if (acct == null && accessToken == null) {
-            idUser = "";
-        } else if (acct != null) {
-            this.idUser = acct.getId();
-        } else if (!accessToken.isExpired()) {
-            GraphRequest request = GraphRequest.newMeRequest(
-                    accessToken,
-                    (object, response) -> {
-                        // Application code
-                        try {
-                            assert object != null;
-                            this.idUser = (String) object.get("id");
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    });
-            Bundle parameters = new Bundle();
-            parameters.putString("fields", "id,name,link");
-            request.setParameters(parameters);
-            request.executeAsync();
-        }
     }
 
     private void setUpPlayer() {
@@ -705,6 +679,7 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
         super.onStop();
         if (isInPictureInPictureMode) {
             player.release();
+            finish();
         }
     }
 
@@ -725,9 +700,7 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
             boolean value;
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 value = Settings.System.canWrite(getApplicationContext());
-                if (value) {
-                    success = true;
-                } else {
+                if (!value) {
                     Toast.makeText(getApplicationContext(), "Not Granted", Toast.LENGTH_SHORT).show();
                 }
             }

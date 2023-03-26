@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -90,15 +91,11 @@ public class IntroduceFilmFragment extends Fragment {
 
                 setUpFireBase();
 
-                if (changeImageDislikeFilm != R.drawable.ic_disliked) {
-                    binding.loutFavorite.setOnClickListener(v -> setUpViewFavoriteFilm());
+                binding.loutFavorite.setOnClickListener(v -> setUpViewFavoriteFilm());
 
-                    binding.loutLike.setOnClickListener(v -> setUpViewLikeFilm());
-                }
+                binding.loutLike.setOnClickListener(v -> setUpViewLikeFilm());
 
-                if (changeImageLikeFilm != R.drawable.ic_like_film) {
-                    binding.loutDislike.setOnClickListener(v -> setUpViewDislikeFilm());
-                }
+                binding.loutDislike.setOnClickListener(v -> setUpViewDislikeFilm());
 
                 changeImageDownloadFilm = R.drawable.ic_download_film;
                 binding.loutDownload.setOnClickListener(v -> setUpViewDownloadFilm());
@@ -162,7 +159,7 @@ public class IntroduceFilmFragment extends Fragment {
         idUser = mWatchFilmActivity.idUser;
 
         FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
-        collectionReferenceFilmFavorite = firebaseFirestore.collection("film_favorited_" + idUser);
+        collectionReferenceFilmFavorite = firebaseFirestore.collection("film_favorite_" + idUser);
         collectionReferenceFilmLike = firebaseFirestore.collection("film_liked_" + filmMainHome.getId());
         collectionReferenceFilmDislike = firebaseFirestore.collection("film_disliked_" + filmMainHome.getId());
 
@@ -173,22 +170,24 @@ public class IntroduceFilmFragment extends Fragment {
 
     private void setUpViewFavoriteFilm() {
         if (changeImageFavoriteFilm == R.drawable.ic_add_favorite) {
+            binding.loutDislike.setEnabled(false);
             changeImageFavoriteFilm = R.drawable.ic_added_favorite;
             binding.tvFavorite.setTextColor(Color.parseColor("#2A48E8"));
-            binding.ivAddFavorite.setImageResource(changeImageFavoriteFilm);
             addFilmFavorite();
             Toast.makeText(mWatchFilmActivity, mWatchFilmActivity.getString(R.string.add_film_favorite), Toast.LENGTH_LONG).show();
         } else if (changeImageFavoriteFilm == R.drawable.ic_added_favorite) {
+            binding.loutDislike.setEnabled(true);
             changeImageFavoriteFilm = R.drawable.ic_add_favorite;
             binding.tvFavorite.setTextColor(Color.parseColor("#777776"));
-            binding.ivAddFavorite.setImageResource(changeImageFavoriteFilm);
             deleteFilmFavorite();
             Toast.makeText(mWatchFilmActivity, mWatchFilmActivity.getString(R.string.remove_film_favorite), Toast.LENGTH_LONG).show();
         }
+        binding.ivAddFavorite.setImageResource(changeImageFavoriteFilm);
     }
 
     private void setUpViewLikeFilm() {
         if (changeImageLikeFilm == R.drawable.ic_like_film) {
+            binding.loutDislike.setEnabled(false);
             changeImageLikeFilm = R.drawable.ic_liked_film;
             binding.tvLikeNumber.setTextColor(Color.parseColor("#2A48E8"));
             currentLike += 1;
@@ -196,6 +195,7 @@ public class IntroduceFilmFragment extends Fragment {
             addFilmLike();
             Toast.makeText(mWatchFilmActivity, mWatchFilmActivity.getString(R.string.add_film_like), Toast.LENGTH_LONG).show();
         } else if (changeImageLikeFilm == R.drawable.ic_liked_film) {
+            binding.loutDislike.setEnabled(true);
             changeImageLikeFilm = R.drawable.ic_like_film;
             binding.tvLikeNumber.setTextColor(Color.parseColor("#777776"));
             currentLike -= 1;
@@ -212,6 +212,8 @@ public class IntroduceFilmFragment extends Fragment {
 
     private void setUpViewDislikeFilm() {
         if (changeImageDislikeFilm == R.drawable.ic_dislike) {
+            binding.loutLike.setEnabled(false);
+            binding.loutFavorite.setEnabled(false);
             changeImageDislikeFilm = R.drawable.ic_disliked;
             binding.tvDislikeNumber.setTextColor(Color.parseColor("#2A48E8"));
             currentDislike += 1;
@@ -219,6 +221,8 @@ public class IntroduceFilmFragment extends Fragment {
             addFilmDislike();
             Toast.makeText(mWatchFilmActivity, mWatchFilmActivity.getString(R.string.add_film_dislike), Toast.LENGTH_LONG).show();
         } else if (changeImageDislikeFilm == R.drawable.ic_disliked) {
+            binding.loutLike.setEnabled(true);
+            binding.loutFavorite.setEnabled(true);
             changeImageDislikeFilm = R.drawable.ic_dislike;
             binding.tvDislikeNumber.setTextColor(Color.parseColor("#777776"));
             currentDislike -= 1;
@@ -291,7 +295,9 @@ public class IntroduceFilmFragment extends Fragment {
                     }
                     if (movieArrayResponse.getData() != null) {
                         mFilmList.addAll(movieArrayResponse.getData());
-                        mFilmList.removeIf(filmMainHome1 -> filmMainHome1.getId() == filmMainHome.getId());
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                            mFilmList.removeIf(filmMainHome1 -> filmMainHome1.getId() == filmMainHome.getId());
+                        }
                     } else {
                         Toast.makeText(mWatchFilmActivity, "Đã hiển thị hết film", Toast.LENGTH_LONG).show();
                     }
@@ -378,14 +384,16 @@ public class IntroduceFilmFragment extends Fragment {
                 QuerySnapshot snapshot = task.getResult();
                 currentLike = snapshot.size();
                 for (QueryDocumentSnapshot doc : snapshot) {
-                    String idFilm1 = Objects.requireNonNull(doc.get("idUser")).toString();
-                    if (Integer.parseInt(idFilm1) == filmMainHome.getId()) {
+                    String idUser1 = Objects.requireNonNull(doc.get("idUser")).toString();
+                    if (idUser1.equals(idUser)) {
                         check = 1;
                         changeImageLikeFilm = R.drawable.ic_liked_film;
                         binding.ivLike.setImageResource(changeImageLikeFilm);
-                        binding.tvLikeNumber.setText(mWatchFilmActivity.getString(R.string.number, currentLike));
                         binding.tvLikeNumber.setTextColor(Color.parseColor("#2A48E8"));
                     }
+                }
+                if (currentLike > 0) {
+                    binding.tvLikeNumber.setText(mWatchFilmActivity.getString(R.string.number, currentLike));
                 }
                 if (check == 0) {
                     changeImageLikeFilm = R.drawable.ic_like_film;
@@ -420,14 +428,16 @@ public class IntroduceFilmFragment extends Fragment {
                 QuerySnapshot snapshot = task.getResult();
                 currentDislike = snapshot.size();
                 for (QueryDocumentSnapshot doc : snapshot) {
-                    String idFilm1 = Objects.requireNonNull(doc.get("idUser")).toString();
-                    if (Integer.parseInt(idFilm1) == filmMainHome.getId()) {
+                    String idUser1 = Objects.requireNonNull(doc.get("idUser")).toString();
+                    if (idUser1.equals(idUser)) {
                         check = 1;
                         changeImageDislikeFilm = R.drawable.ic_disliked;
-                        binding.ivDislike.setImageResource(changeImageLikeFilm);
-                        binding.tvDislikeNumber.setText(mWatchFilmActivity.getString(R.string.number, currentDislike));
+                        binding.ivDislike.setImageResource(changeImageDislikeFilm);
                         binding.tvDislikeNumber.setTextColor(Color.parseColor("#2A48E8"));
                     }
+                }
+                if (currentDislike > 0) {
+                    binding.tvDislikeNumber.setText(mWatchFilmActivity.getString(R.string.number, currentDislike));
                 }
                 if (check == 0) {
                     changeImageDislikeFilm = R.drawable.ic_dislike;

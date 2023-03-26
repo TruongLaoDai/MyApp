@@ -55,34 +55,32 @@ import retrofit2.Response;
 
 public class PersonFragment extends Fragment {
 
-//    private FragmentPersonBinding binding;
-//    private MainActivity mMainActivity;
-//    private CollectionReference collectionReferenceFilmFavorite;
-//    private String idUser;
-//    private List<FilmMainHome> mFilmFavoriteList;
-//    private FilmFavoriteAdapter filmFavoriteAdapter;
-//    private CollectionReference collectionReferenceHistory;
-//    private List<FilmMainHome> mHistoryList;
-//    private HistoryWatchFilmAdapter historyWatchFilmAdapter;
-//
-//    @Override
-//    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
-//                             Bundle savedInstanceState) {
-//        // Inflate the layout for this fragment
-//        mMainActivity = (MainActivity) getActivity();
-//        binding = FragmentPersonBinding.inflate(inflater, container, false);
-//        mFilmFavoriteList = new ArrayList<>();
-//        mHistoryList = new ArrayList<>();
-//
-//        getIdUser();
-//
-//        FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
-//        collectionReferenceFilmFavorite = firebaseFirestore.collection("film_favorite_"+ idUser);
-//        collectionReferenceHistory = firebaseFirestore.collection("history_watch_film_"+ idUser);
-//
-//        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mMainActivity, RecyclerView.HORIZONTAL, false);
-//        LinearLayoutManager linearLayoutManager1 = new LinearLayoutManager(mMainActivity, RecyclerView.HORIZONTAL, false);
-//
+    private FragmentPersonBinding binding;
+    private MainActivity mMainActivity;
+    private CollectionReference collectionReferenceFilmFavorite;
+    private String idUser;
+    private List<FilmMainHome> mFilmFavoriteList;
+    private FilmFavoriteAdapter filmFavoriteAdapter;
+    private CollectionReference collectionReferenceHistory;
+    private List<FilmMainHome> mHistoryList;
+    private HistoryWatchFilmAdapter historyWatchFilmAdapter;
+
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        mMainActivity = (MainActivity) getActivity();
+        binding = FragmentPersonBinding.inflate(inflater, container, false);
+        mFilmFavoriteList = new ArrayList<>();
+        mHistoryList = new ArrayList<>();
+
+        FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
+        collectionReferenceFilmFavorite = firebaseFirestore.collection("film_favorite_"+ idUser);
+        collectionReferenceHistory = firebaseFirestore.collection("history_watch_film_"+ idUser);
+
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mMainActivity, RecyclerView.HORIZONTAL, false);
+        LinearLayoutManager linearLayoutManager1 = new LinearLayoutManager(mMainActivity, RecyclerView.HORIZONTAL, false);
+
 //        binding.rcvHistoryWatchFilm.setLayoutManager(linearLayoutManager);
 //        RecyclerView.ItemDecoration itemDecoration=new DividerItemDecoration(mMainActivity, DividerItemDecoration.HORIZONTAL);
 //        binding.rcvHistoryWatchFilm.addItemDecoration(itemDecoration);
@@ -97,183 +95,126 @@ public class PersonFragment extends Fragment {
 //        filmFavoriteAdapter = new FilmFavoriteAdapter(mMainActivity, this::clickUnFavoriteFilm);
 //        filmFavoriteAdapter.setData(mFilmFavoriteList);
 //        binding.rcvFilmFavorite.setAdapter(filmFavoriteAdapter);
-//
-//        getFilmFavorite();
-//        getHistoryWatchFilm();
-//
-//        return binding.getRoot();
-//    }
-//
-//    @SuppressLint({"SetTextI18n", "NotifyDataSetChanged"})
-//    private void clickDeleteHistory(FilmMainHome movieMainHome){
-//        final Dialog dialog = new Dialog(mMainActivity);
-//        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-//        dialog.setContentView(R.layout.layout_dialog_watch_film_from_time);
-//        dialog.setCancelable(false);
-//
-//        Window window = dialog.getWindow();
-//        if(window == null){
-//            return;
-//        }
-//
-//        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
-//        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-//
-//        WindowManager.LayoutParams windowAttributes = window.getAttributes();
-//        windowAttributes.gravity = Gravity.CENTER;
-//        window.setAttributes(windowAttributes);
-//
-//        TextView tv_title = dialog.findViewById(R.id.tv_at_time);
-//        Button btn_yes = dialog.findViewById(R.id.btn_yes);
-//        Button btn_no = dialog.findViewById(R.id.btn_no);
-//
-//        tv_title.setText("Bạn có muốn xóa film " + movieMainHome.getName() + " khỏi lịch sử xem phim của bạn?");
-//
-//
-//        btn_yes.setOnClickListener(v -> {
-//            collectionReferenceHistory.whereEqualTo("idFilm", movieMainHome.getId() +"")
-//                    .get()
-//                    .addOnCompleteListener(task -> {
-//                        if(task.isSuccessful()){
-//                            DocumentSnapshot documentSnapshot = task.getResult().getDocuments().get(0);
-//                            String documentId = documentSnapshot.getId();
-//                            collectionReferenceHistory.document(documentId)
-//                                    .delete();
-//                        }
-//                    });
-//            mHistoryList.remove(movieMainHome);
+
+        getFilmFavorite();
+        getHistoryWatchFilm();
+
+        return binding.getRoot();
+    }
+
+    @SuppressLint({"SetTextI18n", "NotifyDataSetChanged"})
+    private void clickDeleteHistory(FilmMainHome movieMainHome){
+        final Dialog dialog = new Dialog(mMainActivity);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.layout_dialog_watch_film_from_time);
+        dialog.setCancelable(false);
+
+        Window window = dialog.getWindow();
+        if(window == null){
+            return;
+        }
+
+        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+        WindowManager.LayoutParams windowAttributes = window.getAttributes();
+        windowAttributes.gravity = Gravity.CENTER;
+        window.setAttributes(windowAttributes);
+
+        TextView tv_title = dialog.findViewById(R.id.tv_at_time);
+        Button btn_yes = dialog.findViewById(R.id.btn_yes);
+        Button btn_no = dialog.findViewById(R.id.btn_no);
+
+        tv_title.setText("Bạn có muốn xóa film " + movieMainHome.getName() + " khỏi lịch sử xem phim của bạn?");
+
+
+        btn_yes.setOnClickListener(v -> {
+            collectionReferenceHistory.whereEqualTo("idFilm", movieMainHome.getId() +"")
+                    .get()
+                    .addOnCompleteListener(task -> {
+                        if(task.isSuccessful()){
+                            DocumentSnapshot documentSnapshot = task.getResult().getDocuments().get(0);
+                            String documentId = documentSnapshot.getId();
+                            collectionReferenceHistory.document(documentId)
+                                    .delete();
+                        }
+                    });
+            mHistoryList.remove(movieMainHome);
 //            if(mHistoryList.size() == 0){
 //                binding.tvSizeHistory.setVisibility(View.VISIBLE);
 //            }
-//            historyWatchFilmAdapter.notifyDataSetChanged();
-//            dialog.dismiss();
-//            Toast.makeText(mMainActivity, "Bạn đã xóa film thành công",Toast.LENGTH_LONG).show();
-//        });
-//
-//
-//        btn_no.setOnClickListener(v -> dialog.dismiss());
-//
-//        dialog.show();
-//    }
-//
-//    @SuppressLint({"SetTextI18n", "NotifyDataSetChanged"})
-//    private void clickUnFavoriteFilm(FilmMainHome movieMainHome){
-//        final Dialog dialog = new Dialog(mMainActivity);
-//        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-//        dialog.setContentView(R.layout.layout_dialog_watch_film_from_time);
-//        dialog.setCancelable(false);
-//
-//        Window window = dialog.getWindow();
-//        if(window == null){
-//            return;
-//        }
-//
-//        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
-//        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-//
-//        WindowManager.LayoutParams windowAttributes = window.getAttributes();
-//        windowAttributes.gravity = Gravity.CENTER;
-//        window.setAttributes(windowAttributes);
-//
-//        TextView tv_title = dialog.findViewById(R.id.tv_at_time);
-//        Button btn_yes = dialog.findViewById(R.id.btn_yes);
-//        Button btn_no = dialog.findViewById(R.id.btn_no);
-//
-//        tv_title.setText("Bạn có muốn xóa film " + movieMainHome.getName() + " khỏi mục film yêu thích của bạn?");
-//
-//
-//        btn_yes.setOnClickListener(v -> {
-//            collectionReferenceFilmFavorite.whereEqualTo("idFilm", movieMainHome.getId() +"")
-//                    .get()
-//                    .addOnCompleteListener(task -> {
-//                        if(task.isSuccessful()){
-//                            DocumentSnapshot documentSnapshot = task.getResult().getDocuments().get(0);
-//                            String documentId = documentSnapshot.getId();
-//                            collectionReferenceFilmFavorite.document(documentId)
-//                                    .delete();
-//                        }
-//                    });
-//            mFilmFavoriteList.remove(movieMainHome);
+            historyWatchFilmAdapter.notifyDataSetChanged();
+            dialog.dismiss();
+            Toast.makeText(mMainActivity, "Bạn đã xóa film thành công",Toast.LENGTH_LONG).show();
+        });
+
+
+        btn_no.setOnClickListener(v -> dialog.dismiss());
+
+        dialog.show();
+    }
+
+    @SuppressLint({"SetTextI18n", "NotifyDataSetChanged"})
+    private void clickUnFavoriteFilm(FilmMainHome movieMainHome){
+        final Dialog dialog = new Dialog(mMainActivity);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.layout_dialog_watch_film_from_time);
+        dialog.setCancelable(false);
+
+        Window window = dialog.getWindow();
+        if(window == null){
+            return;
+        }
+
+        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+        WindowManager.LayoutParams windowAttributes = window.getAttributes();
+        windowAttributes.gravity = Gravity.CENTER;
+        window.setAttributes(windowAttributes);
+
+        TextView tv_title = dialog.findViewById(R.id.tv_at_time);
+        Button btn_yes = dialog.findViewById(R.id.btn_yes);
+        Button btn_no = dialog.findViewById(R.id.btn_no);
+
+        tv_title.setText("Bạn có muốn xóa film " + movieMainHome.getName() + " khỏi mục film yêu thích của bạn?");
+
+
+        btn_yes.setOnClickListener(v -> {
+            collectionReferenceFilmFavorite.whereEqualTo("idFilm", movieMainHome.getId() +"")
+                    .get()
+                    .addOnCompleteListener(task -> {
+                        if(task.isSuccessful()){
+                            DocumentSnapshot documentSnapshot = task.getResult().getDocuments().get(0);
+                            String documentId = documentSnapshot.getId();
+                            collectionReferenceFilmFavorite.document(documentId)
+                                    .delete();
+                        }
+                    });
+            mFilmFavoriteList.remove(movieMainHome);
 //            if(mFilmFavoriteList.size() == 0){
 //                binding.tvSizeFavorite.setVisibility(View.VISIBLE);
 //            }
-//            filmFavoriteAdapter.notifyDataSetChanged();
-//            dialog.dismiss();
-//            Toast.makeText(mMainActivity, "Bạn đã xóa film thành công",Toast.LENGTH_LONG).show();
-//        });
-//
-//        btn_no.setOnClickListener(v -> dialog.dismiss());
-//
-//        dialog.show();
-//    }
-//
-//    @SuppressLint("SetTextI18n")
-//    private void getIdUser(){
-//        GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(mMainActivity);
-//        AccessToken accessToken = AccessToken.getCurrentAccessToken();
-//        if(acct == null && accessToken == null){
-//            final Dialog dialog = new Dialog(mMainActivity);
-//            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-//            dialog.setContentView(R.layout.layout_dialog_ask_login);
-//
-//            Window window = dialog.getWindow();
-//            if(window == null){
-//                return;
-//            }
-//
-//            window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
-//            window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-//
-//            WindowManager.LayoutParams windowAttributes = window.getAttributes();
-//            windowAttributes.gravity = Gravity.CENTER;
-//            window.setAttributes(windowAttributes);
-//
-//            TextView tv_title = dialog.findViewById(R.id.tv_at_time);
-//            Button btn_login = dialog.findViewById(R.id.btn_login);
-//            Button btn_no = dialog.findViewById(R.id.btn_no);
-//
-//            tv_title.setText("Bạn cần đăng nhập để biết thông tin này!");
-//
-//            btn_login.setOnClickListener(v -> {
-//                Intent intent = new Intent(mMainActivity, LoginActivity.class);
-//                startActivity(intent);
-//            });
-//
-//            btn_no.setOnClickListener(v -> dialog.dismiss());
-//            dialog.show();
-//        }
-//        else if(acct != null){
-//            this.idUser = acct.getId();
-//        }
-//        else if(!accessToken.isExpired()) {
-//            GraphRequest request = GraphRequest.newMeRequest(
-//                    accessToken,
-//                    (object, response) -> {
-//                        // Application code
-//                        try {
-//                            assert object != null;
-//                            this.idUser = (String) object.get("id");
-//                        } catch (JSONException e) {
-//                            e.printStackTrace();
-//                        }
-//                    });
-//            Bundle parameters = new Bundle();
-//            parameters.putString("fields", "id,name,link");
-//            request.setParameters(parameters);
-//            request.executeAsync();
-//        }
-//    }
-//
-//    public void getHistoryWatchFilm(){
-//        collectionReferenceHistory.get().addOnCompleteListener(task -> {
-//            if(task.isSuccessful()) {
-//                int check = 0;
-//                QuerySnapshot snapshot = task.getResult();
-//                for (QueryDocumentSnapshot doc : snapshot) {
-//                    String idFilm1 = Objects.requireNonNull(doc.get("idFilm")).toString();
-//                    callApiGetHistoryWatchFilm(Integer.parseInt(idFilm1));
-//                    check = 1;
-//                }
+            filmFavoriteAdapter.notifyDataSetChanged();
+            dialog.dismiss();
+            Toast.makeText(mMainActivity, "Bạn đã xóa film thành công",Toast.LENGTH_LONG).show();
+        });
+
+        btn_no.setOnClickListener(v -> dialog.dismiss());
+
+        dialog.show();
+    }
+
+    public void getHistoryWatchFilm(){
+        collectionReferenceHistory.get().addOnCompleteListener(task -> {
+            if(task.isSuccessful()) {
+                int check = 0;
+                QuerySnapshot snapshot = task.getResult();
+                for (QueryDocumentSnapshot doc : snapshot) {
+                    String idFilm1 = Objects.requireNonNull(doc.get("idFilm")).toString();
+                    callApiGetHistoryWatchFilm(Integer.parseInt(idFilm1));
+                    check = 1;
+                }
 //                if(check == 1){
 //                    binding.tvSizeHistory.setVisibility(View.INVISIBLE);
 //                }
@@ -281,65 +222,65 @@ public class PersonFragment extends Fragment {
 //                    binding.tvSizeHistory.setVisibility(View.VISIBLE);
 //                }
 //                binding.loadPersonPage.setVisibility(View.INVISIBLE);
-//            }
-//        });
-//    }
-//
-//    private void callApiGetHistoryWatchFilm(int idFilm){
-//        ApiService.apiService.getFilmDetail("7da353b8a3246f851e0ee436d898a26d", idFilm).enqueue(new Callback<FilmDetailResponse>() {
-//            @SuppressLint({"StringFormatMatches", "NotifyDataSetChanged"})
-//            @Override
-//            public void onResponse(@NonNull Call<FilmDetailResponse> call, @NonNull Response<FilmDetailResponse> response) {
-//                FilmDetailResponse cinema = response.body();
-//                if(cinema != null) {
-//                    mHistoryList.add(cinema.getData());
-//                    historyWatchFilmAdapter.notifyDataSetChanged();
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(@NonNull Call<FilmDetailResponse> call, @NonNull Throwable t) {
-//                Toast.makeText(mMainActivity, "Error Get Film", Toast.LENGTH_SHORT).show();
-//            }
-//        });
-//    }
-//
-//    public void getFilmFavorite(){
-//        collectionReferenceFilmFavorite.get().addOnCompleteListener(task -> {
-//            if(task.isSuccessful()) {
-//                int check = 0;
-//                QuerySnapshot snapshot = task.getResult();
-//                for (QueryDocumentSnapshot doc : snapshot) {
-//                    String idFilm1 = Objects.requireNonNull(doc.get("idFilm")).toString();
-//                    callApiGetFilmFavorite(Integer.parseInt(idFilm1));
-//                    check = 1;
-//                }
+            }
+        });
+    }
+
+    private void callApiGetHistoryWatchFilm(int idFilm){
+        ApiService.apiService.getFilmDetail("7da353b8a3246f851e0ee436d898a26d", idFilm).enqueue(new Callback<FilmDetailResponse>() {
+            @SuppressLint({"StringFormatMatches", "NotifyDataSetChanged"})
+            @Override
+            public void onResponse(@NonNull Call<FilmDetailResponse> call, @NonNull Response<FilmDetailResponse> response) {
+                FilmDetailResponse cinema = response.body();
+                if(cinema != null) {
+                    mHistoryList.add(cinema.getData());
+                    historyWatchFilmAdapter.notifyDataSetChanged();
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<FilmDetailResponse> call, @NonNull Throwable t) {
+                Toast.makeText(mMainActivity, "Error Get Film", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    public void getFilmFavorite(){
+        collectionReferenceFilmFavorite.get().addOnCompleteListener(task -> {
+            if(task.isSuccessful()) {
+                int check = 0;
+                QuerySnapshot snapshot = task.getResult();
+                for (QueryDocumentSnapshot doc : snapshot) {
+                    String idFilm1 = Objects.requireNonNull(doc.get("idFilm")).toString();
+                    callApiGetFilmFavorite(Integer.parseInt(idFilm1));
+                    check = 1;
+                }
 //                if(check == 1){
 //                    binding.tvSizeFavorite.setVisibility(View.INVISIBLE);
 //                }else {
 //                    binding.tvSizeFavorite.setVisibility(View.VISIBLE);
 //                }
 //                binding.loadPersonPage.setVisibility(View.INVISIBLE);
-//            }
-//        });
-//    }
-//
-//    private void callApiGetFilmFavorite(int idFilm){
-//        ApiService.apiService.getFilmDetail("7da353b8a3246f851e0ee436d898a26d", idFilm).enqueue(new Callback<FilmDetailResponse>() {
-//            @SuppressLint({"StringFormatMatches", "NotifyDataSetChanged"})
-//            @Override
-//            public void onResponse(@NonNull Call<FilmDetailResponse> call, @NonNull Response<FilmDetailResponse> response) {
-//                FilmDetailResponse cinema = response.body();
-//                if(cinema != null) {
-//                    mFilmFavoriteList.add(cinema.getData());
-//                    filmFavoriteAdapter.notifyDataSetChanged();
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(@NonNull Call<FilmDetailResponse> call, @NonNull Throwable t) {
-//                Toast.makeText(mMainActivity, "Error Get Film", Toast.LENGTH_SHORT).show();
-//            }
-//        });
-//    }
+            }
+        });
+    }
+
+    private void callApiGetFilmFavorite(int idFilm){
+        ApiService.apiService.getFilmDetail("7da353b8a3246f851e0ee436d898a26d", idFilm).enqueue(new Callback<FilmDetailResponse>() {
+            @SuppressLint({"StringFormatMatches", "NotifyDataSetChanged"})
+            @Override
+            public void onResponse(@NonNull Call<FilmDetailResponse> call, @NonNull Response<FilmDetailResponse> response) {
+                FilmDetailResponse cinema = response.body();
+                if(cinema != null) {
+                    mFilmFavoriteList.add(cinema.getData());
+                    filmFavoriteAdapter.notifyDataSetChanged();
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<FilmDetailResponse> call, @NonNull Throwable t) {
+                Toast.makeText(mMainActivity, "Error Get Film", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
 }

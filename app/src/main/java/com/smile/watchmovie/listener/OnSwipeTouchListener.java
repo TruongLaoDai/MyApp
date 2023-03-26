@@ -1,5 +1,6 @@
 package com.smile.watchmovie.listener;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -14,12 +15,13 @@ public class OnSwipeTouchListener implements View.OnTouchListener {
         this.gestureDetector = new GestureDetector(ctx, new GestureListener());
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean onTouch(View v, MotionEvent event) {
         return gestureDetector.onTouchEvent(event);
     }
 
-    public final class GestureListener extends GestureDetector.SimpleOnGestureListener{
+    public static final class GestureListener extends GestureDetector.SimpleOnGestureListener{
         @Override
         public boolean onFling(@NonNull MotionEvent e1, @NonNull MotionEvent e2, float velocityX, float velocityY) {
             return super.onFling(e1, e2, velocityX, velocityY);
@@ -27,12 +29,7 @@ public class OnSwipeTouchListener implements View.OnTouchListener {
 
         @Override
         public boolean onSingleTapConfirmed(@NonNull MotionEvent e) {
-            onSingLeTouch();
             return super.onSingleTapConfirmed(e);
         }
-    }
-
-    public void onSingLeTouch() {
-
     }
 }

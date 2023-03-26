@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -30,9 +31,7 @@ public class LoginActivity extends AppCompatActivity {
     GoogleSignInOptions gso;
     GoogleSignInClient gsc;
     ActivityLoginBinding binding;
-    LinearLayout loginWithGoogle;
     CallbackManager callBackManager;
-    LinearLayout loginWithFacebook;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,8 +46,9 @@ public class LoginActivity extends AppCompatActivity {
 
         callBackManager = CallbackManager.Factory.create();
 
-        loginWithGoogle = findViewById(R.id.login_with_google);
-        loginWithFacebook = findViewById(R.id.login_with_face);
+        binding.ivBack.setOnClickListener(v -> {
+            startActivity(new Intent(LoginActivity.this, MainActivity.class));
+        });
         binding.loginWithGoogle.setOnClickListener(v -> signIn());
 
         LoginManager.getInstance().registerCallback(callBackManager,

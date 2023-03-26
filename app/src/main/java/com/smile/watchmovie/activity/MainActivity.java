@@ -5,11 +5,14 @@ import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.view.MotionEvent;
+import android.os.Handler;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -37,9 +40,9 @@ public class MainActivity extends AppCompatActivity {
     public ActivityMainBinding binding;
     private BottomNavigationView mNavigationView;
     private CustomViewPager mViewPager;
-    private TextView tvUser;
     private String mTypeLogin;
     public ImageView ivLogoApp;
+    public String nameUser;
 
     @SuppressLint("NonConstantResourceId")
     @Override
@@ -52,61 +55,62 @@ public class MainActivity extends AppCompatActivity {
 
         mNavigationView = binding.bottomNav;
         mViewPager = binding.viewPager;
-        tvUser = binding.tvUser;
         ImageView ivLoginLogout = binding.iconLoginLogout;
         ivLogoApp = binding.ivLogoApp;
+        SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        showSplashHome();
 
         mTypeLogin = getIntent().getStringExtra("type");
         GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(this);
 
-        if(acct != null){
+        if (acct != null) {
             mTypeLogin = "google";
         }
         AccessToken accessToken = AccessToken.getCurrentAccessToken();
-        if(accessToken!=null&& !accessToken.isExpired()){
+        if (accessToken != null && !accessToken.isExpired()) {
             mTypeLogin = "facebook";
         }
-        if(mTypeLogin==null){
-            Toast.makeText(this, "You need login!!", Toast.LENGTH_SHORT).show();
-        }else{
-            if(mTypeLogin.equals("google")) {
-                gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build();
-                gsc = GoogleSignIn.getClient(this, gso);
 
-                if(acct!=null) {
-                    tvUser.setText("Chào " + acct.getDisplayName());
-                    Toast.makeText(this, "Wellcome " + acct.getDisplayName(), Toast.LENGTH_SHORT).show();
-                }
-            }else {
-                if (mTypeLogin.equals("facebook")) {
-                    accessToken = AccessToken.getCurrentAccessToken();
-                    GraphRequest request = GraphRequest.newMeRequest(
-                            accessToken,
-                            (object, response) -> {
-                                // Application code
-                                try {
-                                    assert object != null;
-                                    String fullname = (String) object.get("name");
-                                    tvUser.setText("Chào" + fullname);
-                                    Toast.makeText(MainActivity.this, "Wellcome " + fullname, Toast.LENGTH_SHORT).show();
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
-                            });
-                    Bundle parameters = new Bundle();
-                    parameters.putString("fields", "id,name,link");
-                    request.setParameters(parameters);
-                    request.executeAsync();
-                }else{
-                    Toast.makeText(this, "Home", Toast.LENGTH_SHORT).show();
-                }
+        if (mTypeLogin.equals("google")) {
+            gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build();
+            gsc = GoogleSignIn.getClient(this, gso);
+
+            if (acct != null) {
+                editor.putString("idUser", acct.getId());
+                editor.apply();
+                nameUser = acct.getDisplayName();
+            }
+        } else {
+            if (mTypeLogin.equals("facebook")) {
+                accessToken = AccessToken.getCurrentAccessToken();
+                AccessToken finalAccessToken = accessToken;
+                GraphRequest request = GraphRequest.newMeRequest(
+                        accessToken,
+                        (object, response) -> {
+                            // Application code
+                            try {
+                                assert object != null;
+                                nameUser = (String) object.get("name");
+                                editor.putString("idUser", finalAccessToken.getUserId());
+                                editor.apply();
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        });
+                Bundle parameters = new Bundle();
+                parameters.putString("fields", "id,name,link");
+                request.setParameters(parameters);
+                request.executeAsync();
+            } else {
+                Toast.makeText(this, "Home", Toast.LENGTH_SHORT).show();
             }
         }
 
-        if(mTypeLogin==null){
+        if (mTypeLogin == null) {
             ivLoginLogout.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, LoginActivity.class)));
-        }
-        else {
+        } else {
             ivLoginLogout.setOnClickListener(v -> {
                 if (mTypeLogin.equals("google")) {
                     logOutWithGoogle();
@@ -122,7 +126,7 @@ public class MainActivity extends AppCompatActivity {
 
         setUpViewPager();
         mNavigationView.setOnNavigationItemSelectedListener(item -> {
-            switch (item.getItemId()){
+            switch (item.getItemId()) {
                 case R.id.action_home:
                     mViewPager.setCurrentItem(0);
                     break;
@@ -137,6 +141,17 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    private void showSplashHome() {
+        new Handler().postDelayed(() -> {
+            if (binding.splashLayout.getVisibility() == View.VISIBLE) {
+                binding.splashLayout.startAnimation(AnimationUtils.loadAnimation(getApplicationContext(), android.R.anim.fade_out));
+                binding.splashLayout.setVisibility(View.GONE);
+                if (nameUser != null)
+                    Toast.makeText(MainActivity.this, "Xin chào " + nameUser, Toast.LENGTH_SHORT).show();
+            }
+        }, 2500);
+    }
+
     private void setUpViewPager() {
         ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager(), FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
         mViewPager.setAdapter(viewPagerAdapter);
@@ -149,9 +164,9 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onPageSelected(int position) {
-                switch (position){
+                switch (position) {
                     case 0:
-                        if(binding.toolBarHome.getVisibility() == View.GONE) {
+                        if (binding.toolBarHome.getVisibility() == View.GONE) {
                             binding.toolBarHome.setVisibility(View.VISIBLE);
                             LinearLayout.LayoutParams params1 = (LinearLayout.LayoutParams) binding.toolBarHome.getLayoutParams();
                             params1.width = ViewGroup.LayoutParams.MATCH_PARENT;
@@ -162,17 +177,17 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case 1:
                         binding.toolBarHome.setVisibility(View.GONE);
-                        LinearLayout.LayoutParams params=(LinearLayout.LayoutParams) binding.viewPager.getLayoutParams();
-                        params.width= ViewGroup.LayoutParams.MATCH_PARENT;
-                        params.height= ViewGroup.LayoutParams.MATCH_PARENT;
+                        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) binding.viewPager.getLayoutParams();
+                        params.width = ViewGroup.LayoutParams.MATCH_PARENT;
+                        params.height = ViewGroup.LayoutParams.MATCH_PARENT;
                         binding.viewPager.setLayoutParams(params);
                         mNavigationView.getMenu().findItem(R.id.action_search).setChecked(true);
                         break;
                     case 2:
                         binding.toolBarHome.setVisibility(View.GONE);
-                        LinearLayout.LayoutParams paramsFragmentPerson=(LinearLayout.LayoutParams) binding.viewPager.getLayoutParams();
-                        paramsFragmentPerson.width= ViewGroup.LayoutParams.MATCH_PARENT;
-                        paramsFragmentPerson.height= ViewGroup.LayoutParams.MATCH_PARENT;
+                        LinearLayout.LayoutParams paramsFragmentPerson = (LinearLayout.LayoutParams) binding.viewPager.getLayoutParams();
+                        paramsFragmentPerson.width = ViewGroup.LayoutParams.MATCH_PARENT;
+                        paramsFragmentPerson.height = ViewGroup.LayoutParams.MATCH_PARENT;
                         binding.viewPager.setLayoutParams(paramsFragmentPerson);
                         mNavigationView.getMenu().findItem(R.id.action_person).setChecked(true);
                         break;
@@ -186,15 +201,16 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    void logOutWithGoogle(){
+    void logOutWithGoogle() {
         gsc.signOut().addOnCompleteListener(task -> {
             finish();
-            startActivity(new Intent(MainActivity.this,LoginActivity.class));
+            startActivity(new Intent(MainActivity.this, LoginActivity.class));
         });
     }
-    void logOutWithFaceBook(){
+
+    void logOutWithFaceBook() {
         LoginManager.getInstance().logOut();
-        startActivity(new Intent(MainActivity.this,LoginActivity.class));
+        startActivity(new Intent(MainActivity.this, LoginActivity.class));
         finish();
     }
 }

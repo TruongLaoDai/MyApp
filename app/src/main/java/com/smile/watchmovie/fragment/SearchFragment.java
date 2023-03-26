@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -86,20 +87,22 @@ public class SearchFragment extends Fragment {
             @SuppressLint("SetTextI18n")
             @Override
             public boolean onQueryTextChange(String newText) {
-                binding.loadSearchPage.setVisibility(View.VISIBLE);
-                key = newText;
-                movieMainHomeList.clear();
-                if(newText.equals("")){
-                    binding.loadSearchPage.setVisibility(View.INVISIBLE);
-                    binding.tvTitle.setText("Bạn hãy nhập tên phim cần tìm!");
-                    binding.tvTitle.setVisibility(View.VISIBLE);
-                    mFilmSearchAdapter.setData(movieMainHomeList);
-                    binding.rcvFilm.setAdapter(mFilmSearchAdapter);
-                }
-                else {
-                    binding.tvTitle.setVisibility(View.INVISIBLE);
-                    callApiSearchFilm(newText, 0);
-                }
+                new Handler().postDelayed(() -> {
+                    binding.loadSearchPage.setVisibility(View.VISIBLE);
+                    key = newText;
+                    movieMainHomeList.clear();
+                    if(newText.equals("")){
+                        binding.loadSearchPage.setVisibility(View.INVISIBLE);
+                        binding.tvTitle.setText("Bạn hãy nhập tên phim cần tìm!");
+                        binding.tvTitle.setVisibility(View.VISIBLE);
+                        mFilmSearchAdapter.setData(movieMainHomeList);
+                        binding.rcvFilm.setAdapter(mFilmSearchAdapter);
+                    }
+                    else {
+                        binding.tvTitle.setVisibility(View.INVISIBLE);
+                        callApiSearchFilm(newText, 0);
+                    }
+                }, 2000);
                 return false;
             }
         });
@@ -170,7 +173,7 @@ public class SearchFragment extends Fragment {
 
             @Override
             public void onFailure(@NonNull Call<FilmArrayResponse> call, @NonNull Throwable t) {
-                Toast.makeText(mMainActivity, "Error Get Video", Toast.LENGTH_SHORT).show();
+                Toast.makeText(mMainActivity, "Error Get Film", Toast.LENGTH_SHORT).show();
             }
         });
     }
