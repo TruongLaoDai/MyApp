@@ -1,5 +1,7 @@
 package com.smile.watchmovie.model;
 
+import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -385,13 +387,5 @@ public class FilmMainHome implements Serializable {
 
     public void setSubVideoList(List<SubFilm> subVideoList) {
         this.subVideoList = subVideoList;
-    }
-
-    public List<FilmSubModel> getSubTitleList() {
-        return subTitleList;
-    }
-
-    public void setSubTitleList(List<FilmSubModel> subTitleList) {
-        this.subTitleList = subTitleList;
     }
 }

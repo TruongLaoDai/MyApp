@@ -78,6 +78,9 @@
     <string name="uid">UID</string>
     <string name="auto_play">Tự động phát chiếu</string>
     <string name="auto_play_full_screen">Tự động toàn màn hình</string>
+    <string name="feature_deploying">Tính năng đang được phát triển</string>
+    <string name="iv_back">back</string>
+    <string name="dration_watched">Đã xem: %1$d%</string>
 
     <string-array name="categorys">
         <item>Phim mới</item>

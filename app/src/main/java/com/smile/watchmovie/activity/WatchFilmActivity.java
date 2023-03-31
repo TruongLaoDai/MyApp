@@ -40,8 +40,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.facebook.AccessToken;
-import com.facebook.GraphRequest;
 import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.MediaItem;
 import com.google.android.exoplayer2.PlaybackException;
@@ -54,8 +52,6 @@ import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.exoplayer2.upstream.DataSource;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -67,8 +63,6 @@ import com.smile.watchmovie.databinding.ActivityWatchFilmBinding;
 import com.smile.watchmovie.listener.OnSwipeTouchListener;
 import com.smile.watchmovie.model.FilmMainHome;
 import com.smile.watchmovie.model.SubFilm;
-
-import org.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -117,7 +111,7 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
         filmMainHome = new FilmMainHome();
         filmMainHome = (FilmMainHome) getIntent().getSerializableExtra("film");
         SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
-        idUser = sharedPreferences.getString("idUser", "");;
+        idUser = sharedPreferences.getString("idUser", "");
 
         if (filmMainHome != null) {
             setUpView();
@@ -535,9 +529,13 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
     public void onBackPressed() {
         super.onBackPressed();
         if (!idUser.equals("")) {
+            int episode = Integer.parseInt(tvAtEpisode.getText().toString().substring(4, tvAtEpisode.getText().length())) - 1;
             Map<String, Object> historyWatchFilm = new HashMap<>();
             historyWatchFilm.put("idFilm", filmMainHome.getId() + "");
             historyWatchFilm.put("time", player.getCurrentPosition() + "");
+            if(episode > 0)
+                historyWatchFilm.put("episode", episode);
+            historyWatchFilm.put("duration", player.getDuration());
             if (player.getCurrentPosition() > 30000 && check == 0) {
                 collectionReference.add(historyWatchFilm);
             } else if (check == 1) {
