@@ -17,8 +17,8 @@ import com.smile.watchmovie.api.ApiService;
 import com.smile.watchmovie.databinding.ItemFilmHistoryBinding;
 import com.smile.watchmovie.model.FilmDetailResponse;
 import com.smile.watchmovie.model.FilmMainHome;
-import com.smile.watchmovie.listener.IClickItemDeleteHistoryListener;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -29,15 +29,24 @@ public class HistoryWatchFilmAdapter extends RecyclerView.Adapter<HistoryWatchFi
 
     private List<FilmMainHome> filmMainHomeList;
     private final Context context;
-    private final IClickItemDeleteHistoryListener itemDeleteHistoryListener;
+    private List<Long> timeList;
+    private List<Long> durationList;
 
-    public HistoryWatchFilmAdapter(Context context, IClickItemDeleteHistoryListener itemDeleteHistoryListener) {
+    public HistoryWatchFilmAdapter(Context context) {
         this.context = context;
-        this.itemDeleteHistoryListener = itemDeleteHistoryListener;
+        timeList = new ArrayList<>();
     }
 
     public void setData(List<FilmMainHome> movieMainHomeList) {
         this.filmMainHomeList = movieMainHomeList;
+    }
+
+    public void setTimeList(List<Long> timeList){
+        this.timeList = timeList;
+    }
+
+    public void setDurationList(List<Long> durationList){
+        this.durationList = durationList;
     }
 
     @NonNull
@@ -50,6 +59,8 @@ public class HistoryWatchFilmAdapter extends RecyclerView.Adapter<HistoryWatchFi
     @Override
     public void onBindViewHolder(@NonNull HistoryWatchFilmViewHolder holder, int position) {
         FilmMainHome filmMainHome = filmMainHomeList.get(position);
+        long time = timeList.get(position);
+        long duration = durationList.get(position);
         if (filmMainHome == null) {
             return;
         }
@@ -58,49 +69,45 @@ public class HistoryWatchFilmAdapter extends RecyclerView.Adapter<HistoryWatchFi
                 .error(R.drawable.ic_baseline_broken_image_24)
                 .placeholder(R.drawable.ic_baseline_image_gray)
                 .into(holder.binding.ivImageFilm);
-        int episodesTotal = filmMainHome.getEpisodesTotal();
-        if (episodesTotal == 0) {
-            holder.binding.tvEpisodesTotal.setText(context.getString(R.string.one_episode));
-        } else {
-            holder.binding.tvEpisodesTotal.setText(context.getString(R.string.episode_total, filmMainHome.getEpisodesTotal()));
-        }
 
-        //holder.binding.tvStar.setText(context.getString(R.string.film_start, filmMainHome.getStar()));
+        holder.binding.timeViewed.setMax((int) duration);
+        holder.binding.timeViewed.setProgress((int) time);
+
         holder.binding.tvNameFilm.setText(filmMainHome.getName());
-        holder.binding.layoutFilm.setOnClickListener(view -> {
-            ApiService.apiService.getFilmDetail("7da353b8a3246f851e0ee436d898a26d", filmMainHome.getId()).enqueue(new Callback<FilmDetailResponse>() {
-                @SuppressLint("StringFormatMatches")
-                @Override
-                public void onResponse(@NonNull Call<FilmDetailResponse> call, @NonNull Response<FilmDetailResponse> response) {
-                    FilmDetailResponse cinema = response.body();
-                    if (cinema != null) {
-                        FilmMainHome filmPlay;
-                        filmPlay = cinema.getData();
-                        Intent intent = new Intent(context, WatchFilmActivity.class);
-                        intent.putExtra("movie", filmPlay);
-                        context.startActivity(intent);
-                    }
-                }
+        holder.binding.layoutFilm.setOnClickListener(view ->
+                ApiService.apiService
+                        .getFilmDetail("7da353b8a3246f851e0ee436d898a26d", filmMainHome.getId())
+                        .enqueue(new Callback<FilmDetailResponse>() {
+                            @SuppressLint("StringFormatMatches")
+                            @Override
+                            public void onResponse(@NonNull Call<FilmDetailResponse> call, @NonNull Response<FilmDetailResponse> response) {
+                                FilmDetailResponse cinema = response.body();
+                                if (cinema != null) {
+                                    FilmMainHome filmPlay;
+                                    filmPlay = cinema.getData();
+                                    Intent intent = new Intent(context, WatchFilmActivity.class);
+                                    intent.putExtra("film", filmPlay);
+                                    context.startActivity(intent);
+                                }
+                            }
 
-                @Override
-                public void onFailure(@NonNull Call<FilmDetailResponse> call, @NonNull Throwable t) {
-                    Toast.makeText(context, "Error Get Film", Toast.LENGTH_SHORT).show();
+                            @Override
+                            public void onFailure(@NonNull Call<FilmDetailResponse> call, @NonNull Throwable t) {
+                                Toast.makeText(context, "Error Get Film", Toast.LENGTH_SHORT).show();
 
-                }
-            });
-        });
-        holder.binding.ivDeleteHistory.setOnClickListener(v -> itemDeleteHistoryListener.onClickDeleteHistoryListener(filmMainHome));
+                            }
+                        }));
     }
 
     @Override
     public int getItemCount() {
-        if(filmMainHomeList != null){
+        if (filmMainHomeList != null) {
             return filmMainHomeList.size();
         }
         return 0;
     }
 
-    public static class HistoryWatchFilmViewHolder extends RecyclerView.ViewHolder{
+    public static class HistoryWatchFilmViewHolder extends RecyclerView.ViewHolder {
 
         private final ItemFilmHistoryBinding binding;
 

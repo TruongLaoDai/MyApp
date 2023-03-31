@@ -1,54 +1,71 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-
-    android:layout_margin="10dp"
     android:orientation="vertical">
+
     <LinearLayout
         android:id="@+id/layout_film"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         tools:ignore="UselessParent">
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
 
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/iv_image_film"
-            android:scaleType="centerCrop"
-            android:layout_width="150dp"
-            android:layout_height="150dp"/>
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/loat_detail_film"
+                android:layout_width="120dp"
+                android:layout_height="65dp"
+                app:cardCornerRadius="7dp">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/iv_image_film"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop" />
+
+                <TextView
+                    android:id="@+id/tv_episode"
+                    tools:text="Tập 1"
+                    android:visibility="gone"
+                    android:padding="2dp"
+                    android:layout_gravity="bottom"
+                    android:textColor="@color/white"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+                <TextView
+                    android:id="@+id/tv_duration"
+                    tools:text="Tập 1"
+                    android:padding="2dp"
+                    android:layout_marginEnd="5dp"
+                    android:layout_gravity="bottom|right"
+                    android:textColor="@color/white"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+                <ProgressBar
+                    android:id="@+id/time_viewed"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_gravity="bottom"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </androidx.cardview.widget.CardView>
+
+        </RelativeLayout>
+
         <TextView
-            android:id="@+id/tv_episodesTotal"
-            tools:text="1 tập"
-            android:background="@color/black"
-            android:textColor="@color/white"
-            android:textStyle="bold"
-            android:paddingLeft="10dp"
-            android:paddingTop="4dp"
-            android:paddingRight="10dp"
-            android:paddingBottom="5dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/iv_delete_history"
-            android:layout_alignEnd="@+id/iv_image_film"
-            android:src="@drawable/ic_baseline_delete_24"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-    </RelativeLayout>
-    <TextView
-        android:id="@+id/tv_name_film"
-        tools:text="Vo than chua te"
-        android:gravity="center"
-        android:singleLine="true"
-        android:layout_gravity="center"
-        android:textColor="@color/black"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+            android:id="@+id/tv_name_film"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:singleLine="true"
+            android:textColor="@color/black"
+            tools:text="Vo than chua te" />
     </LinearLayout>
 </LinearLayout>

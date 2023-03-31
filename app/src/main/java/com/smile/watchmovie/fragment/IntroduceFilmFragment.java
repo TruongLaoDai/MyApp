@@ -98,7 +98,7 @@ public class IntroduceFilmFragment extends Fragment {
                 binding.loutDislike.setOnClickListener(v -> setUpViewDislikeFilm());
 
                 changeImageDownloadFilm = R.drawable.ic_download_film;
-                binding.loutDownload.setOnClickListener(v -> setUpViewDownloadFilm());
+                binding.loutDownload.setOnClickListener(v -> Toast.makeText(mWatchFilmActivity, getString(R.string.feature_deploying), Toast.LENGTH_SHORT).show());
             }
 
             playFilmFirst();

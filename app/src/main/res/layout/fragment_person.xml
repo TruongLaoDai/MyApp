@@ -1,190 +1,197 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/layout_person"
-    android:background="@color/gray_light"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/gray_light">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
         <RelativeLayout
             android:id="@+id/lout_account"
-            android:background="@drawable/iv_hello"
             android:layout_width="match_parent"
-            android:layout_height="200dp">
+            android:layout_height="200dp"
+            android:background="@drawable/iv_hello">
+
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/iv_avt_account"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="15dp"
-                android:src="@drawable/ic_account_default"
                 android:layout_marginTop="35dp"
                 android:scaleType="centerCrop"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:src="@drawable/ic_account_default" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tv_name_account"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/iv_avt_account"
                 android:layout_marginStart="5dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginEnd="10dp"
                 android:padding="10dp"
-                android:textSize="18sp"
-                android:textColor="@color/black"
-                android:textStyle="bold"
-                android:layout_below="@+id/iv_avt_account"
-                android:text="@string/app_name"
                 android:singleLine="true"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:text="@string/app_name"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                android:textStyle="bold" />
         </RelativeLayout>
 
         <RelativeLayout
             android:id="@+id/lout_tool"
-            android:layout_marginStart="7dp"
-            android:layout_marginEnd="7dp"
-            android:background="@drawable/bg_white_arrow"
-            android:layout_marginTop="20dp"
-            android:layout_below="@+id/lout_account"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/lout_account"
+            android:layout_marginStart="7dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="7dp"
+            android:background="@drawable/bg_white_arrow">
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tv_history"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:padding="10dp"
-                android:textSize="15sp"
-                android:textColor="@color/black"
                 android:text="@string/history"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:textColor="@color/black"
+                android:textSize="15sp" />
 
             <ImageView
                 android:id="@+id/iv_more_history"
-                android:layout_alignBottom="@+id/tv_history"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_alignTop="@+id/tv_history"
+                android:layout_alignBottom="@+id/tv_history"
                 android:layout_alignParentRight="true"
                 android:layout_marginEnd="10dp"
-                android:src="@drawable/ic_arrow_right_more_category"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:src="@drawable/ic_arrow_right_more_category" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rcv_history"
-                android:layout_marginStart="10dp"
-                android:layout_below="@+id/tv_history"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tv_history"
+                android:layout_marginStart="10dp" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tv_download"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_below="@+id/rcv_history"
-                android:textSize="15sp"
                 android:padding="10dp"
-                android:textColor="@color/black"
                 android:text="@string/downloaded_film"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:textColor="@color/black"
+                android:textSize="15sp" />
 
             <ImageView
                 android:id="@+id/iv_more_download"
-                android:layout_alignBottom="@+id/tv_download"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_alignTop="@+id/tv_download"
+                android:layout_alignBottom="@+id/tv_download"
                 android:layout_alignParentRight="true"
                 android:layout_marginEnd="10dp"
-                android:src="@drawable/ic_arrow_right_more_category"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:src="@drawable/ic_arrow_right_more_category" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tv_favorite"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_below="@+id/tv_download"
-                android:textSize="15sp"
                 android:padding="10dp"
-                android:textColor="@color/black"
                 android:text="@string/film_favorite"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:textColor="@color/black"
+                android:textSize="15sp" />
 
             <ImageView
                 android:id="@+id/iv_more_favorite"
-                android:layout_marginEnd="10dp"
-                android:layout_alignBottom="@+id/tv_favorite"
-                android:layout_alignTop="@+id/tv_favorite"
-                android:layout_alignParentRight="true"
-                android:src="@drawable/ic_arrow_right_more_category"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@+id/tv_favorite"
+                android:layout_alignBottom="@+id/tv_favorite"
+                android:layout_alignParentRight="true"
+                android:layout_marginEnd="10dp"
+                android:src="@drawable/ic_arrow_right_more_category" />
         </RelativeLayout>
 
-    <RelativeLayout
-        android:id="@+id/lout_setting"
-        android:layout_marginStart="7dp"
-        android:layout_marginEnd="7dp"
-        android:background="@drawable/bg_white_arrow"
-        android:layout_marginTop="20dp"
-        android:layout_below="@+id/lout_tool"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        <RelativeLayout
+            android:id="@+id/lout_setting"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/lout_tool"
+            android:layout_marginStart="7dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="7dp"
+            android:background="@drawable/bg_white_arrow">
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tv_setting"
-            android:padding="10dp"
-            android:textSize="15sp"
-            android:textColor="@color/black"
-            android:text="@string/setting"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_setting"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:text="@string/setting"
+                android:textColor="@color/black"
+                android:textSize="15sp" />
 
-        <ImageView
-            android:id="@+id/iv_more_setting"
-            android:layout_alignBottom="@+id/tv_setting"
-            android:layout_alignTop="@+id/tv_setting"
-            android:layout_alignParentRight="true"
-            android:layout_marginEnd="10dp"
-            android:src="@drawable/ic_arrow_right_more_category"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            <ImageView
+                android:id="@+id/iv_more_setting"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@+id/tv_setting"
+                android:layout_alignBottom="@+id/tv_setting"
+                android:layout_alignParentRight="true"
+                android:layout_marginEnd="10dp"
+                android:src="@drawable/ic_arrow_right_more_category" />
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tv_help"
-            android:padding="10dp"
-            android:textSize="15sp"
-            android:layout_below="@id/tv_setting"
-            android:textColor="@color/black"
-            android:text="@string/help"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_help"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tv_setting"
+                android:padding="10dp"
+                android:text="@string/help"
+                android:textColor="@color/black"
+                android:textSize="15sp" />
 
-        <ImageView
-            android:id="@+id/iv_more_help"
-            android:layout_alignBottom="@+id/tv_help"
-            android:layout_alignTop="@+id/tv_help"
-            android:layout_alignParentRight="true"
-            android:layout_marginEnd="10dp"
-            android:src="@drawable/ic_arrow_right_more_category"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            <ImageView
+                android:id="@+id/iv_more_help"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@+id/tv_help"
+                android:layout_alignBottom="@+id/tv_help"
+                android:layout_alignParentRight="true"
+                android:layout_marginEnd="10dp"
+                android:src="@drawable/ic_arrow_right_more_category" />
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tv_feedback"
-            android:padding="10dp"
-            android:textSize="15sp"
-            android:layout_below="@+id/tv_help"
-            android:textColor="@color/black"
-            android:text="@string/feedback"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_feedback"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tv_help"
+                android:padding="10dp"
+                android:text="@string/feedback"
+                android:textColor="@color/black"
+                android:textSize="15sp" />
 
-        <ImageView
-            android:id="@+id/iv_more_feedback"
-            android:layout_alignBottom="@+id/tv_feedback"
-            android:layout_alignTop="@+id/tv_feedback"
-            android:layout_alignParentRight="true"
-            android:layout_marginEnd="10dp"
-            android:src="@drawable/ic_arrow_right_more_category"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            <ImageView
+                android:id="@+id/iv_more_feedback"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@+id/tv_feedback"
+                android:layout_alignBottom="@+id/tv_feedback"
+                android:layout_alignParentRight="true"
+                android:layout_marginEnd="10dp"
+                android:src="@drawable/ic_arrow_right_more_category" />
 
-    </RelativeLayout>
+        </RelativeLayout>
 
+        <ProgressBar
+            android:id="@+id/progress_load_person_home"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true" />
     </RelativeLayout>
 </androidx.core.widget.NestedScrollView>

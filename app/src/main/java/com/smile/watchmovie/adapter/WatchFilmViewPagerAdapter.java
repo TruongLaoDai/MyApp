@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 
+import com.smile.watchmovie.fragment.CommentFragment;
 import com.smile.watchmovie.fragment.IntroduceFilmFragment;
 
 public class WatchFilmViewPagerAdapter extends FragmentStatePagerAdapter {
@@ -17,8 +18,9 @@ public class WatchFilmViewPagerAdapter extends FragmentStatePagerAdapter {
     @Override
     public Fragment getItem(int position) {
         switch (position){
+            case 1:
+                return new CommentFragment();
             case 0:
-                return new IntroduceFilmFragment();
             default:
                 return new IntroduceFilmFragment();
         }
@@ -26,7 +28,7 @@ public class WatchFilmViewPagerAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public int getCount() {
-        return 1;
+        return 2;
     }
 
     @Nullable
@@ -35,6 +37,8 @@ public class WatchFilmViewPagerAdapter extends FragmentStatePagerAdapter {
         switch (position){
             case 0:
                 return "Giới thiệu";
+            case 1:
+                return "Bình luận";
             default:
                 return "null";
         }

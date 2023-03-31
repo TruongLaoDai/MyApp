@@ -65,31 +65,32 @@ public class FilmSearchAdapter extends RecyclerView.Adapter<FilmSearchAdapter.Fi
         }
         holder.itemFilmDetailBinding.tvViewNumber.setText(context.getString(R.string.tv_view_number, filmMainHome.getViewNumber()));
 
+
         holder.itemFilmDetailBinding.tvNameFilm.setText(filmMainHome.getName());
-        holder.itemFilmDetailBinding.layoutFilm.setOnClickListener(view -> {
-            ApiService.apiService.getFilmDetail("7da353b8a3246f851e0ee436d898a26d", filmMainHome.getId()).enqueue(new Callback<FilmDetailResponse>() {
-                @SuppressLint("StringFormatMatches")
-                @Override
-                public void onResponse(@NonNull Call<FilmDetailResponse> call, @NonNull Response<FilmDetailResponse> response) {
-                    FilmDetailResponse cinema = response.body();
-                    if (cinema != null) {
-                        FilmMainHome filmPlay;
-                        filmPlay = cinema.getData();
-                        Intent intent = new Intent(context, WatchFilmActivity.class);
-                        intent.putExtra("film", filmPlay);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        context.startActivity(intent);
-                    }
-                }
+        holder.itemFilmDetailBinding.layoutFilm.setOnClickListener(view ->
+                ApiService.apiService.getFilmDetail("7da353b8a3246f851e0ee436d898a26d", filmMainHome.getId())
+                        .enqueue(new Callback<FilmDetailResponse>() {
+                            @SuppressLint("StringFormatMatches")
+                            @Override
+                            public void onResponse(@NonNull Call<FilmDetailResponse> call, @NonNull Response<FilmDetailResponse> response) {
+                                FilmDetailResponse cinema = response.body();
+                                if (cinema != null) {
+                                    FilmMainHome filmPlay;
+                                    filmPlay = cinema.getData();
+                                    Intent intent = new Intent(context, WatchFilmActivity.class);
+                                    intent.putExtra("film", filmPlay);
+                                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                    context.startActivity(intent);
+                                }
+                            }
 
-                @Override
-                public void onFailure(@NonNull Call<FilmDetailResponse> call, @NonNull Throwable t) {
-                    Toast.makeText(context, "Error Get Film", Toast.LENGTH_SHORT).show();
+                            @Override
+                            public void onFailure(@NonNull Call<FilmDetailResponse> call, @NonNull Throwable t) {
+                                Toast.makeText(context, "Error Get Film", Toast.LENGTH_SHORT).show();
 
-                }
-            });
-        });
+                            }
+                        }));
     }
 
     @Override
