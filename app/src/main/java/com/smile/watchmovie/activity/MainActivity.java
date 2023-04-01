@@ -72,6 +72,7 @@ public class MainActivity extends AppCompatActivity {
         if (accessToken != null && !accessToken.isExpired()) {
             mTypeLogin = "facebook";
         }
+        mTypeLogin="google";
 
         if (mTypeLogin.equals("google")) {
             gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build();

@@ -29,6 +29,25 @@
                 android:value="" />
         </activity>
         <activity
+            android:name=".activity.ChannelActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Design.NoActionBar"
+            android:windowSoftInputMode="adjustPan|adjustResize">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
+            android:name=".activity.VideoActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:exported="false"
+            android:theme="@style/Theme.Design.NoActionBar"
+            android:windowSoftInputMode="adjustPan|adjustResize">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
             android:name=".activity.WatchFilmActivity"
             android:configChanges="orientation|screenSize|screenLayout|layoutDirection|smallestScreenSize|keyboardHidden|uiMode"
             android:excludeFromRecents="true"

@@ -1,11 +1,15 @@
 package com.smile.watchmovie.api;
 
+import com.smile.watchmovie.model.AppMedia;
+import com.smile.watchmovie.model.AppMediaDetail;
+import com.smile.watchmovie.model.ChannelDetail;
 import com.smile.watchmovie.model.FilmArrayResponse;
 import com.smile.watchmovie.model.FilmDetailResponse;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
+import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface ApiService {
@@ -36,4 +40,5 @@ public interface ApiService {
                                               @Query("categoryId") int categoryId,
                                               @Query("page") int page,
                                               @Query("size") int size);
+
 }
