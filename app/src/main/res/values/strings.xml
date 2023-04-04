@@ -81,6 +81,17 @@
     <string name="feature_deploying">Tính năng đang được phát triển</string>
     <string name="iv_back">back</string>
     <string name="dration_watched">Đã xem: %1$d%</string>
+    <string name="buy_premium">Mua Premium</string>
+    <string name="buy_title">Mua Premium để xem trước vô số nội dung</string>
+    <string name="go">Go</string>
+    <string name="title_buy">Mua Premium để xem toàn bộ phim miễn phí</string>
+    <string name="type_premium">Gói Premium</string>
+    <string name="premium_month">     Premium \n  hàng tháng</string>
+    <string name="premium_yearly">      Premium \n      hàng năm</string>
+    <string name="price_monthly">VND 47000</string>
+    <string name="price_yearly">VND 439000</string>
+    <string name="buy">Mua ngay</string>
+    <string name="benifit_premium">Quyền lợi Premium</string>
     <string name="wsToken">7da353b8a3246f851e0ee436d898a26d</string>
     <string name="appId">c3dd215f4ed3239d0fc98ce38ea3fcd0</string>
 

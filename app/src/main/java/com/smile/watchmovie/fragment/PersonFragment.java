@@ -30,6 +30,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.smile.watchmovie.activity.ChoosePaymentActivity;
 import com.smile.watchmovie.activity.HistoryWatchFilmActivity;
 import com.smile.watchmovie.activity.MainActivity;
 import com.smile.watchmovie.R;
@@ -120,6 +121,8 @@ public class PersonFragment extends Fragment {
         binding.tvHelp.setOnClickListener(v ->
                 Toast.makeText(mMainActivity, getString(R.string.feature_deploying), Toast.LENGTH_SHORT).show()
         );
+
+        binding.loutPay.setOnClickListener(v -> mMainActivity.startActivity(new Intent(mMainActivity, ChoosePaymentActivity.class)));
     }
 
     @SuppressLint({"SetTextI18n", "NotifyDataSetChanged"})

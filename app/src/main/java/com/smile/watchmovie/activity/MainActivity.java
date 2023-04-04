@@ -67,6 +67,7 @@ public class MainActivity extends AppCompatActivity {
         mViewPager = binding.viewPager;
         ImageView ivLoginLogout = binding.iconLoginLogout;
         ivLogoApp = binding.ivLogoApp;
+        mTypeLogin = "";
         SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
 

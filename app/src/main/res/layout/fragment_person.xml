@@ -41,10 +41,76 @@
         </RelativeLayout>
 
         <RelativeLayout
+            android:id="@+id/lout_pay"
+            android:padding="10dp"
+            android:background="#F8C5C5"
+            android:layout_marginHorizontal="5dp"
+            android:layout_below="@+id/lout_account"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/iv_premium"
+                android:src="@drawable/ic_premium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_title_pay"
+                android:layout_toEndOf="@+id/iv_premium"
+                android:textColor="#E55151"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:layout_marginStart="5dp"
+                android:text="@string/buy_premium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_title_pay_detail"
+                android:text="@string/buy_title"
+                android:textColor="#E55151"
+                android:layout_marginStart="2dp"
+                android:layout_below="@+id/tv_title_pay"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/go"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentTop="true"
+                    android:paddingVertical="10dp"
+                    android:layout_marginEnd="20dp"
+                    android:textColor="@color/white"
+                    android:textSize="16sp"
+                    android:text="@string/go"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+                <ImageView
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginEnd="5dp"
+                    android:src="@drawable/ic_arrow_right_more"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"/>
+                <ImageView
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginTop="12dp"
+                    android:src="@drawable/ic_arrow_right_more"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"/>
+
+
+        </RelativeLayout>
+
+        <RelativeLayout
             android:id="@+id/lout_tool"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/lout_account"
+            android:layout_below="@+id/lout_pay"
             android:layout_marginStart="7dp"
             android:layout_marginTop="20dp"
             android:layout_marginEnd="7dp"
