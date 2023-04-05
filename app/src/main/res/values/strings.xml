@@ -81,6 +81,8 @@
     <string name="feature_deploying">Tính năng đang được phát triển</string>
     <string name="iv_back">back</string>
     <string name="dration_watched">Đã xem: %1$d%</string>
+    <string name="wsToken">7da353b8a3246f851e0ee436d898a26d</string>
+    <string name="appId">c3dd215f4ed3239d0fc98ce38ea3fcd0</string>
 
     <string-array name="categorys">
         <item>Phim mới</item>

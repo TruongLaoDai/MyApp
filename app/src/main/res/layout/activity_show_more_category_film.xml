@@ -7,6 +7,12 @@
     android:orientation="vertical"
     tools:context=".activity.ShowMoreCategoryFilmActivity">
 
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/reload_lout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/tool_bar"
         app:titleTextColor="@color/black"

@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.smile.watchmovie.R;
 import com.smile.watchmovie.activity.MainActivity;
 import com.smile.watchmovie.adapter.FilmSearchAdapter;
 import com.smile.watchmovie.custom.PaginationScrollListener;
@@ -134,7 +135,7 @@ public class SearchFragment extends Fragment {
     }
 
     private void callApiSearchFilm(String key, int page) {
-        ApiService.apiService.searchFilms("7da353b8a3246f851e0ee436d898a26d", key, page, 10).enqueue(new Callback<FilmArrayResponse>() {
+        ApiService.apiService.searchFilms(getString(R.string.wsToken), key, page, 10).enqueue(new Callback<FilmArrayResponse>() {
             @SuppressLint({"NotifyDataSetChanged", "SetTextI18n"})
             @Override
             public void onResponse(@NonNull Call<FilmArrayResponse> call, @NonNull Response<FilmArrayResponse> response) {
