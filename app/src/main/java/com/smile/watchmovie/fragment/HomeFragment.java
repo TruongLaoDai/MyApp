@@ -17,6 +17,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.smile.watchmovie.R;
 import com.smile.watchmovie.activity.MainActivity;
 import com.smile.watchmovie.activity.ShowMoreCategoryFilmActivity;
 import com.smile.watchmovie.adapter.FilmAdapter;
@@ -136,7 +137,7 @@ public class HomeFragment extends Fragment {
     }
 
     public void callApiGetHomeFilmByCategory(int categoryId, int page) {
-        ApiService.apiService.getFilmByCategory("7da353b8a3246f851e0ee436d898a26d", categoryId, page, 5).enqueue(new Callback<FilmArrayResponse>() {
+        ApiService.apiService.getFilmByCategory(getString(R.string.wsToken), categoryId, page, 5).enqueue(new Callback<FilmArrayResponse>() {
 
             @Override
             public void onResponse(@NonNull Call<FilmArrayResponse> call, @NonNull Response<FilmArrayResponse> response) {
