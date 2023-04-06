@@ -15,7 +15,6 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.smile.watchmovie.R;
 import com.smile.watchmovie.api.ApiService;
 import com.smile.watchmovie.databinding.ActivityHistoryWatchFilmBinding;
-import com.smile.watchmovie.databinding.ActivityWatchFilmBinding;
 import com.smile.watchmovie.model.FilmDetailResponse;
 import com.smile.watchmovie.model.FilmMainHome;
 
@@ -67,7 +66,7 @@ public class HistoryWatchFilmActivity extends AppCompatActivity {
     }
 
     private void callApiGetHistoryWatchFilm(int idFilm) {
-        ApiService.apiService.getFilmDetail("7da353b8a3246f851e0ee436d898a26d", idFilm).enqueue(new Callback<FilmDetailResponse>() {
+        ApiService.apiService.getFilmDetail(getString(R.string.wsToken), idFilm).enqueue(new Callback<FilmDetailResponse>() {
             @SuppressLint({"StringFormatMatches", "NotifyDataSetChanged"})
             @Override
             public void onResponse(@NonNull Call<FilmDetailResponse> call, @NonNull Response<FilmDetailResponse> response) {
