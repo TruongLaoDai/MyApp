@@ -1,14 +1,19 @@
 package com.smile.watchmovie.activity;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import android.annotation.SuppressLint;
+import android.app.AlarmManager;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
@@ -25,23 +30,16 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.firebase.messaging.FirebaseMessaging;
 import com.smile.watchmovie.R;
 import com.smile.watchmovie.adapter.ViewPagerAdapter;
-import com.smile.watchmovie.api.ApiService;
 import com.smile.watchmovie.custom.CustomViewPager;
 import com.smile.watchmovie.databinding.ActivityMainBinding;
-import com.smile.watchmovie.model.Weather;
-import com.smile.watchmovie.model.WeatherResponse;
+import com.smile.watchmovie.notification.NotificationReceiver;
 
 import org.json.JSONException;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -53,6 +51,8 @@ public class MainActivity extends AppCompatActivity {
     private String mTypeLogin;
     public ImageView ivLogoApp;
     public String nameUser;
+    private AlarmManager alarmManager;
+    private PendingIntent pendingIntent;
 
     @SuppressLint("NonConstantResourceId")
     @Override
@@ -70,10 +70,10 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
+        createNotificationChannel();
         showSplashHome();
-
         mTypeLogin = getIntent().getStringExtra("type");
-        if(mTypeLogin == null) {
+        if (mTypeLogin == null) {
             mTypeLogin = "";
         }
         GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(this);
@@ -161,21 +161,11 @@ public class MainActivity extends AppCompatActivity {
                 binding.splashLayout.startAnimation(AnimationUtils.loadAnimation(getApplicationContext(), android.R.anim.fade_out));
                 binding.splashLayout.setVisibility(View.GONE);
                 getWeather();
+                setAlarmManager();
                 if (nameUser != null)
                     Toast.makeText(MainActivity.this, "Xin chào " + nameUser, Toast.LENGTH_SHORT).show();
             }
         }, 2500);
-    }
-
-    private void pushNotiWeather() {
-        FirebaseMessaging.getInstance().getToken()
-                .addOnCompleteListener(task -> {
-                    if (!task.isSuccessful()) {
-                        return;
-                    }
-
-                    String token = task.getResult();
-                });
     }
 
     private void setUpViewPager() {
@@ -228,23 +218,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void getWeather() {
-        ApiService.apiWeather.getWeather("Hanoi", "metric", getString(R.string.appId)).enqueue(new Callback<WeatherResponse>() {
-            @Override
-            public void onResponse(@NonNull Call<WeatherResponse> call, @NonNull Response<WeatherResponse> response) {
-                WeatherResponse weatherResponse = response.body();
-                if(weatherResponse != null) {
-                    if ( weatherResponse.getWeather() != null) {
-                        Weather weather = weatherResponse.getWeather();
-                        Toast.makeText(MainActivity.this, weather.getTemp() + "", Toast.LENGTH_SHORT).show();
-                    }
-                }
-            }
 
-            @Override
-            public void onFailure(@NonNull Call<WeatherResponse> call, @NonNull Throwable t) {
-                Toast.makeText(MainActivity.this, "Fail to get weather", Toast.LENGTH_SHORT).show();
-            }
-        });
 
     }
 
@@ -259,5 +233,36 @@ public class MainActivity extends AppCompatActivity {
         LoginManager.getInstance().logOut();
         startActivity(new Intent(MainActivity.this, LoginActivity.class));
         finish();
+    }
+
+    private void createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = "watchMediaWeatherChannel";
+            String description = "Channel for Weather";
+
+            int importance = NotificationManager.IMPORTANCE_HIGH;
+            NotificationChannel channel = new NotificationChannel("watchmedia", name, importance);
+
+//            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+//            notificationManager.createNotificationChannel(channel);
+            NotificationManagerCompat.from(this).createNotificationChannel(channel);
+
+        }
+    }
+
+    private void setAlarmManager() {
+        alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+
+        Intent intent = new Intent(this, NotificationReceiver.class);
+
+        pendingIntent = PendingIntent.getBroadcast(this, 0, intent, Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ?
+                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_ONE_SHOT : PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_ONE_SHOT);
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY, 7);
+        calendar.set(Calendar.HOUR, 0);
+        calendar.set(Calendar.SECOND, 0);
+
+        alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_HOUR, pendingIntent);
     }
 }
