@@ -3,54 +3,44 @@ package com.smile.watchmovie.model;
 import com.google.gson.annotations.SerializedName;
 
 public class Weather {
-    @SerializedName("temp")
-    private float temp;
-    @SerializedName("pressure")
-    private float pressure;
-    @SerializedName("humidity")
-    private float humidity;
-    @SerializedName("temp_min")
-    private float temp_min;
-    @SerializedName("temp_max")
-    private float temp_max;
+    @SerializedName("id")
+    private String id;
+    @SerializedName("main")
+    private String main;
+    @SerializedName("description")
+    private String description;
+    @SerializedName("icon")
+    private String icon;
 
-    public float getTemp() {
-        return temp;
+    public String getId() {
+        return id;
     }
 
-    public void setTemp(float temp) {
-        this.temp = temp;
+    public void setId(String id) {
+        this.id = id;
     }
 
-    public float getPressure() {
-        return pressure;
+    public String getMain() {
+        return main;
     }
 
-    public void setPressure(float pressure) {
-        this.pressure = pressure;
+    public void setMain(String main) {
+        this.main = main;
     }
 
-    public float getHumidity() {
-        return humidity;
+    public String getDescription() {
+        return description;
     }
 
-    public void setHumidity(float humidity) {
-        this.humidity = humidity;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
-    public float getTemp_min() {
-        return temp_min;
+    public String getIcon() {
+        return icon;
     }
 
-    public void setTemp_min(float temp_min) {
-        this.temp_min = temp_min;
-    }
-
-    public float getTemp_max() {
-        return temp_max;
-    }
-
-    public void setTemp_max(float temp_max) {
-        this.temp_max = temp_max;
+    public void setIcon(String icon) {
+        this.icon = icon;
     }
 }
