@@ -64,6 +64,11 @@ public class FilmSearchAdapter extends RecyclerView.Adapter<FilmSearchAdapter.Fi
             holder.itemFilmDetailBinding.tvEpisodesTotal.setText(context.getString(R.string.episode_total, filmMainHome.getEpisodesTotal()));
         }
         holder.itemFilmDetailBinding.tvViewNumber.setText(context.getString(R.string.tv_view_number, filmMainHome.getViewNumber()));
+        if(filmMainHome.getId() % 2 == 0) {
+            holder.itemFilmDetailBinding.loutPremium.setVisibility(ViewGroup.VISIBLE);
+        } else {
+            holder.itemFilmDetailBinding.loutPremium.setVisibility(ViewGroup.GONE);
+        }
 
 
         holder.itemFilmDetailBinding.tvNameFilm.setText(filmMainHome.getName());

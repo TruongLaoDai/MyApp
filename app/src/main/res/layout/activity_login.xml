@@ -244,4 +244,10 @@
 
     </LinearLayout>
 
+    <ProgressBar
+        android:id="@+id/loading_login"
+        android:layout_centerInParent="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
 </RelativeLayout>

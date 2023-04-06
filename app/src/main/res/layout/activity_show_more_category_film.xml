@@ -7,17 +7,16 @@
     android:orientation="vertical"
     tools:context=".activity.ShowMoreCategoryFilmActivity">
 
-    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        android:id="@+id/reload_lout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/tool_bar"
         app:titleTextColor="@color/black"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
+
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/reload_lout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
     <androidx.recyclerview.widget.RecyclerView
         android:layout_below="@+id/tool_bar"
@@ -26,6 +25,8 @@
         android:layout_marginBottom="10dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     <ProgressBar
         android:id="@+id/load_home_page"

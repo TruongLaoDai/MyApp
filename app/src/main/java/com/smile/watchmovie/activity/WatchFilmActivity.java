@@ -114,8 +114,12 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
         idUser = sharedPreferences.getString("idUser", "");
 
         if (filmMainHome != null) {
-            setUpView();
-            initViewForTouchExoplayer();
+            if (filmMainHome.getId() % 2 == 0) {
+
+            } else {
+                setUpView();
+                initViewForTouchExoplayer();
+            }
         }
         binding.exoplayerView.findViewById(R.id.iv_back).setOnClickListener(v -> onBackPressed());
 
@@ -201,7 +205,7 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
                         baseY = event.getY();
                         break;
                     case MotionEvent.ACTION_MOVE:
-                        if(checkFullScreen){
+                        if (checkFullScreen) {
                             setSwipeWhenFullScreen(event);
                         }
                         break;
@@ -217,7 +221,7 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
         });
     }
 
-    private void setSwipeWhenFullScreen(MotionEvent event){
+    private void setSwipeWhenFullScreen(MotionEvent event) {
         long diffX = (long) Math.ceil(event.getX() - baseX);
         long diffY = (long) Math.ceil(event.getY() - baseY);
 
@@ -306,7 +310,7 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
         LayoutInflater inflater = getLayoutInflater();
         View view = inflater.inflate(R.layout.lout_custom_toast, findViewById(R.id.lout_toast));
         toast.setView(view);
-        toast.setGravity(Gravity.LEFT|Gravity.TOP, 30, 350);
+        toast.setGravity(Gravity.LEFT | Gravity.TOP, 30, 350);
         toast.setDuration(Toast.LENGTH_SHORT);
         TextView tvToast = view.findViewById(R.id.tv_toast);
 
@@ -400,7 +404,7 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
         binding.exoplayerView.findViewById(R.id.iv_episode_next).setVisibility(View.GONE);
         ivUnlockScreen.setVisibility(View.GONE);
         TextView tv_speed = binding.exoplayerView.findViewById(R.id.tv_speed_play_vertical);
-        if(tv_speed.getText().length() == 0) {
+        if (tv_speed.getText().length() == 0) {
             binding.exoplayerView.findViewById(R.id.iv_speed_play_vertical).setVisibility(View.VISIBLE);
         } else {
             tv_speed.setVisibility(View.VISIBLE);
@@ -533,7 +537,7 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
             Map<String, Object> historyWatchFilm = new HashMap<>();
             historyWatchFilm.put("idFilm", filmMainHome.getId() + "");
             historyWatchFilm.put("time", player.getCurrentPosition() + "");
-            if(episode > 0)
+            if (episode > 0)
                 historyWatchFilm.put("episode", episode);
             historyWatchFilm.put("duration", player.getDuration());
             if (player.getCurrentPosition() > 30000 && check == 0) {

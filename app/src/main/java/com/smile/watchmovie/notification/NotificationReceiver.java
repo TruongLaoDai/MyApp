@@ -21,7 +21,6 @@ import com.smile.watchmovie.model.Weather;
 import com.smile.watchmovie.model.WeatherResponse;
 
 import java.util.List;
-import java.util.Locale;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -61,7 +60,6 @@ public class NotificationReceiver extends BroadcastReceiver {
                         }
 
                         notificationManagerCompat.notify(123, builder.build());
-                        //Toast.makeText(MainActivity.this, weather.getTemp() + "", Toast.LENGTH_SHORT).show();
                     }
                 }
             }
