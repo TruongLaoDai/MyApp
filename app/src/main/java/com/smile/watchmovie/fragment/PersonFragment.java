@@ -72,9 +72,12 @@ public class PersonFragment extends Fragment {
 
         SharedPreferences sharedPreferences = mMainActivity.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
         idUser = sharedPreferences.getString("idUser", "");
+        String nameUser = sharedPreferences.getString("nameUser", "");
 
         FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
         collectionReferenceHistory = firebaseFirestore.collection("history_watch_film_" + idUser);
+
+        binding.tvNameAccount.setText(nameUser);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mMainActivity, RecyclerView.HORIZONTAL, false);
 
@@ -189,7 +192,7 @@ public class PersonFragment extends Fragment {
     }
 
     private void callApiGetHistoryWatchFilm(int idFilm) {
-        ApiService.apiService.getFilmDetail("7da353b8a3246f851e0ee436d898a26d", idFilm).enqueue(new Callback<FilmDetailResponse>() {
+        ApiService.apiService.getFilmDetail(getString(R.string.wsToken), idFilm).enqueue(new Callback<FilmDetailResponse>() {
             @SuppressLint({"StringFormatMatches", "NotifyDataSetChanged"})
             @Override
             public void onResponse(@NonNull Call<FilmDetailResponse> call, @NonNull Response<FilmDetailResponse> response) {

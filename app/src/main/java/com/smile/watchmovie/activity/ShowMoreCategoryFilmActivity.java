@@ -103,7 +103,7 @@ public class ShowMoreCategoryFilmActivity extends AppCompatActivity {
     }
 
     public void callApiGetByCategoryListMovie(int categoryId, int page) {
-        ApiService.apiService.getFilmByCategory("7da353b8a3246f851e0ee436d898a26d", categoryId, page, 5).enqueue(new Callback<FilmArrayResponse>() {
+        ApiService.apiService.getFilmByCategory(getString(R.string.wsToken), categoryId, page, 5).enqueue(new Callback<FilmArrayResponse>() {
             @SuppressLint("NotifyDataSetChanged")
             @Override
             public void onResponse(@NonNull Call<FilmArrayResponse> call, @NonNull Response<FilmArrayResponse> response) {

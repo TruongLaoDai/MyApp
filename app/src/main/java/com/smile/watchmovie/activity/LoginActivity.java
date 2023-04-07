@@ -47,7 +47,7 @@ public class LoginActivity extends AppCompatActivity {
         callBackManager = CallbackManager.Factory.create();
 
         binding.ivBack.setOnClickListener(v -> {
-            startActivity(new Intent(LoginActivity.this, MainActivity.class));
+            finish();
         });
         binding.loginWithGoogle.setOnClickListener(v -> signIn());
 

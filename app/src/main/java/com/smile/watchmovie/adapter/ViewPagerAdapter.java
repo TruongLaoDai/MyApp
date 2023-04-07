@@ -6,6 +6,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 
 import com.smile.watchmovie.fragment.HomeFragment;
+import com.smile.watchmovie.fragment.MovieFragment;
 import com.smile.watchmovie.fragment.PersonFragment;
 import com.smile.watchmovie.fragment.SearchFragment;
 
@@ -23,7 +24,6 @@ public class ViewPagerAdapter extends FragmentStatePagerAdapter {
                 return new SearchFragment();
             case 2:
                 return new PersonFragment();
-            case 0:
             default:
                 return new HomeFragment();
         }
