@@ -14,7 +14,6 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.os.Parcelable;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,8 +31,10 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.smile.watchmovie.activity.ChoosePaymentActivity;
 import com.smile.watchmovie.activity.HistoryWatchFilmActivity;
+import com.smile.watchmovie.activity.InfoAccountActivity;
 import com.smile.watchmovie.activity.MainActivity;
 import com.smile.watchmovie.R;
+import com.smile.watchmovie.activity.PrivateSettingActivity;
 import com.smile.watchmovie.adapter.HistoryWatchFilmAdapter;
 import com.smile.watchmovie.api.ApiService;
 import com.smile.watchmovie.databinding.FragmentPersonBinding;
@@ -53,13 +54,12 @@ public class PersonFragment extends Fragment {
 
     private FragmentPersonBinding binding;
     private MainActivity mMainActivity;
-    private CollectionReference collectionReferenceFilmFavorite;
-    private String idUser;
     private CollectionReference collectionReferenceHistory;
     private List<FilmMainHome> mHistoryList;
     private List<Long> timeList;
     private List<Long> durationList;
     private HistoryWatchFilmAdapter historyWatchFilmAdapter;
+    String nameUser;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -72,13 +72,10 @@ public class PersonFragment extends Fragment {
         durationList = new ArrayList<>();
 
         SharedPreferences sharedPreferences = mMainActivity.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
-        idUser = sharedPreferences.getString("idUser", "");
-        String nameUser = sharedPreferences.getString("nameUser", "");
+        String idUser = sharedPreferences.getString("idUser", "");
 
         FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
         collectionReferenceHistory = firebaseFirestore.collection("history_watch_film_" + idUser);
-
-        binding.tvNameAccount.setText(nameUser);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mMainActivity, RecyclerView.HORIZONTAL, false);
 
@@ -90,6 +87,8 @@ public class PersonFragment extends Fragment {
         binding.rcvHistory.setAdapter(historyWatchFilmAdapter);
         onClickItem();
         getHistoryWatchFilm();
+
+        binding.loutAccount.setOnClickListener(v -> startActivity(new Intent(mMainActivity, InfoAccountActivity.class)));
 
         return binding.getRoot();
     }
@@ -110,7 +109,7 @@ public class PersonFragment extends Fragment {
         });
 
          binding.tvSetting.setOnClickListener(v -> {
-             Intent intent = new Intent(mMainActivity, HistoryWatchFilmActivity.class);
+             Intent intent = new Intent(mMainActivity, PrivateSettingActivity.class);
              mMainActivity.startActivity(intent);
          });
 
@@ -211,5 +210,26 @@ public class PersonFragment extends Fragment {
                 Toast.makeText(mMainActivity, "Error Get Film", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        SharedPreferences sharedPreferences = mMainActivity.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+        nameUser = sharedPreferences.getString("name", "");
+        String is_vip = sharedPreferences.getString("isVip", "");
+        if(!is_vip.equals("0")) {
+            binding.ivVip.setVisibility(View.VISIBLE);
+            binding.tvTitlePayDetail.setText(R.string.account_vip);
+        } else {
+            binding.ivVip.setVisibility(View.GONE);
+            binding.tvTitlePayDetail.setText(R.string.buy_title);
+        }
+        binding.tvNameAccount.setText(nameUser);
+
+        if(nameUser.equals("")) {
+            mHistoryList.clear();
+            historyWatchFilmAdapter.setData(mHistoryList);
+        }
     }
 }

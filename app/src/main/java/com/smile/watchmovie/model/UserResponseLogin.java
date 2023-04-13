@@ -2,19 +2,18 @@ package com.smile.watchmovie.model;
 
 import com.google.gson.annotations.SerializedName;
 
-public class UserResponse {
-
-    @SerializedName("id_user")
-    private int id;
+public class UserResponseLogin {
+    @SerializedName("data")
+    private User data;
     @SerializedName("message")
     private String message;
 
-    public int getId() {
-        return id;
+    public User getData() {
+        return data;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setData(User data) {
+        this.data = data;
     }
 
     public String getMessage() {

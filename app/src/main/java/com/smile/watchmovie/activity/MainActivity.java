@@ -51,8 +51,6 @@ public class MainActivity extends AppCompatActivity {
     private String mTypeLogin;
     public ImageView ivLogoApp;
     public String nameUser;
-    private AlarmManager alarmManager;
-    private PendingIntent pendingIntent;
 
     @SuppressLint("NonConstantResourceId")
     @Override
@@ -70,13 +68,10 @@ public class MainActivity extends AppCompatActivity {
         mTypeLogin = "";
         SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-
         createNotificationChannel();
         showSplashHome();
-        mTypeLogin = getIntent().getStringExtra("type");
-        if (mTypeLogin == null) {
-            mTypeLogin = "";
-        }
+        mTypeLogin = sharedPreferences.getString("typeLogin", "");
+
         GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(this);
 
         if (acct != null) {
@@ -93,14 +88,11 @@ public class MainActivity extends AppCompatActivity {
             gsc = GoogleSignIn.getClient(this, gso);
 
             if (acct != null) {
-                editor.putString("idUser", acct.getId());
-                editor.apply();
                 nameUser = acct.getDisplayName();
             }
         } else {
             if (mTypeLogin.equals("facebook")) {
                 accessToken = AccessToken.getCurrentAccessToken();
-                AccessToken finalAccessToken = accessToken;
                 GraphRequest request = GraphRequest.newMeRequest(
                         accessToken,
                         (object, response) -> {
@@ -108,9 +100,6 @@ public class MainActivity extends AppCompatActivity {
                             try {
                                 assert object != null;
                                 nameUser = (String) object.get("name");
-                                editor.putString("idUser", finalAccessToken.getUserId());
-                                editor.putString("nameUser", nameUser);
-                                editor.apply();
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
@@ -128,6 +117,8 @@ public class MainActivity extends AppCompatActivity {
             ivLoginLogout.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, LoginActivity.class)));
         } else {
             ivLoginLogout.setOnClickListener(v -> {
+                editor.clear();
+                editor.apply();
                 if (mTypeLogin.equals("google")) {
                     logOutWithGoogle();
                 } else {
@@ -162,7 +153,6 @@ public class MainActivity extends AppCompatActivity {
             if (binding.splashLayout.getVisibility() == View.VISIBLE) {
                 binding.splashLayout.startAnimation(AnimationUtils.loadAnimation(getApplicationContext(), android.R.anim.fade_out));
                 binding.splashLayout.setVisibility(View.GONE);
-                getWeather();
                 setAlarmManager();
                 if (nameUser != null)
                     Toast.makeText(MainActivity.this, "Xin chào " + nameUser, Toast.LENGTH_SHORT).show();
@@ -219,11 +209,6 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void getWeather() {
-
-
-    }
-
     void logOutWithGoogle() {
         gsc.signOut().addOnCompleteListener(task -> {
             finish();
@@ -240,31 +225,28 @@ public class MainActivity extends AppCompatActivity {
     private void createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             CharSequence name = "watchMediaWeatherChannel";
-            String description = "Channel for Weather";
 
             int importance = NotificationManager.IMPORTANCE_HIGH;
             NotificationChannel channel = new NotificationChannel("watchmedia", name, importance);
 
-//            NotificationManager notificationManager = getSystemService(NotificationManager.class);
-//            notificationManager.createNotificationChannel(channel);
             NotificationManagerCompat.from(this).createNotificationChannel(channel);
 
         }
     }
 
     private void setAlarmManager() {
-        alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 
         Intent intent = new Intent(this, NotificationReceiver.class);
 
-        pendingIntent = PendingIntent.getBroadcast(this, 0, intent, Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ?
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ?
                 PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_ONE_SHOT : PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_ONE_SHOT);
 
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.HOUR_OF_DAY, 7);
-        calendar.set(Calendar.HOUR, 0);
+        calendar.set(Calendar.MINUTE, 0);
         calendar.set(Calendar.SECOND, 0);
 
-        alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_HOUR, pendingIntent);
+        alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
     }
 }

@@ -14,7 +14,7 @@ import okhttp3.FormBody;
 import okhttp3.RequestBody;
 
 public class CreateOrder {
-    private class CreateOrderData {
+    private static class CreateOrderData {
         String AppId;
         String AppUser;
         String AppTime;
@@ -66,8 +66,7 @@ public class CreateOrder {
                 .add("mac", input.Mac)
                 .build();
 
-        JSONObject data = HttpProvider.sendPost(AppInfo.URL_CREATE_ORDER, formBody);
-        return data;
+         return HttpProvider.sendPost(AppInfo.URL_CREATE_ORDER, formBody);
     }
 }
 

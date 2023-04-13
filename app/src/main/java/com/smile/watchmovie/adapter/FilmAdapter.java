@@ -3,6 +3,7 @@ package com.smile.watchmovie.adapter;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.Toast;
@@ -59,32 +60,40 @@ public class FilmAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     .placeholder(R.drawable.ic_baseline_image_gray)
                     .into(((FilmViewHolder) holder).itemFilmBinding.ivImageFilm);
 
+            if (filmMainHome.getId() % 2 == 0) {
+                ((FilmViewHolder) holder).itemFilmBinding.loutPremium.setVisibility(ViewGroup.VISIBLE);
+            } else {
+                ((FilmViewHolder) holder).itemFilmBinding.loutPremium.setVisibility(ViewGroup.GONE);
+            }
+
             ((FilmViewHolder) holder).itemFilmBinding.tvNameFilm.setText(filmMainHome.getName());
-            ((FilmViewHolder) holder).itemFilmBinding.layoutFilm.setOnClickListener(view -> {
-                ApiService.apiService.getFilmDetail("7da353b8a3246f851e0ee436d898a26d", filmMainHome.getId()).enqueue(new Callback<FilmDetailResponse>() {
-                    @SuppressLint("StringFormatMatches")
-                    @Override
-                    public void onResponse(@NonNull Call<FilmDetailResponse> call, @NonNull Response<FilmDetailResponse> response) {
-                        FilmDetailResponse cinema = response.body();
-                        if (cinema != null) {
-                            FilmMainHome filmPlay;
-                            filmPlay = cinema.getData();
-                            Intent intent = new Intent(context, WatchFilmActivity.class);
-                            intent.putExtra("film", filmPlay);
-                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            context.startActivity(intent);
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(@NonNull Call<FilmDetailResponse> call, @NonNull Throwable t) {
-                        Toast.makeText(context, "Error Get Film", Toast.LENGTH_SHORT).show();
-
-                    }
-                });
-            });
+            ((FilmViewHolder) holder).itemFilmBinding.layoutFilm.setOnClickListener(view -> playFilm(filmMainHome));
         }
+    }
+
+    private void playFilm(FilmMainHome filmMainHome) {
+        ApiService.apiService.getFilmDetail(context.getString(R.string.wsToken), filmMainHome.getId()).enqueue(new Callback<FilmDetailResponse>() {
+            @SuppressLint("StringFormatMatches")
+            @Override
+            public void onResponse(@NonNull Call<FilmDetailResponse> call, @NonNull Response<FilmDetailResponse> response) {
+                FilmDetailResponse cinema = response.body();
+                if (cinema != null) {
+                    FilmMainHome filmPlay;
+                    filmPlay = cinema.getData();
+                    Intent intent = new Intent(context, WatchFilmActivity.class);
+                    intent.putExtra("film", filmPlay);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    context.startActivity(intent);
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<FilmDetailResponse> call, @NonNull Throwable t) {
+                Toast.makeText(context, "Error Get Film", Toast.LENGTH_SHORT).show();
+
+            }
+        });
     }
 
     @Override

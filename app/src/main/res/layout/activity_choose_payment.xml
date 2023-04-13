@@ -13,6 +13,7 @@
         android:padding="10dp">
 
         <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/iv_back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_arrow_back" />
@@ -27,6 +28,7 @@
             android:textStyle="bold" />
 
         <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/iv_history_pay"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
@@ -40,7 +42,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/tool_bar"
         android:layout_marginStart="10dp"
-        android:layout_marginTop="15dp">
+        android:layout_marginTop="10dp">
 
         <androidx.cardview.widget.CardView
             android:id="@+id/lout_iv_account"
@@ -80,8 +82,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/lout_account"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="20dp">
+        android:layout_marginHorizontal="10dp"
+        android:layout_marginTop="10dp">
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_type"
@@ -120,7 +122,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/tv_buy_monthly"
-                    android:layout_marginStart="5dp"
+                    android:layout_marginStart="10dp"
                     android:layout_marginTop="5dp"
                     android:gravity="center"
                     android:text="@string/price_monthly"
@@ -151,36 +153,52 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/tv_buy_yearly"
-                    android:layout_marginStart="10dp"
+                    android:layout_marginStart="5dp"
                     android:layout_marginTop="5dp"
                     android:text="@string/price_yearly"
                     android:textColor="#E55151"
                     android:textStyle="bold" />
             </RelativeLayout>
         </LinearLayout>
-
-
     </RelativeLayout>
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_des_type_premium"
+        android:layout_marginHorizontal="10dp"
+        android:textColor="@color/gray"
+        android:layout_below="@+id/lout_type_premium"
+        android:text="@string/des_type_premium_month"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_buy"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
         android:text="@string/buy"
         android:textColor="@color/white"
         android:textStyle="bold"
         android:layout_marginHorizontal="10dp"
         android:background="@drawable/bg_buy_premium"
-        android:layout_below="@+id/lout_type_premium"
+        android:layout_below="@+id/tv_des_type_premium"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
     <androidx.appcompat.widget.AppCompatTextView
-        android:layout_marginTop="30dp"
+        android:id="@+id/tv_title_benefit"
+        android:layout_marginTop="10dp"
         android:layout_marginStart="10dp"
         android:textColor="@color/black"
         android:textStyle="bold"
         android:layout_below="@+id/btn_buy"
         android:text="@string/benifit_premium"
         android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:layout_below="@+id/tv_title_benefit"
+        android:src="@drawable/ic_benefit_uer_vip"
+        android:layout_marginTop="5dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
 </RelativeLayout>

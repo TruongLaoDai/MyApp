@@ -9,8 +9,9 @@
         android:name="android.permission.WRITE_SETTINGS"
         tools:ignore="ProtectedPermissions" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
-    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM"/>
-    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="com.android.alarm.permission.SET_ALARM" />
 
     <application
         android:allowBackup="true"
@@ -24,15 +25,30 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="33">
         <activity
+            android:name=".activity.HistoryBuyPremiumActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.InfoAccountActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.SettingPlayFilmActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.PrivateSettingActivity"
+            android:exported="false" />
+        <activity
             android:name=".activity.ChoosePaymentActivity"
             android:exported="true"
             android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="demozpdk"
-                    android:host="app" />
+
+                <data
+                    android:host="app"
+                    android:scheme="demozpdk" />
             </intent-filter>
         </activity>
         <activity
@@ -59,10 +75,15 @@
         </activity>
         <activity
             android:name=".activity.LoginActivity"
-            android:exported="true">
+            android:exported="true" />
+        <activity
+            android:name=".activity.MainActivity"
+            android:exported="true"
+            android:windowSoftInputMode="adjustNothing">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -72,12 +93,6 @@
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
-        </activity>
-        <activity
-            android:name=".activity.MainActivity"
-            android:exported="true"
-            android:windowSoftInputMode="adjustNothing">
-
         </activity>
 
         <meta-data
@@ -103,7 +118,9 @@
                 <data android:scheme="@string/fb_login_protocol_scheme" />
             </intent-filter>
         </activity>
-        <receiver android:name=".notification.NotificationReceiver"/>
+
+        <receiver android:name=".notification.NotificationReceiver" />
+        <service android:name=".service.NotificationService" android:enabled="true"/>
     </application>
 
 </manifest>

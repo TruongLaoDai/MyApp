@@ -62,6 +62,7 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'com.google.firebase:firebase-firestore:24.4.3'
     implementation fileTree(dir: '/home/lecong/Workspace/DemoZPDK_Android/DemoZPDK_Android/ZPDK-Android', include: ['*.aar', '*.jar'], exclude: [])
+    implementation fileTree(dir: '/home/lecong/Workspace/DevTools/document/zpdk-release-v3.1', include: ['*.aar', '*.jar'], exclude: [])
     testImplementation 'junit:junit:4.13.2'
     //CircleIndicator
     implementation 'me.relex:circleindicator:2.1.6'

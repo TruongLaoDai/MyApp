@@ -3,8 +3,8 @@ package com.smile.watchmovie.model;
 import com.google.gson.annotations.SerializedName;
 
 public class User {
-    @SerializedName("id_user")
-    private String id_user;
+    @SerializedName("id")
+    private String id;
     @SerializedName("username")
     private String username;
     @SerializedName("password")
@@ -20,14 +20,14 @@ public class User {
     @SerializedName("role")
     private String role;
     @SerializedName("is_vip")
-    private boolean is_vip;
+    private String is_vip;
 
     public String getId_user() {
-        return id_user;
+        return id;
     }
 
     public void setId_user(String id_user) {
-        this.id_user = id_user;
+        this.id = id_user;
     }
 
     public String getUsername() {
@@ -86,11 +86,26 @@ public class User {
         this.role = role;
     }
 
-    public boolean isIs_vip() {
+    public String isIs_vip() {
         return is_vip;
     }
 
-    public void setIs_vip(boolean is_vip) {
+    public void setIs_vip(String is_vip) {
         this.is_vip = is_vip;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id_user='" + id + '\'' +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", full_name='" + full_name + '\'' +
+                ", address='" + address + '\'' +
+                ", phone='" + phone + '\'' +
+                ", gender='" + gender + '\'' +
+                ", role='" + role + '\'' +
+                ", is_vip=" + is_vip +
+                '}';
     }
 }
