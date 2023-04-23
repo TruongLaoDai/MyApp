@@ -55,11 +55,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/tv_name"
+    <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/edt_name"
         android:padding="10dp"
         android:textSize="15sp"
         tools:text="@string/name"
+        android:textColor="@color/gray"
+        android:singleLine="true"
+        android:imeOptions="actionDone"
+        android:maxLength="25"
         android:maxWidth="200dp"
         app:layout_constraintEnd_toStartOf="@+id/iv_change_name"
         app:layout_constraintTop_toTopOf="@+id/title_name"
@@ -84,33 +88,37 @@
         android:layout_height="1dp"/>
 
     <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/title_birth"
+        android:id="@+id/title_address"
         android:layout_marginStart="10dp"
         android:textColor="@color/black"
         android:padding="15dp"
         android:textSize="15sp"
-        android:text="@string/birth_day"
+        android:text="@string/address"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/title_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/tv_birth_day"
+    <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/edt_address"
         android:padding="10dp"
         android:textSize="15sp"
         tools:text="@string/name"
+        android:textColor="@color/gray"
+        android:singleLine="true"
+        android:imeOptions="actionDone"
+        android:maxLength="25"
         android:maxWidth="200dp"
         app:layout_constraintEnd_toStartOf="@+id/iv_change_birthday"
-        app:layout_constraintTop_toTopOf="@+id/title_birth"
-        app:layout_constraintBottom_toBottomOf="@+id/title_birth"
+        app:layout_constraintTop_toTopOf="@+id/title_address"
+        app:layout_constraintBottom_toBottomOf="@+id/title_address"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/iv_change_birthday"
-        app:layout_constraintTop_toTopOf="@+id/title_birth"
-        app:layout_constraintBottom_toBottomOf="@+id/title_birth"
+        app:layout_constraintTop_toTopOf="@+id/title_address"
+        app:layout_constraintBottom_toBottomOf="@+id/title_address"
         android:layout_marginEnd="5dp"
         android:src="@drawable/ic_arrow_right_more_category"
         app:layout_constraintEnd_toEndOf="parent"
@@ -118,39 +126,43 @@
         android:layout_height="wrap_content"/>
 
     <View
-        app:layout_constraintTop_toBottomOf="@+id/title_birth"
+        app:layout_constraintTop_toBottomOf="@+id/title_address"
         android:background="@color/gray_light"
         android:layout_width="match_parent"
         android:layout_height="1dp"/>
 
     <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/title_story"
+        android:id="@+id/title_phone_number"
         android:layout_marginStart="10dp"
         android:textColor="@color/black"
         android:padding="15dp"
         android:textSize="15sp"
-        android:text="@string/story"
+        android:text="@string/phone_number"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/title_birth"
+        app:layout_constraintTop_toBottomOf="@id/title_address"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/tv_story"
+    <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/edt_number_phone"
         android:padding="10dp"
         android:textSize="15sp"
         tools:text="@string/name"
         android:maxWidth="200dp"
+        android:maxLength="10"
+        android:textColor="@color/gray"
+        android:singleLine="true"
+        android:imeOptions="actionDone"
         app:layout_constraintEnd_toStartOf="@+id/iv_change_story"
-        app:layout_constraintTop_toTopOf="@+id/title_story"
-        app:layout_constraintBottom_toBottomOf="@+id/title_story"
+        app:layout_constraintTop_toTopOf="@+id/title_phone_number"
+        app:layout_constraintBottom_toBottomOf="@+id/title_phone_number"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/iv_change_story"
-        app:layout_constraintTop_toTopOf="@+id/title_story"
-        app:layout_constraintBottom_toBottomOf="@+id/title_story"
+        app:layout_constraintTop_toTopOf="@+id/title_phone_number"
+        app:layout_constraintBottom_toBottomOf="@+id/title_phone_number"
         android:layout_marginEnd="5dp"
         android:src="@drawable/ic_arrow_right_more_category"
         app:layout_constraintEnd_toEndOf="parent"
@@ -158,51 +170,29 @@
         android:layout_height="wrap_content"/>
 
     <View
-        app:layout_constraintTop_toBottomOf="@+id/title_story"
+        app:layout_constraintTop_toBottomOf="@+id/title_phone_number"
         android:background="@color/gray_light"
         android:layout_width="match_parent"
         android:layout_height="1dp"/>
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/title_uid"
-        android:layout_marginStart="10dp"
-        android:textColor="@color/black"
-        android:padding="15dp"
-        android:textSize="15sp"
-        android:text="@string/uid"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/title_story"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
-
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/tv_uid"
-        android:padding="10dp"
-        android:layout_marginEnd="3dp"
-        android:textSize="15sp"
-        tools:text="@string/uid"
-        android:maxWidth="200dp"
-        app:layout_constraintEnd_toStartOf="@+id/iv_copy_uid"
-        app:layout_constraintTop_toTopOf="@+id/title_uid"
-        app:layout_constraintBottom_toBottomOf="@+id/title_uid"
+    <CheckBox
+        android:id="@+id/checkBox_male"
+        app:layout_constraintStart_toStartOf="@id/title_phone_number"
+        app:layout_constraintTop_toBottomOf="@+id/title_phone_number"
+        android:layout_marginStart="50dp"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:text="Nam" />
 
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/iv_copy_uid"
-        app:layout_constraintTop_toTopOf="@+id/title_uid"
-        app:layout_constraintBottom_toBottomOf="@+id/title_uid"
-        android:layout_marginEnd="5dp"
-        android:src="@drawable/ic_copy"
-        app:layout_constraintEnd_toEndOf="parent"
+    <CheckBox
+        android:id="@+id/checkBox_female"
+        app:layout_constraintTop_toBottomOf="@+id/title_phone_number"
+        app:layout_constraintEnd_toEndOf="@id/iv_change_story"
+        android:layout_marginEnd="50dp"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:text="Nữ" />
 
-    <View
-        app:layout_constraintTop_toBottomOf="@+id/title_uid"
-        android:background="@color/gray_light"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"/>
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/title_link"
@@ -212,7 +202,7 @@
         android:textSize="15sp"
         android:text="@string/manage_link"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/title_uid"
+        app:layout_constraintTop_toBottomOf="@id/checkBox_female"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
@@ -232,8 +222,34 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"/>
 
+    <ProgressBar
+        android:id="@+id/load_update_user"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
 
     <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_update"
+        android:textColor="@color/ic_launcher_background"
+        android:background="@drawable/bg_white_arrow"
+        android:backgroundTint="@color/gray_light"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/btn_logout"
+        android:layout_marginEnd="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginBottom="10dp"
+        android:text="@string/update"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_logout"
         android:textColor="@color/ic_launcher_background"
         android:background="@drawable/bg_white_arrow"
         android:backgroundTint="@color/gray_light"

@@ -22,6 +22,7 @@ import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.Settings;
 import android.util.DisplayMetrics;
 import android.util.Rational;
@@ -48,6 +49,7 @@ import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.source.ConcatenatingMediaSource;
 import com.google.android.exoplayer2.source.MediaSource;
 import com.google.android.exoplayer2.source.hls.HlsMediaSource;
+import com.google.android.exoplayer2.ui.DefaultTimeBar;
 import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.exoplayer2.upstream.DataSource;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
@@ -70,6 +72,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Timer;
 
 public class WatchFilmActivity extends AppCompatActivity implements Player.Listener {
 
@@ -86,7 +89,6 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
     private int check = 0;
 
     private PictureInPictureParams.Builder piBuilder;
-    private boolean isInPictureInPictureMode = false;
     private int device_width;
     private int device_height;
     private boolean left = false;
@@ -98,6 +100,9 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
     private ProgressBar brt_progress, vol_progress;
     private float speed;
     private PlaybackParameters playbackParameters;
+    private Timer timer;
+    private String isVip;
+    private boolean auto_play;
 
     @SuppressLint("SetTextI18n")
     @Override
@@ -107,16 +112,29 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
 
         binding = ActivityWatchFilmBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        timer = new Timer();
 
         filmMainHome = new FilmMainHome();
         filmMainHome = (FilmMainHome) getIntent().getSerializableExtra("film");
         SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
         idUser = sharedPreferences.getString("idUser", "");
+        isVip = sharedPreferences.getString("isVip", "0");
+        boolean full_screen = sharedPreferences.getBoolean("full_screen", false);
+        auto_play = sharedPreferences.getBoolean("auto_play", false);
+        
+        if(isVip.equals("0")) {
+            initPlayerForDontVip();
+        }
 
         if (filmMainHome != null) {
             setUpView();
             initViewForTouchExoplayer();
         }
+
+        if(full_screen) {
+            setUpShowFilmFullScreen();
+        }
+
         binding.exoplayerView.findViewById(R.id.iv_back).setOnClickListener(v -> onBackPressed());
 
         DisplayMetrics displayMetrics = new DisplayMetrics();
@@ -201,7 +219,7 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
                         baseY = event.getY();
                         break;
                     case MotionEvent.ACTION_MOVE:
-                        if(checkFullScreen){
+                        if (checkFullScreen) {
                             setSwipeWhenFullScreen(event);
                         }
                         break;
@@ -217,7 +235,7 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
         });
     }
 
-    private void setSwipeWhenFullScreen(MotionEvent event){
+    private void setSwipeWhenFullScreen(MotionEvent event) {
         long diffX = (long) Math.ceil(event.getX() - baseX);
         long diffY = (long) Math.ceil(event.getY() - baseY);
 
@@ -306,7 +324,7 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
         LayoutInflater inflater = getLayoutInflater();
         View view = inflater.inflate(R.layout.lout_custom_toast, findViewById(R.id.lout_toast));
         toast.setView(view);
-        toast.setGravity(Gravity.LEFT|Gravity.TOP, 30, 350);
+        toast.setGravity(Gravity.LEFT | Gravity.TOP, 30, 350);
         toast.setDuration(Toast.LENGTH_SHORT);
         TextView tvToast = view.findViewById(R.id.tv_toast);
 
@@ -400,7 +418,7 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
         binding.exoplayerView.findViewById(R.id.iv_episode_next).setVisibility(View.GONE);
         ivUnlockScreen.setVisibility(View.GONE);
         TextView tv_speed = binding.exoplayerView.findViewById(R.id.tv_speed_play_vertical);
-        if(tv_speed.getText().length() == 0) {
+        if (tv_speed.getText().length() == 0) {
             binding.exoplayerView.findViewById(R.id.iv_speed_play_vertical).setVisibility(View.VISIBLE);
         } else {
             tv_speed.setVisibility(View.VISIBLE);
@@ -458,6 +476,36 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
         PlayerView mPlayerView = binding.exoplayerView;
         mPlayerView.setPlayer(player);
         player.addListener(this);
+        if(!auto_play)
+            player.setPlayWhenReady(false);
+    }
+
+    @Override
+    public void onPositionDiscontinuity(@NonNull Player.PositionInfo oldPosition, @NonNull Player.PositionInfo newPosition, int reason) {
+        Player.Listener.super.onPositionDiscontinuity(oldPosition, newPosition, reason);
+        if (isVip.equals("0")) {
+            if (reason == Player.DISCONTINUITY_REASON_SEEK && player.getCurrentPosition() >= 300 * 1000) {
+                setUpWhenVip();
+            }
+        }
+    }
+
+    private void initPlayerForDontVip() {
+        new Handler().postDelayed(() -> {
+            if (player.getCurrentPosition() >= 300 * 1000) {
+                setUpWhenVip();
+            }
+            setUpWhenVip();
+        }, 400 * 1000);
+    }
+
+    private void setUpWhenVip() {
+        player.setPlayWhenReady(false);
+        DefaultTimeBar exoProgress = binding.exoplayerView.findViewById(R.id.exo_progress);
+        ImageView exopPlay = binding.exoplayerView.findViewById(R.id.exo_play);
+        exoProgress.setEnabled(false);
+        exopPlay.setEnabled(false);
+        openDialogWatchFilmAtTime("Bạn hãy đăng kí Vip để xem tiếp phim", 0, 2);
     }
 
     private void lockScreen(boolean check_lock_screen) {
@@ -533,7 +581,7 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
             Map<String, Object> historyWatchFilm = new HashMap<>();
             historyWatchFilm.put("idFilm", filmMainHome.getId() + "");
             historyWatchFilm.put("time", player.getCurrentPosition() + "");
-            if(episode > 0)
+            if (episode > 0)
                 historyWatchFilm.put("episode", episode);
             historyWatchFilm.put("duration", player.getDuration());
             if (player.getCurrentPosition() > 30000 && check == 0) {
@@ -556,7 +604,6 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
     @Override
     public void onPictureInPictureModeChanged(boolean isInPictureInPictureMode) {
         super.onPictureInPictureModeChanged(isInPictureInPictureMode);
-        this.isInPictureInPictureMode = isInPictureInPictureMode;
         if (isInPictureInPictureMode) {
             binding.exoplayerView.hideController();
         } else {
@@ -577,9 +624,16 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
                 });
     }
 
+    private String messagePlayAtTime(long time) {
+        int hour = (int) (time / 1000 / 3600);
+        int minute = (int) ((time / 1000 - hour * 3600) / 60);
+        int second = (int) (time / 1000 - hour * 3600 - minute * 60);
+        return "Bạn có muốn xem phim từ " + hour + ":" + minute + ":" + second;
+    }
+
 
     @SuppressLint("SetTextI18n")
-    private void openDialogWatchFilmAtTime(long time) {
+    private void openDialogWatchFilmAtTime(String message, long time, int type) {
         final Dialog dialog = new Dialog(this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.layout_dialog_watch_film_from_time);
@@ -601,23 +655,33 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
         Button btn_yes = dialog.findViewById(R.id.btn_yes);
         Button btn_no = dialog.findViewById(R.id.btn_no);
 
-        int hour = (int) (time / 1000 / 3600);
-        int minute = (int) ((time / 1000 - hour * 3600) / 60);
-        int second = (int) (time / 1000 - hour * 3600 - minute * 60);
-        String atTime = hour + ":" + minute + ":" + second;
-        tv_at_time.setText("Bạn có muốn xem phim từ " + atTime);
+        tv_at_time.setText(message);
+
+        dialog.show();
 
         btn_yes.setOnClickListener(v -> {
-            player.setPlayWhenReady(true);
-            player.seekTo(time);
+            if (type == 1) {
+                player.setPlayWhenReady(true);
+                player.seekTo(time);
+            } else {
+                Intent intent = new Intent(WatchFilmActivity.this, ChoosePaymentActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+            }
             dialog.dismiss();
         });
 
         btn_no.setOnClickListener(v -> {
-            player.setPlayWhenReady(true);
+            if (type == 1) {
+                player.setPlayWhenReady(true);
+            } else {
+                player.setPlayWhenReady(false);
+                DefaultTimeBar exo_progress = binding.exoplayerView.findViewById(R.id.exo_progress);
+                exo_progress.setEnabled(false);
+            }
             dialog.dismiss();
         });
-        dialog.show();
     }
 
     public void historyWatchFilm() {
@@ -629,7 +693,7 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
                     if (Integer.parseInt(idFilm1) == filmMainHome.getId()) {
                         String time = Objects.requireNonNull(doc.get("time")).toString();
                         check = 1;
-                        openDialogWatchFilmAtTime(Long.parseLong(time));
+                        openDialogWatchFilmAtTime(messagePlayAtTime(Long.parseLong(time)), Long.parseLong(time), 1);
                         player.setPlayWhenReady(false);
                     }
                 }
@@ -668,16 +732,29 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
     @Override
     protected void onRestart() {
         super.onRestart();
-        player.setPlayWhenReady(true);
-        player.getPlaybackState();
+        setUpPlayer();
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        if (isInPictureInPictureMode) {
+        if(player != null) {
             player.release();
-            finish();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        releasePlayer();
+        timer.cancel();
+    }
+
+    // Giải phóng ExoPlayer
+    private void releasePlayer() {
+        if (player != null) {
+            player.release();
+            player = null;
         }
     }
 

@@ -71,6 +71,13 @@ public class ShowMoreCategoryFilmActivity extends AppCompatActivity {
             }
         });
 
+        binding.reloadLout.setOnRefreshListener(() -> {
+            callApiGetByCategoryListMovie(categoryId, 0);
+            new Handler().postDelayed(() -> {
+                binding.reloadLout.setRefreshing(false);
+            }, 3000);
+        });
+
         callApiGetByCategoryListMovie(categoryId, 0);
     }
 

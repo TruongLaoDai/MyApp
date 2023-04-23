@@ -7,25 +7,27 @@
     android:orientation="vertical"
     tools:context=".activity.ShowMoreCategoryFilmActivity">
 
-    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        android:id="@+id/reload_lout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/tool_bar"
-        app:titleTextColor="@color/black"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        app:titleTextColor="@color/black" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:layout_below="@+id/tool_bar"
-        android:id="@+id/rcv_film_category"
-        android:layout_marginStart="10dp"
-        android:layout_marginBottom="10dp"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/reload_lout"
+
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:layout_below="@+id/tool_bar">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rcv_film_category"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="10dp"
+            android:layout_marginBottom="10dp" />
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     <ProgressBar
         android:id="@+id/load_home_page"
@@ -35,8 +37,8 @@
 
     <ProgressBar
         android:id="@+id/load_more"
-        android:layout_alignParentBottom="true"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true" />
 
 </RelativeLayout>

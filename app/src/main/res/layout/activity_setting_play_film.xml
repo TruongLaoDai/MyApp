@@ -32,6 +32,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/title_auto_play"
         android:layout_marginEnd="5dp"
         app:layout_constraintEnd_toEndOf="parent"
+        android:checked="true"
         android:thumb="@drawable/custom_thumb_switch_button"
         app:track="@drawable/custom_track_switch_button"
         android:layout_width="wrap_content"
@@ -56,7 +57,7 @@
         android:layout_height="wrap_content"/>
 
     <androidx.appcompat.widget.SwitchCompat
-        android:id="@+id/iv_change_name"
+        android:id="@+id/sw_setting_play_full_screen"
         app:layout_constraintTop_toTopOf="@+id/title_auto_full_screen"
         app:layout_constraintBottom_toBottomOf="@+id/title_auto_full_screen"
         android:layout_marginEnd="5dp"
