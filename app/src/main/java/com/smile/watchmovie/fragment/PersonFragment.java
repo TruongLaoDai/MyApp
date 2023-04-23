@@ -192,7 +192,7 @@ public class PersonFragment extends Fragment {
     }
 
     private void callApiGetHistoryWatchFilm(int idFilm) {
-        ApiService.apiService.getFilmDetail(getString(R.string.wsToken), idFilm).enqueue(new Callback<FilmDetailResponse>() {
+        ApiService.apiService.getFilmDetail("7da353b8a3246f851e0ee436d898a26d", idFilm).enqueue(new Callback<FilmDetailResponse>() {
             @SuppressLint({"StringFormatMatches", "NotifyDataSetChanged"})
             @Override
             public void onResponse(@NonNull Call<FilmDetailResponse> call, @NonNull Response<FilmDetailResponse> response) {

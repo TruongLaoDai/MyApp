@@ -6,7 +6,6 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 
 import com.smile.watchmovie.fragment.HomeFragment;
-import com.smile.watchmovie.fragment.MovieFragment;
 import com.smile.watchmovie.fragment.PersonFragment;
 import com.smile.watchmovie.fragment.SearchFragment;
 

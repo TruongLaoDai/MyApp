@@ -68,7 +68,7 @@ public class FilmFavoriteAdapter extends RecyclerView.Adapter<FilmFavoriteAdapte
         holder.binding.tvStar.setText(context.getString(R.string.film_start, filmMainHome.getStar()));
         holder.binding.tvNameFilm.setText(filmMainHome.getName());
         holder.binding.layoutFilm.setOnClickListener(view -> {
-            ApiService.apiService.getFilmDetail(context.getString(R.string.wsToken), filmMainHome.getId()).enqueue(new Callback<FilmDetailResponse>() {
+            ApiService.apiService.getFilmDetail("7da353b8a3246f851e0ee436d898a26d", filmMainHome.getId()).enqueue(new Callback<FilmDetailResponse>() {
                 @SuppressLint("StringFormatMatches")
                 @Override
                 public void onResponse(@NonNull Call<FilmDetailResponse> call, @NonNull Response<FilmDetailResponse> response) {

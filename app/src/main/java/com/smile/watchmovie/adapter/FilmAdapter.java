@@ -61,7 +61,7 @@ public class FilmAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
             ((FilmViewHolder) holder).itemFilmBinding.tvNameFilm.setText(filmMainHome.getName());
             ((FilmViewHolder) holder).itemFilmBinding.layoutFilm.setOnClickListener(view -> {
-                ApiService.apiService.getFilmDetail(context.getString(R.string.wsToken), filmMainHome.getId()).enqueue(new Callback<FilmDetailResponse>() {
+                ApiService.apiService.getFilmDetail("7da353b8a3246f851e0ee436d898a26d", filmMainHome.getId()).enqueue(new Callback<FilmDetailResponse>() {
                     @SuppressLint("StringFormatMatches")
                     @Override
                     public void onResponse(@NonNull Call<FilmDetailResponse> call, @NonNull Response<FilmDetailResponse> response) {

@@ -1,17 +1,12 @@
 package com.smile.watchmovie.api;
 
-import com.smile.watchmovie.model.AppMedia;
-import com.smile.watchmovie.model.AppMediaDetail;
-import com.smile.watchmovie.model.ChannelDetail;
 import com.smile.watchmovie.model.FilmArrayResponse;
 import com.smile.watchmovie.model.FilmDetailResponse;
-import com.smile.watchmovie.model.PushNotiWeather;
 import com.smile.watchmovie.model.WeatherResponse;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
-import retrofit2.http.Path;
 import retrofit2.http.POST;
 import retrofit2.http.Query;
 
@@ -52,8 +47,4 @@ public interface ApiService {
     Call<WeatherResponse> getWeather(@Query("q") String cityName,
                                      @Query("units") String units,
                                      @Query("appid") String appid);
-
-    @POST("fcm/send")
-    Call<PushNotiWeather> postNotiWeather(@Header("Authorization") String authorization
-                                          );
 }

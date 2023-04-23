@@ -6,8 +6,6 @@ import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AnimationUtils;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -15,15 +13,12 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.smile.watchmovie.R;
 import com.smile.watchmovie.activity.MainActivity;
 import com.smile.watchmovie.adapter.FilmSearchAdapter;
 import com.smile.watchmovie.custom.PaginationScrollListener;
-import com.smile.watchmovie.adapter.FilmAdapter;
 import com.smile.watchmovie.api.ApiService;
 import com.smile.watchmovie.databinding.FragmentSearchBinding;
 import com.smile.watchmovie.model.FilmArrayResponse;
@@ -135,7 +130,7 @@ public class SearchFragment extends Fragment {
     }
 
     private void callApiSearchFilm(String key, int page) {
-        ApiService.apiService.searchFilms(getString(R.string.wsToken), key, page, 10).enqueue(new Callback<FilmArrayResponse>() {
+        ApiService.apiService.searchFilms("7da353b8a3246f851e0ee436d898a26d", key, page, 10).enqueue(new Callback<FilmArrayResponse>() {
             @SuppressLint({"NotifyDataSetChanged", "SetTextI18n"})
             @Override
             public void onResponse(@NonNull Call<FilmArrayResponse> call, @NonNull Response<FilmArrayResponse> response) {

@@ -76,7 +76,7 @@ public class HistoryWatchFilmAdapter extends RecyclerView.Adapter<HistoryWatchFi
         holder.binding.tvNameFilm.setText(filmMainHome.getName());
         holder.binding.layoutFilm.setOnClickListener(view ->
                 ApiService.apiService
-                        .getFilmDetail(context.getString(R.string.wsToken), filmMainHome.getId())
+                        .getFilmDetail("7da353b8a3246f851e0ee436d898a26d", filmMainHome.getId())
                         .enqueue(new Callback<FilmDetailResponse>() {
                             @SuppressLint("StringFormatMatches")
                             @Override
