@@ -4,7 +4,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -24,22 +23,21 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.smile.watchmovie.R;
-import com.smile.watchmovie.api.ApiService;
 import com.smile.watchmovie.databinding.ActivityLoginBinding;
 import com.smile.watchmovie.model.User;
-import com.smile.watchmovie.model.UserResponse;
-import com.smile.watchmovie.model.UserResponseLogin;
 
 import org.json.JSONException;
 
 import java.util.Collections;
-import java.util.Objects;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -49,6 +47,7 @@ public class LoginActivity extends AppCompatActivity {
     CallbackManager callBackManager;
     private String username, password, full_name, picture;
     private SharedPreferences.Editor editor;
+    private CollectionReference collectionReference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +63,9 @@ public class LoginActivity extends AppCompatActivity {
 
         SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
         editor = sharedPreferences.edit();
+
+        FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
+        collectionReference = firebaseFirestore.collection("WatchFilm");
 
         gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build();
         gsc = GoogleSignIn.getClient(this, gso);
@@ -120,60 +122,86 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void callApiRegisterUser(String type) {
-        ApiService.apiUser.registerUser(username, password, full_name).enqueue(new Callback<UserResponse>() {
-            @SuppressLint("NotifyDataSetChanged")
-            @Override
-            public void onResponse(@NonNull Call<UserResponse> call, @NonNull Response<UserResponse> response) {
-                UserResponse userResponse = response.body();
-                if (binding.loadingLogin.getVisibility() == View.VISIBLE) {
-                    binding.loadingLogin.setVisibility(View.INVISIBLE);
-                }
-                if (binding.loadingLogin.getVisibility() == View.VISIBLE) {
-                    binding.loadingLogin.setVisibility(View.INVISIBLE);
-                }
-                if (userResponse != null) {
-                    if (userResponse.getMessage().equals("Success")) {
-                        navigateToMainActivity(type);
-                        saveToSharedPreferences(userResponse.getId() + "", "0", full_name, picture);
-                        Toast.makeText(LoginActivity.this, "Login success1", Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(LoginActivity.this, "Error Register1", Toast.LENGTH_LONG).show();
-                    }
-                } else {
-                    Toast.makeText(LoginActivity.this, "Error Register2", Toast.LENGTH_LONG).show();
-                }
-            }
+        User user = new User(password, full_name, "", "", "", "0");
+        collectionReference.document("tbluser").collection("user"+password).add(user);
+//        ApiService.apiUser.registerUser(username, password, full_name).enqueue(new Callback<UserResponse>() {
+//            @SuppressLint("NotifyDataSetChanged")
+//            @Override
+//            public void onResponse(@NonNull Call<UserResponse> call, @NonNull Response<UserResponse> response) {
+//                UserResponse userResponse = response.body();
+//                if (binding.loadingLogin.getVisibility() == View.VISIBLE) {
+//                    binding.loadingLogin.setVisibility(View.INVISIBLE);
+//                }
+//                if (binding.loadingLogin.getVisibility() == View.VISIBLE) {
+//                    binding.loadingLogin.setVisibility(View.INVISIBLE);
+//                }
+//                if (userResponse != null) {
+//                    if (userResponse.getMessage().equals("Success")) {
+//                        navigateToMainActivity(type);
+//                        saveToSharedPreferences(userResponse.getId() + "", "0", full_name, picture);
+//                        Toast.makeText(LoginActivity.this, "Login success1", Toast.LENGTH_SHORT).show();
+//                    } else {
+//                        Toast.makeText(LoginActivity.this, "Error Register1", Toast.LENGTH_LONG).show();
+//                    }
+//                } else {
+//                    Toast.makeText(LoginActivity.this, "Error Register2", Toast.LENGTH_LONG).show();
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(@NonNull Call<UserResponse> call, @NonNull Throwable t) {
+//                binding.loadingLogin.setVisibility(View.INVISIBLE);
+//                Toast.makeText(LoginActivity.this, "Error Register3", Toast.LENGTH_SHORT).show();
+//            }
+//        });
 
-            @Override
-            public void onFailure(@NonNull Call<UserResponse> call, @NonNull Throwable t) {
-                binding.loadingLogin.setVisibility(View.INVISIBLE);
-                Toast.makeText(LoginActivity.this, "Error Register3", Toast.LENGTH_SHORT).show();
-            }
-        });
     }
 
     public void callApiLoginUser(String type) {
-        ApiService.apiUser.loginUser(username, password).enqueue(new Callback<UserResponseLogin>() {
-            @SuppressLint("NotifyDataSetChanged")
-            @Override
-            public void onResponse(@NonNull Call<UserResponseLogin> call, @NonNull Response<UserResponseLogin> response) {
-                UserResponseLogin userResponse = response.body();
-                binding.loadingLogin.setVisibility(View.INVISIBLE);
-                if (userResponse != null) {
-                    User user = userResponse.getData();
-                    saveToSharedPreferences(user.getId_user(), user.isIs_vip(), user.getFull_name() == null ? full_name: user.getFull_name(), picture);
-                    navigateToMainActivity(type);
-                } else {
-                    callApiRegisterUser(type);
-                }
-            }
+//        collectionReference.document("tbluser").collection("user"+password).whereEqualTo("id", password)
+//                .get()
+//                .addOnSuccessListener(queryDocumentSnapshots -> {
+//                    binding.loadingLogin.setVisibility(View.GONE);
+//                    if(queryDocumentSnapshots.getDocuments().size() > 0) {
+//                        DocumentSnapshot doc = queryDocumentSnapshots.getDocuments().get(0);
+//                        User user = doc.toObject(User.class);
+//                        assert user != null;
+//                        Toast.makeText(LoginActivity.this, user.getId(), Toast.LENGTH_SHORT).show();
+//                    } else {
+//                        callApiRegisterUser(type);
+//                    }
+//                })
+//                .addOnFailureListener(e -> {
+//                    binding.loadingLogin.setVisibility(View.GONE);
+//                    Toast.makeText(this, "Login fail", Toast.LENGTH_SHORT).show();
+//                });
+        collectionReference.document("tbluser").collection("user"+password).document("MkP5RATJ3Zcb8Cs5L8ZL").update("address", "Thai Binh");
+//        ApiService.apiUser.loginUser(username, password).enqueue(new Callback<UserResponseLogin>() {
+//            @SuppressLint("NotifyDataSetChanged")
+//            @Override
+//            public void onResponse(@NonNull Call<UserResponseLogin> call, @NonNull Response<UserResponseLogin> response) {
+//                UserResponseLogin userResponse = response.body();
+//                binding.loadingLogin.setVisibility(View.INVISIBLE);
+//                if (userResponse != null) {
+//                    User user = userResponse.getData();
+//                    saveToSharedPreferences(user.getId_user(), user.isIs_vip(), user.getFull_name() == null ? full_name: user.getFull_name(), picture);
+//                    navigateToMainActivity(type);
+//                } else {
+//                    callApiRegisterUser(type);
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(@NonNull Call<UserResponseLogin> call, @NonNull Throwable t) {
+//                binding.loadingLogin.setVisibility(View.INVISIBLE);
+//                Toast.makeText(LoginActivity.this, "Error Login", Toast.LENGTH_SHORT).show();
+//            }
+//        });
 
-            @Override
-            public void onFailure(@NonNull Call<UserResponseLogin> call, @NonNull Throwable t) {
-                binding.loadingLogin.setVisibility(View.INVISIBLE);
-                Toast.makeText(LoginActivity.this, "Error Login", Toast.LENGTH_SHORT).show();
-            }
-        });
+    }
+
+    public void historyWatchFilm() {
+
     }
 
     private void saveToSharedPreferences(String idUser, String isVip, String name, String picture) {

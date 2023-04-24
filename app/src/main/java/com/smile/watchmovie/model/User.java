@@ -22,12 +22,24 @@ public class User {
     @SerializedName("is_vip")
     private String is_vip;
 
-    public String getId_user() {
+    public User() {
+    }
+
+    public User(String id, String full_name, String address, String phone, String gender, String is_vip) {
+        this.id = id;
+        this.full_name = full_name;
+        this.address = address;
+        this.phone = phone;
+        this.gender = gender;
+        this.is_vip = is_vip;
+    }
+
+    public String getId() {
         return id;
     }
 
-    public void setId_user(String id_user) {
-        this.id = id_user;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getUsername() {
@@ -97,7 +109,7 @@ public class User {
     @Override
     public String toString() {
         return "User{" +
-                "id_user='" + id + '\'' +
+                "id='" + id + '\'' +
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
                 ", full_name='" + full_name + '\'' +
