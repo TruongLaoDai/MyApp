@@ -1,10 +1,12 @@
 package com.smile.watchmovie.model;
 
+import com.google.firebase.firestore.Exclude;
 import com.google.gson.annotations.SerializedName;
 
 public class User {
     @SerializedName("id")
     private String id;
+    private String documentId;
     @SerializedName("username")
     private String username;
     @SerializedName("password")
@@ -33,13 +35,20 @@ public class User {
         this.gender = gender;
         this.is_vip = is_vip;
     }
-
     public String getId() {
         return id;
     }
 
     public void setId(String id) {
         this.id = id;
+    }
+    @Exclude
+    public String getDocumentId() {
+        return documentId;
+    }
+
+    public void setDocumentId(String documentId) {
+        this.documentId = documentId;
     }
 
     public String getUsername() {

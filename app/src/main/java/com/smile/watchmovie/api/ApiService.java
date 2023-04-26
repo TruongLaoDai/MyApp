@@ -2,7 +2,6 @@ package com.smile.watchmovie.api;
 
 import com.smile.watchmovie.model.FilmArrayResponse;
 import com.smile.watchmovie.model.FilmDetailResponse;
-import com.smile.watchmovie.model.HistoryUpVip;
 import com.smile.watchmovie.model.HistoryUpVipResponse;
 import com.smile.watchmovie.model.MediaReactionResponse;
 import com.smile.watchmovie.model.User;

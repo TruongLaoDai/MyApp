@@ -24,6 +24,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.smile.watchmovie.R;
 import com.smile.watchmovie.api.ApiService;
 import com.smile.watchmovie.databinding.ActivityChoosePaymentBinding;
@@ -49,6 +51,7 @@ public class ChoosePaymentActivity extends AppCompatActivity {
     private String payId;
     private String price, type_vip;
     private SharedPreferences.Editor editor;
+    private CollectionReference collectionReference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,10 +73,7 @@ public class ChoosePaymentActivity extends AppCompatActivity {
         String nameUser = sharedPreferences.getString("name", "");
         String is_vip = sharedPreferences.getString("isVip", "");
 
-        Glide.with(this).load(picture)
-                .error(R.drawable.ic_account_default)
-                .placeholder(R.drawable.ic_account_default)
-                .into(binding.ivAccount);
+        setUpFireBase();
 
         binding.tvNameAccount.setText(nameUser);
 
@@ -132,6 +132,11 @@ public class ChoosePaymentActivity extends AppCompatActivity {
                     }
                 }
         );
+    }
+
+    private void setUpFireBase() {
+        FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
+        collectionReference = firebaseFirestore.collection("WatchFilm");
     }
 
     private void payForUpVip() {
