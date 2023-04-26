@@ -23,6 +23,7 @@ public class PrivateSettingActivity extends AppCompatActivity {
 
         binding = ActivityPrivateSettingBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        setupToolBar();
 
         binding.settingPlayFilm.setOnClickListener(v -> {
             Intent intent = new Intent(PrivateSettingActivity.this, SettingPlayFilmActivity.class);
@@ -39,5 +40,11 @@ public class PrivateSettingActivity extends AppCompatActivity {
             Intent intent = new Intent(PrivateSettingActivity.this, InfoAccountActivity.class);
             startActivity(intent);
         });
+    }
+
+    private void setupToolBar() {
+        binding.toolBar.setTitle("Cài đặt cá nhân");
+        binding.toolBar.setNavigationIcon(R.drawable.ic_arrow_back_white);
+        binding.toolBar.setNavigationOnClickListener(v -> finish());
     }
 }

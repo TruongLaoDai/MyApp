@@ -9,6 +9,13 @@ public class HistoryUpVip {
     private String is_vip;
     @SerializedName("exp_vip")
     private String dateRegister;
+
+
+    public HistoryUpVip(String is_vip, String dateRegister) {
+        this.is_vip = is_vip;
+        this.dateRegister = dateRegister;
+    }
+
     public int getId() {
         return id;
     }

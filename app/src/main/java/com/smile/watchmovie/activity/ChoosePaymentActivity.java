@@ -24,16 +24,25 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.smile.watchmovie.R;
 import com.smile.watchmovie.api.ApiService;
 import com.smile.watchmovie.databinding.ActivityChoosePaymentBinding;
 import com.smile.watchmovie.model.CreateOrder;
+import com.smile.watchmovie.model.HistoryUpVip;
 import com.smile.watchmovie.model.Refund;
 import com.smile.watchmovie.model.UserResponse;
 
 import org.json.JSONObject;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -47,7 +56,7 @@ public class ChoosePaymentActivity extends AppCompatActivity {
 
     private ActivityChoosePaymentBinding binding;
     private String token;
-    private String idUser;
+    private String idUser, documentId;
     private String payId;
     private String price, type_vip;
     private SharedPreferences.Editor editor;
@@ -62,6 +71,7 @@ public class ChoosePaymentActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         price = "47000";
+        type_vip = "1";
 
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
@@ -69,9 +79,9 @@ public class ChoosePaymentActivity extends AppCompatActivity {
         editor = sharedPreferences.edit();
 
         idUser = sharedPreferences.getString("idUser", "");
-        String picture = sharedPreferences.getString("picture", "");
         String nameUser = sharedPreferences.getString("name", "");
         String is_vip = sharedPreferences.getString("isVip", "");
+        documentId = sharedPreferences.getString("documentId", "");
 
         setUpFireBase();
 
@@ -108,8 +118,6 @@ public class ChoosePaymentActivity extends AppCompatActivity {
         binding.ivHistoryPay.setEnabled(!idUser.equals(""));
 
         binding.ivHistoryPay.setOnClickListener(v -> startActivity(new Intent(ChoosePaymentActivity.this, HistoryBuyPremiumActivity.class)));
-
-        editor.putString("is_vip", "1");
 
         binding.btnBuy.setOnClickListener(v ->
                 {
@@ -209,34 +217,32 @@ public class ChoosePaymentActivity extends AppCompatActivity {
     }
 
     private void callApiUpdateUserToVip(String id_user, String is_vip) {
-        ApiService.apiUser.updateUserToVip(Integer.parseInt(id_user), is_vip).enqueue(new Callback<UserResponse>() {
-            @SuppressLint("StringFormatMatches")
-            @Override
-            public void onResponse(@NonNull Call<UserResponse> call, @NonNull Response<UserResponse> response) {
-                UserResponse userResponse = response.body();
-                if (userResponse != null) {
-                    if (userResponse.getMessage().equals("Success")) {
-                        editor.putString("isVip", type_vip);
-                        editor.apply();
-                        new AlertDialog.Builder(ChoosePaymentActivity.this)
-                                .setTitle("Thanh toán thành công")
-                                .setMessage("Bây giờ bạn có thể trải nghiệm tất cả phim miễn phí!")
-                                .setPositiveButton("OK", (dialog, which) -> {
-                                }).show();
-                    } else {
-                        refundWhenUpdateVipError(price, payId);
-                    }
-                } else {
+        collectionReference.document("tbluser").collection("user" + id_user).document(documentId)
+                .update("is_vip", is_vip)
+                .addOnCompleteListener(task -> {
+                    Date date = new Date();
+                    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+                    HistoryUpVip historyUpVip = new HistoryUpVip(is_vip, format.format(date));
+                    collectionReference.document("tblhistoryupvip").collection("user" + id_user)
+                            .add(historyUpVip)
+                            .addOnCompleteListener(task1 -> {
+                                editor.putString("isVip", type_vip);
+                                editor.apply();
+                                new AlertDialog.Builder(ChoosePaymentActivity.this)
+                                        .setTitle("Thanh toán thành công")
+                                        .setMessage("Bây giờ bạn có thể trải nghiệm tất cả phim miễn phí!")
+                                        .setPositiveButton("OK", (dialog, which) -> {
+                                        }).show();
+                            })
+                            .addOnFailureListener(e -> {
+                                refundWhenUpdateVipError(price, payId);
+                                Toast.makeText(ChoosePaymentActivity.this, "Error update", Toast.LENGTH_SHORT).show();
+                            });
+                })
+                .addOnFailureListener(e -> {
                     refundWhenUpdateVipError(price, payId);
-                }
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<UserResponse> call, @NonNull Throwable t) {
-                refundWhenUpdateVipError(price, payId);
-                Toast.makeText(ChoosePaymentActivity.this, "Error update", Toast.LENGTH_SHORT).show();
-            }
-        });
+                    Toast.makeText(ChoosePaymentActivity.this, "Error update", Toast.LENGTH_SHORT).show();
+                });
     }
 
     public void createOrder(String price) {

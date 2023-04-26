@@ -38,4 +38,10 @@ public class SettingPlayFilmActivity extends AppCompatActivity {
             editor.apply();
         });
     }
+
+    private void setupToolBar() {
+        binding.toolBar.setTitle("Cài đặt phát chiếu");
+        binding.toolBar.setNavigationIcon(R.drawable.ic_arrow_back_white);
+        binding.toolBar.setNavigationOnClickListener(v -> finish());
+    }
 }

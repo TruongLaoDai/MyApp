@@ -4,13 +4,14 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.smile.watchmovie.R;
 import com.smile.watchmovie.api.ApiService;
@@ -19,7 +20,6 @@ import com.smile.watchmovie.model.FilmDetailResponse;
 import com.smile.watchmovie.model.FilmMainHome;
 
 import java.util.List;
-import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -41,8 +41,12 @@ public class HistoryWatchFilmActivity extends AppCompatActivity {
 
         binding = ActivityHistoryWatchFilmBinding.inflate(getLayoutInflater());
 
+        SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+
+        idUser = sharedPreferences.getString("idUser", "");
+
         FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
-        collectionReferenceHistory = firebaseFirestore.collection("history_watch_film_" + idUser);
+        collectionReferenceHistory = firebaseFirestore.collection("watchfilm");
 
         binding.ivBack.setOnClickListener(v -> finish());
         setContentView(binding.getRoot());
@@ -50,16 +54,11 @@ public class HistoryWatchFilmActivity extends AppCompatActivity {
     }
 
     public void getHistoryWatchFilm() {
-        collectionReferenceHistory.get().addOnCompleteListener(task -> {
+        collectionReferenceHistory.document("tblhistorywatchfilm").collection("user" + idUser).get()
+                .addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
-                int check = 0;
                 QuerySnapshot snapshot = task.getResult();
-                for (QueryDocumentSnapshot doc : snapshot) {
-                    String idFilm1 = Objects.requireNonNull(doc.get("idFilm")).toString();
-                    String time = Objects.requireNonNull(doc.get("time")).toString();
-                    callApiGetHistoryWatchFilm(Integer.parseInt(idFilm1));
-                    check = 1;
-                }
+
                 binding.progressLoadHistoryHome.setVisibility(View.INVISIBLE);
             }
         });
