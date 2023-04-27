@@ -1,36 +1,52 @@
 package com.smile.watchmovie.model;
 
+import com.google.firebase.firestore.Exclude;
 import com.google.gson.annotations.SerializedName;
 
 public class MediaReaction {
-    @SerializedName("amountLike")
-    private long amountLike;
-    @SerializedName("amountDislike")
-    private long amountDislike;
-    @SerializedName("reactionUser")
-    private int reactionUser;
+    private String documentId;
+    private String idUser;
+    private String dateReact;
+    private int type_reaction;
 
-    public long getAmountLike() {
-        return amountLike;
+    public MediaReaction() {
     }
 
-    public void setAmountLike(long amountLike) {
-        this.amountLike = amountLike;
+    public MediaReaction(String idUser, String dateReact, int type_reaction) {
+        this.idUser = idUser;
+        this.dateReact = dateReact;
+        this.type_reaction = type_reaction;
+    }
+    @Exclude
+    public String getDocumentId() {
+        return documentId;
     }
 
-    public long getAmountDislike() {
-        return amountDislike;
+    public void setDocumentId(String documentId) {
+        this.documentId = documentId;
     }
 
-    public void setAmountDislike(long amountDislike) {
-        this.amountDislike = amountDislike;
+    public String getIdUser() {
+        return idUser;
     }
 
-    public int getReactionUser() {
-        return reactionUser;
+    public void setIdUser(String idUser) {
+        this.idUser = idUser;
     }
 
-    public void setReactionUser(int reactionUser) {
-        this.reactionUser = reactionUser;
+    public String getDateReact() {
+        return dateReact;
+    }
+
+    public void setDateReact(String dateReact) {
+        this.dateReact = dateReact;
+    }
+
+    public int getType_reaction() {
+        return type_reaction;
+    }
+
+    public void setType_reaction(int type_reaction) {
+        this.type_reaction = type_reaction;
     }
 }

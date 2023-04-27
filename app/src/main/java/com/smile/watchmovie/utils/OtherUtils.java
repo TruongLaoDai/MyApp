@@ -26,7 +26,7 @@ public class OtherUtils {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             LocalDate today = LocalDate.now();
             LocalDate dateUpVIp = LocalDate.of(Integer.parseInt(data[0]), Integer.parseInt(data[1]), Integer.parseInt(data[2]));
-            long daysBetween = ChronoUnit.DAYS.between(today, dateUpVIp);
+            long daysBetween = ChronoUnit.DAYS.between(dateUpVIp, today);
             if (type_vip.equals("1")) {
                 if(daysBetween > 30) {
                     return "Hết hạn";

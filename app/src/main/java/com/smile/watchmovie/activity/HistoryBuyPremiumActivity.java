@@ -54,7 +54,7 @@ public class HistoryBuyPremiumActivity extends AppCompatActivity {
         idUser = sharedPreferences.getString("idUser", "");
 
         FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
-        collectionReference = firebaseFirestore.collection("watchfilm");
+        collectionReference = firebaseFirestore.collection("WatchFilm");
 
         binding.ivBack.setOnClickListener(v -> finish());
 
@@ -62,7 +62,7 @@ public class HistoryBuyPremiumActivity extends AppCompatActivity {
     }
 
     private void callApiGetListHistoryUpVip() {
-        collectionReference.document("tblhistorywatchfilm").collection("user" + idUser).get()
+        collectionReference.document("tblhistoryupvip").collection("user" + idUser).get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         QuerySnapshot snapshot = task.getResult();
@@ -72,8 +72,8 @@ public class HistoryBuyPremiumActivity extends AppCompatActivity {
                                 binding.ivEmpty.setVisibility(View.GONE);
                                 HistoryUpVip historyUpVip = doc.toObject(HistoryUpVip.class);
                                 historyUpVipList.add(historyUpVip);
-                                historyUpVipAdapter.notifyDataSetChanged();
                             }
+                            historyUpVipAdapter.notifyDataSetChanged();
                         } else {
                             binding.loadHistoryPayment.setVisibility(View.VISIBLE);
                             binding.ivEmpty.setVisibility(View.VISIBLE);

@@ -118,7 +118,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void callApiRegisterUser(String type) {
-        User user = new User(password, full_name, "", "", "", "0");
+        User user = new User(password, username, full_name, "", "", "", "0");
         collectionReference.document("tbluser").collection("user"+password)
                 .add(user)
                 .addOnCompleteListener(task -> {

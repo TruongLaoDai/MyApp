@@ -64,12 +64,18 @@ import com.smile.watchmovie.adapter.WatchFilmViewPagerAdapter;
 import com.smile.watchmovie.databinding.ActivityWatchFilmBinding;
 import com.smile.watchmovie.listener.OnSwipeTouchListener;
 import com.smile.watchmovie.model.FilmMainHome;
+import com.smile.watchmovie.model.HistoryWatchFilm;
 import com.smile.watchmovie.model.SubFilm;
+import com.smile.watchmovie.model.User;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Timer;
@@ -103,6 +109,7 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
     private Timer timer;
     private String isVip;
     private boolean auto_play;
+    private HistoryWatchFilm historyWatchFilm;
 
     @SuppressLint("SetTextI18n")
     @Override
@@ -121,9 +128,9 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
         isVip = sharedPreferences.getString("isVip", "0");
         boolean full_screen = sharedPreferences.getBoolean("full_screen", false);
         auto_play = sharedPreferences.getBoolean("auto_play", false);
-        
-        if(isVip.equals("0")) {
-            initPlayerForDontVip();
+
+        if (isVip.equals("0") && filmMainHome.getId() % 2 == 0) {
+            setUpWhenVip();
         }
 
         if (filmMainHome != null) {
@@ -131,7 +138,7 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
             initViewForTouchExoplayer();
         }
 
-        if(full_screen) {
+        if (full_screen) {
             setUpShowFilmFullScreen();
         }
 
@@ -156,7 +163,7 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
 
         if (!idUser.equals("")) {
             FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
-            collectionReference = firebaseFirestore.collection("history_watch_film_" + idUser);
+            collectionReference = firebaseFirestore.collection("WatchFilm");
             historyWatchFilm();
         }
 
@@ -476,27 +483,8 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
         PlayerView mPlayerView = binding.exoplayerView;
         mPlayerView.setPlayer(player);
         player.addListener(this);
-        if(!auto_play)
+        if (!auto_play)
             player.setPlayWhenReady(false);
-    }
-
-    @Override
-    public void onPositionDiscontinuity(@NonNull Player.PositionInfo oldPosition, @NonNull Player.PositionInfo newPosition, int reason) {
-        Player.Listener.super.onPositionDiscontinuity(oldPosition, newPosition, reason);
-        if (isVip.equals("0")) {
-            if (reason == Player.DISCONTINUITY_REASON_SEEK && player.getCurrentPosition() >= 300 * 1000) {
-                setUpWhenVip();
-            }
-        }
-    }
-
-    private void initPlayerForDontVip() {
-        new Handler().postDelayed(() -> {
-            if (player.getCurrentPosition() >= 300 * 1000) {
-                setUpWhenVip();
-            }
-            setUpWhenVip();
-        }, 400 * 1000);
     }
 
     private void setUpWhenVip() {
@@ -577,17 +565,15 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
     public void onBackPressed() {
         super.onBackPressed();
         if (!idUser.equals("")) {
-            int episode = Integer.parseInt(tvAtEpisode.getText().toString().substring(4, tvAtEpisode.getText().length())) - 1;
-            Map<String, Object> historyWatchFilm = new HashMap<>();
-            historyWatchFilm.put("idFilm", filmMainHome.getId() + "");
-            historyWatchFilm.put("time", player.getCurrentPosition() + "");
-            if (episode > 0)
-                historyWatchFilm.put("episode", episode);
-            historyWatchFilm.put("duration", player.getDuration());
-            if (player.getCurrentPosition() > 30000 && check == 0) {
-                collectionReference.add(historyWatchFilm);
-            } else if (check == 1) {
-                updateDataTimeWatchFilm(historyWatchFilm);
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+            Date date = new Date();
+            HistoryWatchFilm historyWatchFilm = new HistoryWatchFilm(filmMainHome.getId(), player.getCurrentPosition(), format.format(date));
+            if (player.getCurrentPosition() > 30000) {
+                if (check == 0) {
+                    collectionReference.document("tblhistorywatchfilm").collection(idUser).add(historyWatchFilm);
+                } else {
+                    updateDataTimeWatchFilm(historyWatchFilm);
+                }
             }
         }
         if (player.isPlaying()) {
@@ -611,17 +597,11 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
         }
     }
 
-    private void updateDataTimeWatchFilm(Map<String, Object> historyWatchFilm) {
-        collectionReference.whereEqualTo("idFilm", filmMainHome.getId() + "")
-                .get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        DocumentSnapshot documentSnapshot = task.getResult().getDocuments().get(0);
-                        String documentId = documentSnapshot.getId();
-                        collectionReference.document(documentId)
-                                .update(historyWatchFilm);
-                    }
-                });
+    private void updateDataTimeWatchFilm(HistoryWatchFilm historyWatchFilm) {
+        collectionReference.document("tblhistorywatchfilm").collection(idUser)
+                .document(this.historyWatchFilm.getDocumentID())
+                .update("duration", historyWatchFilm.getDuration(),
+                        "dayWatch", historyWatchFilm.getDayWatch());
     }
 
     private String messagePlayAtTime(long time) {
@@ -685,20 +665,36 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
     }
 
     public void historyWatchFilm() {
-        collectionReference.get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                QuerySnapshot snapshot = task.getResult();
-                for (QueryDocumentSnapshot doc : snapshot) {
-                    String idFilm1 = Objects.requireNonNull(doc.get("idFilm")).toString();
-                    if (Integer.parseInt(idFilm1) == filmMainHome.getId()) {
-                        String time = Objects.requireNonNull(doc.get("time")).toString();
-                        check = 1;
-                        openDialogWatchFilmAtTime(messagePlayAtTime(Long.parseLong(time)), Long.parseLong(time), 1);
-                        player.setPlayWhenReady(false);
+        collectionReference.document("tblhistorywatchfilm").collection(idUser).whereEqualTo("id_film", filmMainHome.getId())
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    if (queryDocumentSnapshots.getDocuments().size() > 0) {
+                        DocumentSnapshot doc = queryDocumentSnapshots.getDocuments().get(0);
+                        this.historyWatchFilm = doc.toObject(HistoryWatchFilm.class);
+                        if (historyWatchFilm != null) {
+                            historyWatchFilm.setDocumentID(doc.getId());
+                            Date today = new Date();
+                            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+                            String strToday = format.format(today);
+                            try {
+                                Date todayFormat = format.parse(strToday);
+                                Date dayWatch = format.parse(historyWatchFilm.getDayWatch());
+                                if(todayFormat != null) {
+                                    if (todayFormat.compareTo(dayWatch) == 0) {
+                                        check = 1;
+                                    }
+                                }
+                            } catch (ParseException e) {
+                                throw new RuntimeException(e);
+                            }
+                            openDialogWatchFilmAtTime(messagePlayAtTime(historyWatchFilm.getDuration()), historyWatchFilm.getDuration(), 1);
+                            player.setPlayWhenReady(false);
+                        }
                     }
-                }
-            }
-        });
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(this, "Get history film fail", Toast.LENGTH_SHORT).show();
+                });
     }
 
     @Override
@@ -738,7 +734,7 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
     @Override
     protected void onStop() {
         super.onStop();
-        if(player != null) {
+        if (player != null) {
             player.release();
         }
     }

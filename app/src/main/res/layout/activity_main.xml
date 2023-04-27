@@ -12,6 +12,7 @@
     <LinearLayout
         android:layout_weight="1"
         android:id="@+id/tool_bar_home"
+        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:background="#44B9ED"
@@ -60,14 +61,13 @@
     <com.smile.watchmovie.custom.CustomViewPager
         android:id="@+id/view_pager"
         android:background="@color/white"
-        android:layout_weight="9"
+        android:layout_weight="10"
         android:layout_width="match_parent"
         android:layout_height="0dp" />
 
     <RelativeLayout
         android:id="@+id/splash_layout"
         android:orientation="vertical"
-        android:visibility="gone"
         android:background="@color/white"
         android:layout_width="match_parent"
         android:layout_height="match_parent">

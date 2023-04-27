@@ -27,8 +27,9 @@ public class User {
     public User() {
     }
 
-    public User(String id, String full_name, String address, String phone, String gender, String is_vip) {
+    public User(String id, String username, String full_name, String address, String phone, String gender, String is_vip) {
         this.id = id;
+        this.username = username;
         this.full_name = full_name;
         this.address = address;
         this.phone = phone;
