@@ -1,32 +1,22 @@
 package com.smile.watchmovie.fragment;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.DownloadManager;
-import android.content.Context;
-import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Handler;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.smile.watchmovie.R;
@@ -37,17 +27,15 @@ import com.smile.watchmovie.api.ApiService;
 import com.smile.watchmovie.databinding.FragmentIntroduceFilmBinding;
 import com.smile.watchmovie.model.FilmArrayResponse;
 import com.smile.watchmovie.model.FilmMainHome;
-import com.smile.watchmovie.model.MediaReaction;
+import com.smile.watchmovie.model.FilmReaction;
 import com.smile.watchmovie.model.SubFilm;
 
-import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.UUID;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -61,18 +49,17 @@ public class IntroduceFilmFragment extends Fragment {
     private List<FilmMainHome> mFilmList;
     private FilmMainHome filmMainHome;
     private EpisodeAdapter mEpisodeAdapter;
-    private boolean mIsLoading, checkMediaReacted = false;
+    private boolean mIsLoading;
     private int mCurrentPage = 0;
 
     private DocumentReference documentReferenceFilmFavorite;
     private DocumentReference documentReferenceFilmLike;
     private DocumentReference documentReferenceFilmDislike;
-    private CollectionReference collectionReferenceReaction;
 
     private int changeImageFavoriteFilm, changeImageDislikeFilm, changeImageLikeFilm;
     private int currentLike, currentDislike;
     private int statusLike, statusDislike, statusFavorite;
-    private MediaReaction mediaLike, mediaDislike, mediaFavorite;
+    private FilmReaction mediaLike, mediaDislike, mediaFavorite;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -94,7 +81,6 @@ public class IntroduceFilmFragment extends Fragment {
 
                 binding.loutDislike.setOnClickListener(v -> setUpViewDislikeFilm());
 
-                int changeImageDownloadFilm = R.drawable.ic_download_film;
                 binding.loutDownload.setOnClickListener(v -> Toast.makeText(mWatchFilmActivity, getString(R.string.feature_deploying), Toast.LENGTH_SHORT).show());
             }
 
@@ -148,7 +134,7 @@ public class IntroduceFilmFragment extends Fragment {
     }
 
     private void clickOpenDetailFilm() {
-        MyBottomSheetFragment myBottomSheetFragment = new MyBottomSheetFragment(filmMainHome);
+        DetailFilmBottomSheetFragment myBottomSheetFragment = new DetailFilmBottomSheetFragment(filmMainHome);
         myBottomSheetFragment.show(mWatchFilmActivity.getSupportFragmentManager(), myBottomSheetFragment.getTag());
     }
 
@@ -325,15 +311,14 @@ public class IntroduceFilmFragment extends Fragment {
 
     public void isFilmFavorite() {
         documentReferenceFilmFavorite
-                .collection(filmMainHome.getId() + "")
-                .whereEqualTo("idUser", idUser)
+                .collection(idUser)
+                .whereEqualTo("idFilm", filmMainHome.getId())
                 .get().addOnSuccessListener(queryDocumentSnapshots -> {
                     if (queryDocumentSnapshots.size() > 0) {
-                        this.mediaFavorite = queryDocumentSnapshots.getDocuments().get(0).toObject(MediaReaction.class);
+                        this.mediaFavorite = queryDocumentSnapshots.getDocuments().get(0).toObject(FilmReaction.class);
                         if(mediaFavorite != null) {
                             statusFavorite = 2;
                             this.mediaFavorite.setDocumentId(queryDocumentSnapshots.getDocuments().get(0).getId());
-                            checkMediaReacted = true;
                             if(this.mediaFavorite.getType_reaction() == 1) {
                                 changeImageFavoriteFilm = R.drawable.ic_added_favorite;
                                 binding.ivAddFavorite.setImageResource(changeImageFavoriteFilm);
@@ -363,11 +348,10 @@ public class IntroduceFilmFragment extends Fragment {
                 .whereEqualTo("idUser", idUser)
                 .get().addOnSuccessListener(queryDocumentSnapshots -> {
                     if (queryDocumentSnapshots.size() > 0) {
-                        this.mediaLike = queryDocumentSnapshots.getDocuments().get(0).toObject(MediaReaction.class);
+                        this.mediaLike = queryDocumentSnapshots.getDocuments().get(0).toObject(FilmReaction.class);
                         if(mediaLike != null) {
                             statusLike = 2;
                             this.mediaLike.setDocumentId(queryDocumentSnapshots.getDocuments().get(0).getId());
-                            checkMediaReacted = true;
                             if(this.mediaLike.getType_reaction() == 1) {
                                 changeImageDislikeFilm = R.drawable.ic_dislike;
                                 changeImageLikeFilm = R.drawable.ic_liked_film;
@@ -401,9 +385,7 @@ public class IntroduceFilmFragment extends Fragment {
                         }
                     }
                 })
-                .addOnFailureListener(e -> {
-                    Toast.makeText(mWatchFilmActivity, "Get film like error", Toast.LENGTH_SHORT).show();
-                });
+                .addOnFailureListener(e -> Toast.makeText(mWatchFilmActivity, "Get film like error", Toast.LENGTH_SHORT).show());
     }
 
     public void isFilmDislike() {
@@ -412,11 +394,10 @@ public class IntroduceFilmFragment extends Fragment {
                 .whereEqualTo("idUser", idUser)
                 .get().addOnSuccessListener(queryDocumentSnapshots -> {
                     if (queryDocumentSnapshots.size() > 0) {
-                        this.mediaDislike = queryDocumentSnapshots.getDocuments().get(0).toObject(MediaReaction.class);
+                        this.mediaDislike = queryDocumentSnapshots.getDocuments().get(0).toObject(FilmReaction.class);
                         if(mediaDislike != null) {
                             statusDislike = 2;
                             this.mediaDislike.setDocumentId(queryDocumentSnapshots.getDocuments().get(0).getId());
-                            checkMediaReacted = true;
                             if(this.mediaDislike.getType_reaction() == 1) {
                                 changeImageDislikeFilm = R.drawable.ic_disliked;
                                 changeImageLikeFilm = R.drawable.ic_like_film;
@@ -450,72 +431,24 @@ public class IntroduceFilmFragment extends Fragment {
                         }
                     }
                 })
-                .addOnFailureListener(e -> {
-                    Toast.makeText(mWatchFilmActivity, "Get film dislike error", Toast.LENGTH_SHORT).show();
-                });
-    }
-
-    private final ActivityResultLauncher<String> requestPermissionLauncher =
-            registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
-                if (isGranted) {
-                    downloadFilm(mWatchFilmActivity.idUser);
-                } else {
-                    Toast.makeText(mWatchFilmActivity, mWatchFilmActivity.getString(R.string.ms_permission_denied), Toast.LENGTH_LONG).show();
-                }
-            });
-
-    private void downloadFilm(String downloadUrl) {
-        if (ContextCompat.checkSelfPermission(
-                mWatchFilmActivity, Manifest.permission.WRITE_EXTERNAL_STORAGE) ==
-                PackageManager.PERMISSION_GRANTED) {
-            startDownloadFilm(downloadUrl);
-        } else {
-            requestPermissionLauncher.launch(
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE);
-        }
-    }
-
-    private void startDownloadFilm(String downloadUrl) {
-        String mBaseFolderPath = android.os.Environment
-                .getExternalStorageDirectory()
-                + File.separator
-                + "FolderName" + File.separator;
-        if (!new File(mBaseFolderPath).exists()) {
-            new File(mBaseFolderPath).mkdir();
-        }
-
-        if (downloadUrl == null || TextUtils.isEmpty(downloadUrl)) {
-            return;
-        }
-
-        Uri downloadUri = Uri.parse(downloadUrl.trim());
-        if (downloadUri == null) {
-            return;
-        }
-
-        String mFilePath = "file://" + mBaseFolderPath + "/" + UUID.randomUUID().toString();
-        DownloadManager.Request req = new DownloadManager.Request(downloadUri);
-        req.setDestinationUri(Uri.parse(mFilePath));
-        req.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
-        DownloadManager dm = (DownloadManager) requireActivity().getSystemService(Context.DOWNLOAD_SERVICE);
-        dm.enqueue(req);
+                .addOnFailureListener(e -> Toast.makeText(mWatchFilmActivity, "Get film dislike error", Toast.LENGTH_SHORT).show());
     }
 
     private void updateFavorite() {
         if(statusFavorite == 1 && changeImageFavoriteFilm == R.drawable.ic_added_favorite) {
             documentReferenceFilmFavorite
-                    .collection(filmMainHome.getId()+"")
+                    .collection(idUser)
                     .document(this.mediaFavorite.getDocumentId())
                     .update("type_reaction", 1);
         } else if(statusFavorite == 2 && changeImageFavoriteFilm == R.drawable.ic_add_favorite) {
             documentReferenceFilmFavorite
-                    .collection(filmMainHome.getId()+"")
+                    .collection(idUser)
                     .document(this.mediaFavorite.getDocumentId())
                     .delete();
         } else if(statusFavorite ==0 && changeImageFavoriteFilm == R.drawable.ic_added_favorite) {
-            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-            MediaReaction mediaReaction = new MediaReaction(idUser, format.format(new Date()), 1);
-            documentReferenceFilmFavorite.collection(filmMainHome.getId()+"").add(mediaReaction);
+            SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
+            FilmReaction mediaReaction = new FilmReaction(filmMainHome.getId(), filmMainHome.getAvatar(), filmMainHome.getName(), format.format(new Date()), 1);
+            documentReferenceFilmFavorite.collection(idUser).add(mediaReaction);
         }
     }
 
@@ -531,8 +464,8 @@ public class IntroduceFilmFragment extends Fragment {
                     .document(this.mediaLike.getDocumentId())
                     .delete();
         } else if(statusLike ==0 && changeImageLikeFilm == R.drawable.ic_liked_film) {
-            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-            MediaReaction mediaReaction = new MediaReaction(idUser, format.format(new Date()), 1);
+            SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
+            FilmReaction mediaReaction = new FilmReaction(idUser, format.format(new Date()), 1);
             documentReferenceFilmLike.collection(filmMainHome.getId()+"").add(mediaReaction);
         }
     }
@@ -549,8 +482,8 @@ public class IntroduceFilmFragment extends Fragment {
                     .document(this.mediaDislike.getDocumentId())
                     .delete();
         } else if(statusDislike ==0 && changeImageDislikeFilm == R.drawable.ic_disliked) {
-            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-            MediaReaction mediaReaction = new MediaReaction(idUser, format.format(new Date()), 1);
+            SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
+            FilmReaction mediaReaction = new FilmReaction(idUser, format.format(new Date()), 1);
             documentReferenceFilmDislike.collection(filmMainHome.getId()+"").add(mediaReaction);
         }
     }

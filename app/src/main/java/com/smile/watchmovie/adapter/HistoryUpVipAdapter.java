@@ -55,16 +55,7 @@ public class HistoryUpVipAdapter extends RecyclerView.Adapter<HistoryUpVipAdapte
         OtherUtils otherUtils = new OtherUtils();
         holder.binding.tvStatus.setText(otherUtils.formatCommonTime(historyUpVip.getDateRegister(), historyUpVip.getIs_vip()));
 
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-        Date date;
-        try {
-            date = format.parse(historyUpVip.getDateRegister());
-            assert date != null;
-            SimpleDateFormat formatToString = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
-            holder.binding.tvDateStart.setText(formatToString.format(date));
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+        holder.binding.tvDateStart.setText(historyUpVip.getDateRegister());
     }
 
     @Override

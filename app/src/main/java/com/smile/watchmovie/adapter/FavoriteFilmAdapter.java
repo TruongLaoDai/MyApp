@@ -17,22 +17,22 @@ import com.smile.watchmovie.R;
 import com.smile.watchmovie.activity.WatchFilmActivity;
 import com.smile.watchmovie.api.ApiService;
 import com.smile.watchmovie.databinding.ItemFilmHistoryBinding;
-import com.smile.watchmovie.listener.IClickItemDeleteHistoryListener;
+import com.smile.watchmovie.listener.IClickItemUnFavoriteListener;
 import com.smile.watchmovie.model.FilmDetailResponse;
 import com.smile.watchmovie.model.FilmMainHome;
-import com.smile.watchmovie.model.HistoryWatchFilm;
+import com.smile.watchmovie.model.FilmReaction;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class HistoryWatchFilmAdapter extends RecyclerView.Adapter<HistoryWatchFilmAdapter.HistoryWatchFilmViewHolder> {
+public class FavoriteFilmAdapter extends RecyclerView.Adapter<FavoriteFilmAdapter.FavoriteFilmViewHolder> {
 
     private final Context context;
     private QuerySnapshot queryDocumentSnapshots;
-    private IClickItemDeleteHistoryListener deleteHistoryListener;
+    private IClickItemUnFavoriteListener unFavoriteListener;
 
-    public HistoryWatchFilmAdapter(Context context) {
+    public FavoriteFilmAdapter(Context context) {
         this.context = context;
     }
     @SuppressLint("NotifyDataSetChanged")
@@ -41,36 +41,28 @@ public class HistoryWatchFilmAdapter extends RecyclerView.Adapter<HistoryWatchFi
         notifyDataSetChanged();
     }
 
-    public void setDeleteHistoryListener(IClickItemDeleteHistoryListener deleteHistoryListener){
-        this.deleteHistoryListener = deleteHistoryListener;
+    public void setUnFavoriteListener(IClickItemUnFavoriteListener unFavoriteListener) {
+        this.unFavoriteListener = unFavoriteListener;
     }
 
     @NonNull
     @Override
-    public HistoryWatchFilmViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public FavoriteFilmViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        return new HistoryWatchFilmAdapter.HistoryWatchFilmViewHolder(ItemFilmHistoryBinding.inflate(inflater, parent, false));
-    }
-
-    private String messagePlayAtTime(long time) {
-        int hour = (int) (time / 1000 / 3600);
-        int minute = (int) ((time / 1000 - hour * 3600) / 60);
-        int second = (int) (time / 1000 - hour * 3600 - minute * 60);
-        if(hour != 0)
-            return hour + ":" + minute + ":" + second;
-        return minute + ":" + second;
+        return new FavoriteFilmAdapter.FavoriteFilmViewHolder(ItemFilmHistoryBinding.inflate(inflater, parent, false));
     }
 
     @Override
-    public void onBindViewHolder(@NonNull HistoryWatchFilmViewHolder holder, int position) {
-        HistoryWatchFilm historyWatchFilm = queryDocumentSnapshots.getDocuments().get(position).toObject(HistoryWatchFilm.class);
+    public void onBindViewHolder(@NonNull FavoriteFilmViewHolder holder, int position) {
+        FilmReaction filmFavorite = queryDocumentSnapshots.getDocuments().get(position).toObject(FilmReaction.class);
 
-        if (historyWatchFilm == null) {
+        if (filmFavorite == null) {
             return;
         }
-        historyWatchFilm.setDocumentID(queryDocumentSnapshots.getDocuments().get(position).getId());
 
-        Glide.with(context).load(historyWatchFilm.getAvatarFilm())
+        filmFavorite.setDocumentId(queryDocumentSnapshots.getDocuments().get(position).getId());
+
+        Glide.with(context).load(filmFavorite.getAvatarFilm())
                 .error(R.drawable.ic_baseline_broken_image_24)
                 .placeholder(R.drawable.ic_baseline_image_gray)
                 .into(holder.binding.ivImageFilm);
@@ -81,19 +73,18 @@ public class HistoryWatchFilmAdapter extends RecyclerView.Adapter<HistoryWatchFi
         holder.binding.tvEpisodesTotal.setVisibility(View.GONE);
         holder.binding.tvViewNumber.setVisibility(View.GONE);
 
-        holder.binding.tvDurationWatched.setText(context.getString(R.string.duration_watch, messagePlayAtTime(historyWatchFilm.getDuration())));
-        holder.binding.tvDayWatched.setText(context.getString(R.string.day_watch, historyWatchFilm.getDayWatch()));
+        holder.binding.tvDayWatched.setText(context.getString(R.string.day_favorite, filmFavorite.getDateReact()));
 
-        if (historyWatchFilm.getId_film() % 2 == 0) {
+        if (filmFavorite.getIdFilm() % 2 == 0) {
             holder.binding.loutPremium.setVisibility(ViewGroup.VISIBLE);
         } else {
             holder.binding.loutPremium.setVisibility(ViewGroup.GONE);
         }
 
-        holder.binding.tvNameFilm.setText(historyWatchFilm.getNameFilm());
+        holder.binding.tvNameFilm.setText(filmFavorite.getNameFilm());
         holder.binding.layoutFilm.setOnClickListener(view ->
                 ApiService.apiService
-                        .getFilmDetail("7da353b8a3246f851e0ee436d898a26d", historyWatchFilm.getId_film())
+                        .getFilmDetail("7da353b8a3246f851e0ee436d898a26d", filmFavorite.getIdFilm())
                         .enqueue(new Callback<FilmDetailResponse>() {
                             @SuppressLint("StringFormatMatches")
                             @Override
@@ -114,7 +105,7 @@ public class HistoryWatchFilmAdapter extends RecyclerView.Adapter<HistoryWatchFi
 
                             }
                         }));
-        holder.binding.ivMoreAction.setOnClickListener(v -> deleteHistoryListener.onClickDeleteHistoryListener(historyWatchFilm));
+        holder.binding.ivMoreAction.setOnClickListener(v -> unFavoriteListener.onClickUnFavoriteListener(filmFavorite));
     }
 
     @Override
@@ -125,13 +116,12 @@ public class HistoryWatchFilmAdapter extends RecyclerView.Adapter<HistoryWatchFi
         return 0;
     }
 
-    public static class HistoryWatchFilmViewHolder extends RecyclerView.ViewHolder {
+    public static class FavoriteFilmViewHolder extends RecyclerView.ViewHolder {
 
         private final ItemFilmHistoryBinding binding;
 
-        public HistoryWatchFilmViewHolder(@NonNull ItemFilmHistoryBinding binding) {
+        public FavoriteFilmViewHolder(@NonNull ItemFilmHistoryBinding binding) {
             super(binding.getRoot());
-
             this.binding = binding;
         }
     }

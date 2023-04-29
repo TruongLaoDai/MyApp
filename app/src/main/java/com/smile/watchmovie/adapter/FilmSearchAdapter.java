@@ -18,7 +18,11 @@ import com.smile.watchmovie.databinding.ItemFilmDetailBinding;
 import com.smile.watchmovie.model.FilmDetailResponse;
 import com.smile.watchmovie.model.FilmMainHome;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -46,6 +50,18 @@ public class FilmSearchAdapter extends RecyclerView.Adapter<FilmSearchAdapter.Fi
         return new FilmSearchViewHolder(ItemFilmDetailBinding.inflate(inflater, parent, false));
     }
 
+    private String dateCreated(String date) {
+        String[] data = date.split("T");
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        try {
+            Date date1 = format.parse(data[0]);
+            SimpleDateFormat format1 = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
+            return format1.format(date1);
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     @Override
     public void onBindViewHolder(@NonNull FilmSearchViewHolder holder, int position) {
         FilmMainHome filmMainHome = filmMainHomeList.get(position);
@@ -71,6 +87,7 @@ public class FilmSearchAdapter extends RecyclerView.Adapter<FilmSearchAdapter.Fi
             holder.itemFilmDetailBinding.loutPremium.setVisibility(ViewGroup.GONE);
         }
 
+        holder.itemFilmDetailBinding.tvCreated.setText(context.getString(R.string.day_watch, dateCreated(filmMainHome.getCreated())));
         holder.itemFilmDetailBinding.tvNameFilm.setText(filmMainHome.getName());
         holder.itemFilmDetailBinding.layoutFilm.setOnClickListener(view ->
                 playFilm(filmMainHome)

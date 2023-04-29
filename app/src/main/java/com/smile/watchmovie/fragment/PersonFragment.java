@@ -23,7 +23,6 @@ import com.smile.watchmovie.R;
 import com.smile.watchmovie.activity.PrivateSettingActivity;
 import com.smile.watchmovie.api.ApiService;
 import com.smile.watchmovie.databinding.FragmentPersonBinding;
-import com.smile.watchmovie.model.HistoryWatchFilm;
 import com.smile.watchmovie.model.TemperatureHumidity;
 import com.smile.watchmovie.model.Weather;
 import com.smile.watchmovie.model.WeatherResponse;
@@ -123,11 +122,13 @@ public class PersonFragment extends Fragment {
             binding.ivVip.setVisibility(View.GONE);
             binding.tvTitlePayDetail.setText(R.string.buy_title);
         }
-        binding.tvNameAccount.setText(nameUser);
+        if(!nameUser.equals(""))
+            binding.tvNameAccount.setText(nameUser);
+        else
+            binding.tvNameAccount.setText(mMainActivity.getString(R.string.login));
 
         binding.loutAccount.setOnClickListener(v -> {
                     if (idUser.equals("")) {
-                        binding.tvNameAccount.setText(mMainActivity.getString(R.string.login));
                         Intent intent = new Intent(mMainActivity, LoginActivity.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

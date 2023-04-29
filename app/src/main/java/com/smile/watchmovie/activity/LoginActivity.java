@@ -125,7 +125,6 @@ public class LoginActivity extends AppCompatActivity {
                     user.setDocumentId(task.getResult().getId());
                     saveToSharedPreferences(user);
                     navigateToMainActivity(type);
-                    Toast.makeText(LoginActivity.this, user.toString(), Toast.LENGTH_SHORT).show();
                 });
     }
 
@@ -138,11 +137,9 @@ public class LoginActivity extends AppCompatActivity {
                         DocumentSnapshot doc = queryDocumentSnapshots.getDocuments().get(0);
                         User user = doc.toObject(User.class);
                         if(user != null) {
-                            user.setIs_vip("0");
                             user.setDocumentId(doc.getId());
                             saveToSharedPreferences(user);
                             navigateToMainActivity(type);
-                            Toast.makeText(LoginActivity.this, user.toString(), Toast.LENGTH_SHORT).show();
                         } else {
                             callApiRegisterUser(type);
                         }

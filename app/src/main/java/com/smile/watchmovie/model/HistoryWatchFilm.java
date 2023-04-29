@@ -7,14 +7,17 @@ public class HistoryWatchFilm {
     private long duration;
     private String dayWatch;
     private String documentID;
+    private String avatarFilm;
+    private String nameFilm;
 
     public HistoryWatchFilm() {
     }
-
-    public HistoryWatchFilm(int id_film, long duration, String dayWatch) {
+    public HistoryWatchFilm(int id_film, long duration, String dayWatch, String avatarFilm, String nameFilm) {
         this.id_film = id_film;
         this.duration = duration;
         this.dayWatch = dayWatch;
+        this.avatarFilm = avatarFilm;
+        this.nameFilm = nameFilm;
     }
 
     public int getId_film() {
@@ -48,5 +51,21 @@ public class HistoryWatchFilm {
 
     public void setDayWatch(String dayWatch) {
         this.dayWatch = dayWatch;
+    }
+
+    public String getAvatarFilm() {
+        return avatarFilm;
+    }
+
+    public void setAvatarFilm(String avatarFilm) {
+        this.avatarFilm = avatarFilm;
+    }
+
+    public String getNameFilm() {
+        return nameFilm;
+    }
+
+    public void setNameFilm(String nameFilm) {
+        this.nameFilm = nameFilm;
     }
 }

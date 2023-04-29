@@ -91,7 +91,6 @@ public class InfoAccountActivity extends AppCompatActivity {
         binding.btnLogout.setOnClickListener(v ->
                 new AlertDialog.Builder(InfoAccountActivity.this)
                         .setTitle("Xác nhận đăng xuất?")
-                        .setMessage("Bạn không được để tên rỗng!")
                         .setPositiveButton("Đăng xuất", (dialog, which) -> {
                             editor.clear();
                             editor.apply();

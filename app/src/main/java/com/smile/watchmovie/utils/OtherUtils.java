@@ -21,11 +21,10 @@ public class OtherUtils {
     }
 
     public String formatCommonTime(String dateUpVip, String type_vip) {
-        String[] date = dateUpVip.split(" ");
-        String data[] = date[0].split("-");
+        String[] data = dateUpVip.split("-");
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             LocalDate today = LocalDate.now();
-            LocalDate dateUpVIp = LocalDate.of(Integer.parseInt(data[0]), Integer.parseInt(data[1]), Integer.parseInt(data[2]));
+            LocalDate dateUpVIp = LocalDate.of(Integer.parseInt(data[2]), Integer.parseInt(data[1]), Integer.parseInt(data[0]));
             long daysBetween = ChronoUnit.DAYS.between(dateUpVIp, today);
             if (type_vip.equals("1")) {
                 if(daysBetween > 30) {

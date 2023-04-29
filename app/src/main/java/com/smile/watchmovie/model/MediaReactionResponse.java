@@ -7,7 +7,7 @@ public class MediaReactionResponse {
     @SerializedName("id_mreaction")
     private int id_mreaction;
     @SerializedName("data")
-    private MediaReaction mediaReaction;
+    private FilmReaction mediaReaction;
     @SerializedName("favorite")
     private int favorite;
 
@@ -19,11 +19,11 @@ public class MediaReactionResponse {
         this.id_mreaction = id_mreaction;
     }
 
-    public MediaReaction getMediaReaction() {
+    public FilmReaction getMediaReaction() {
         return mediaReaction;
     }
 
-    public void setMediaReaction(MediaReaction mediaReaction) {
+    public void setMediaReaction(FilmReaction mediaReaction) {
         this.mediaReaction = mediaReaction;
     }
 

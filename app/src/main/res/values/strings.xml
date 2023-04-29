@@ -106,6 +106,12 @@
     <string name="refund_unsucces">Hoàn tiền không thành công</string>
     <string name="history_buy_premium">Lịch Sử Mua Premium</string>
     <string name="update">Cập nhật</string>
+    <string name="duration_watch">Bạn đã xem đến: %1$s</string>
+    <string name="day_created">Ngày tạo: %1$s</string>
+    <string name="day_watch">Ngày xem: %1$s</string>
+    <string name="day_favorite">Ngày thêm: %1$s</string>
+    <string name="delete">Xóa</string>
+    <string name="cancel">Hủy</string>
 
     <string-array name="categorys">
         <item>Phim mới</item>

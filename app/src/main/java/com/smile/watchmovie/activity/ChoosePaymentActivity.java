@@ -14,6 +14,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.view.Gravity;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -113,7 +114,6 @@ public class ChoosePaymentActivity extends AppCompatActivity {
                                 .setTitle("Bạn đã mua gói")
                                 .setMessage("Bạn đã mua gói trước đây hãy đợi khi gói hết hạn để mua tiếp")
                                 .setPositiveButton("OK", (dialog, which) -> {
-                                    payForUpVip();
                                 }).show();
                     } else if (is_vip.equals("1") || is_vip.equals("2")) {
                         new AlertDialog.Builder(ChoosePaymentActivity.this)
@@ -127,6 +127,13 @@ public class ChoosePaymentActivity extends AppCompatActivity {
                     }
                 }
         );
+        //demo refund
+        binding.ivAccount.setOnClickListener(v -> {
+            if(type_vip.equals("1"))
+                refundWhenUpdateVipError("47000", payId);
+            else
+                refundWhenUpdateVipError("439000", payId);
+        });
     }
 
     private void setUpFireBase() {
@@ -208,7 +215,7 @@ public class ChoosePaymentActivity extends AppCompatActivity {
                 .update("is_vip", is_vip)
                 .addOnCompleteListener(task -> {
                     Date date = new Date();
-                    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+                    SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
                     HistoryUpVip historyUpVip = new HistoryUpVip(is_vip, format.format(date));
                     collectionReference.document("tblhistoryupvip").collection("user" + id_user)
                             .add(historyUpVip)

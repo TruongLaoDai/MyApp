@@ -22,7 +22,6 @@ import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.provider.Settings;
 import android.util.DisplayMetrics;
 import android.util.Rational;
@@ -57,8 +56,6 @@ import com.google.android.exoplayer2.util.Util;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.smile.watchmovie.R;
 import com.smile.watchmovie.adapter.WatchFilmViewPagerAdapter;
 import com.smile.watchmovie.databinding.ActivityWatchFilmBinding;
@@ -66,18 +63,14 @@ import com.smile.watchmovie.listener.OnSwipeTouchListener;
 import com.smile.watchmovie.model.FilmMainHome;
 import com.smile.watchmovie.model.HistoryWatchFilm;
 import com.smile.watchmovie.model.SubFilm;
-import com.smile.watchmovie.model.User;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
-import java.util.Objects;
 import java.util.Timer;
 
 public class WatchFilmActivity extends AppCompatActivity implements Player.Listener {
@@ -107,7 +100,6 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
     private float speed;
     private PlaybackParameters playbackParameters;
     private Timer timer;
-    private String isVip;
     private boolean auto_play;
     private HistoryWatchFilm historyWatchFilm;
 
@@ -125,7 +117,7 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
         filmMainHome = (FilmMainHome) getIntent().getSerializableExtra("film");
         SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
         idUser = sharedPreferences.getString("idUser", "");
-        isVip = sharedPreferences.getString("isVip", "0");
+        String isVip = sharedPreferences.getString("isVip", "0");
         boolean full_screen = sharedPreferences.getBoolean("full_screen", false);
         auto_play = sharedPreferences.getBoolean("auto_play", false);
 
@@ -565,9 +557,9 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
     public void onBackPressed() {
         super.onBackPressed();
         if (!idUser.equals("")) {
-            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+            SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
             Date date = new Date();
-            HistoryWatchFilm historyWatchFilm = new HistoryWatchFilm(filmMainHome.getId(), player.getCurrentPosition(), format.format(date));
+            HistoryWatchFilm historyWatchFilm = new HistoryWatchFilm(filmMainHome.getId(), player.getCurrentPosition(), format.format(date), filmMainHome.getAvatar(), filmMainHome.getName());
             if (player.getCurrentPosition() > 30000) {
                 if (check == 0) {
                     collectionReference.document("tblhistorywatchfilm").collection(idUser).add(historyWatchFilm);
@@ -674,7 +666,7 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
                         if (historyWatchFilm != null) {
                             historyWatchFilm.setDocumentID(doc.getId());
                             Date today = new Date();
-                            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+                            SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
                             String strToday = format.format(today);
                             try {
                                 Date todayFormat = format.parse(strToday);
@@ -692,9 +684,7 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
                         }
                     }
                 })
-                .addOnFailureListener(e -> {
-                    Toast.makeText(this, "Get history film fail", Toast.LENGTH_SHORT).show();
-                });
+                .addOnFailureListener(e -> Toast.makeText(this, "Get history film fail", Toast.LENGTH_SHORT).show());
     }
 
     @Override
