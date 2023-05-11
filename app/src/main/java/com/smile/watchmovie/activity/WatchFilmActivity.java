@@ -84,7 +84,7 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
     private TextView tvAtEpisode, brt_text, vol_text;
     public FilmMainHome filmMainHome;
     private CollectionReference collectionReference;
-    public String idUser;
+    public String idUser, isVip;
     private int check = 0;
 
     private PictureInPictureParams.Builder piBuilder;
@@ -100,7 +100,7 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
     private float speed;
     private PlaybackParameters playbackParameters;
     private Timer timer;
-    private boolean auto_play;
+    private boolean auto_play, full_screen;
     private HistoryWatchFilm historyWatchFilm;
 
     @SuppressLint("SetTextI18n")
@@ -117,13 +117,9 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
         filmMainHome = (FilmMainHome) getIntent().getSerializableExtra("film");
         SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
         idUser = sharedPreferences.getString("idUser", "");
-        String isVip = sharedPreferences.getString("isVip", "0");
-        boolean full_screen = sharedPreferences.getBoolean("full_screen", false);
+        isVip = sharedPreferences.getString("isVip", "0");
+        full_screen = sharedPreferences.getBoolean("full_screen", false);
         auto_play = sharedPreferences.getBoolean("auto_play", false);
-
-        if (isVip.equals("0") && filmMainHome.getId() % 2 == 0) {
-            setUpWhenVip();
-        }
 
         if (filmMainHome != null) {
             setUpView();
@@ -188,6 +184,13 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
         binding.exoplayerView.findViewById(R.id.iv_speed_play_vertical).setOnClickListener(v -> playSpeedFilm());
 
         binding.exoplayerView.findViewById(R.id.tv_speed_play_vertical).setOnClickListener(v -> playSpeedFilm());
+
+        if (isVip.equals("0") && filmMainHome.getId() % 2 == 0) {
+            setUpWhenVip();
+        }
+
+        if (!auto_play)
+            player.setPlayWhenReady(false);
     }
 
     private void initViewForTouchExoplayer() {
@@ -481,11 +484,12 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
 
     private void setUpWhenVip() {
         player.setPlayWhenReady(false);
+
         DefaultTimeBar exoProgress = binding.exoplayerView.findViewById(R.id.exo_progress);
         ImageView exopPlay = binding.exoplayerView.findViewById(R.id.exo_play);
         exoProgress.setEnabled(false);
         exopPlay.setEnabled(false);
-        openDialogWatchFilmAtTime("Bạn hãy đăng kí Vip để xem tiếp phim", 0, 2);
+        openDialogWatchFilmAtTime("Bạn hãy đăng kí Vip để xem phim", 0, 2);
     }
 
     private void lockScreen(boolean check_lock_screen) {
@@ -749,7 +753,7 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
         super.onConfigurationChanged(newConfig);
         if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             setUpShowFilmFullScreen();
-        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
+        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT && !full_screen) {
             setUpShowNoFullScreen();
         }
     }

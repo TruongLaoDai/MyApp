@@ -26,6 +26,12 @@ public class SettingPlayFilmActivity extends AppCompatActivity {
         binding = ActivitySettingPlayFilmBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        boolean full_screen = sharedPreferences.getBoolean("full_screen", false);
+        boolean auto_play = sharedPreferences.getBoolean("auto_play", true);
+
+        binding.swSettingPlayFullScreen.setChecked(full_screen);
+        binding.swSettingAutoPlay.setChecked(auto_play);
+
         binding.titleAutoFullScreen.setOnClickListener(v -> {
             binding.swSettingPlayFullScreen.setChecked(!binding.swSettingPlayFullScreen.isChecked());
             editor.putBoolean("full_screen", binding.swSettingPlayFullScreen.isChecked());
@@ -37,6 +43,20 @@ public class SettingPlayFilmActivity extends AppCompatActivity {
             editor.putBoolean("auto_play", binding.swSettingAutoPlay.isChecked());
             editor.apply();
         });
+
+        binding.swSettingPlayFullScreen.setOnClickListener(v -> {
+            binding.swSettingPlayFullScreen.setChecked(binding.swSettingPlayFullScreen.isChecked());
+            editor.putBoolean("full_screen", binding.swSettingPlayFullScreen.isChecked());
+            editor.apply();
+        });
+
+        binding.swSettingAutoPlay.setOnClickListener(v -> {
+            binding.swSettingAutoPlay.setChecked(binding.swSettingAutoPlay.isChecked());
+            editor.putBoolean("auto_play", binding.swSettingAutoPlay.isChecked());
+            editor.apply();
+        });
+
+        setupToolBar();
     }
 
     private void setupToolBar() {
