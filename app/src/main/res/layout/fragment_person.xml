@@ -26,11 +26,11 @@
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/iv_vip"
-                android:layout_alignEnd="@+id/iv_avt_account"
-                android:layout_alignStart="@+id/iv_avt_account"
-                android:layout_marginTop="20dp"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
+                android:layout_alignStart="@+id/iv_avt_account"
+                android:layout_alignEnd="@+id/iv_avt_account"
+                android:layout_marginTop="20dp"
                 android:src="@drawable/ic_vip" />
 
             <androidx.appcompat.widget.AppCompatTextView
@@ -50,91 +50,92 @@
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tv_weather"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
                 android:layout_marginTop="100dp"
                 android:layout_marginEnd="10dp"
-                android:textSize="16sp"
                 android:textColor="@color/white"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:textSize="16sp" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tv_weather_detail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tv_weather"
                 android:layout_alignParentEnd="true"
                 android:layout_marginTop="10dp"
                 android:layout_marginEnd="10dp"
-                android:textSize="16sp"
-                android:layout_below="@+id/tv_weather"
                 android:textColor="@color/white"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:textSize="16sp" />
         </RelativeLayout>
 
         <RelativeLayout
             android:id="@+id/lout_pay"
-            android:padding="10dp"
-            android:background="#F8C5C5"
-            android:layout_marginHorizontal="5dp"
-            android:layout_below="@+id/lout_account"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/lout_account"
+            android:layout_marginHorizontal="5dp"
+            android:background="#F8C5C5"
+            android:padding="10dp">
 
             <ImageView
                 android:id="@+id/iv_premium"
-                android:src="@drawable/ic_premium"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_premium" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tv_title_pay"
-                android:layout_toEndOf="@+id/iv_premium"
-                android:textColor="#E55151"
-                android:textStyle="bold"
-                android:textSize="16sp"
-                android:layout_marginStart="5dp"
-                android:text="@string/buy_premium"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_toEndOf="@+id/iv_premium"
+                android:text="@string/buy_premium"
+                android:textColor="#E55151"
+                android:textSize="16sp"
+                android:textStyle="bold" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tv_title_pay_detail"
-                android:text="@string/buy_title"
-                android:textColor="#E55151"
-                android:layout_marginStart="2dp"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentStart="true"
-                android:layout_marginEnd="45dp"
-                android:layout_below="@+id/tv_title_pay"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tv_title_pay"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginStart="2dp"
+                android:layout_marginEnd="45dp"
+                android:text="@string/buy_title"
+                android:textColor="#E55151" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/go"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentTop="true"
-                android:paddingVertical="10dp"
-                android:layout_marginEnd="20dp"
-                android:textColor="@color/white"
-                android:textSize="16sp"
-                android:text="@string/go"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="20dp"
+                android:paddingVertical="10dp"
+                android:text="@string/go"
+                android:textColor="@color/white"
+                android:textSize="16sp" />
 
             <ImageView
-                android:layout_alignParentEnd="true"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
                 android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
                 android:layout_marginTop="12dp"
                 android:layout_marginEnd="5dp"
-                android:src="@drawable/ic_arrow_right_more"
-                android:layout_width="20dp"
-                android:layout_height="20dp"/>
+                android:src="@drawable/ic_arrow_right_more" />
+
             <ImageView
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentTop="true"
-                android:layout_marginTop="12dp"
-                android:src="@drawable/ic_arrow_right_more"
                 android:layout_width="20dp"
-                android:layout_height="20dp"/>
+                android:layout_height="20dp"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginTop="12dp"
+                android:src="@drawable/ic_arrow_right_more" />
 
 
         </RelativeLayout>
@@ -230,6 +231,7 @@
                 android:id="@+id/tv_setting"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:foreground="?android:attr/selectableItemBackground"
                 android:padding="10dp"
                 android:text="@string/setting"
                 android:textColor="@color/black"
@@ -250,6 +252,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/tv_setting"
+                android:foreground="?android:attr/selectableItemBackground"
                 android:padding="10dp"
                 android:text="@string/help"
                 android:textColor="@color/black"
@@ -270,6 +273,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/tv_help"
+                android:foreground="?android:attr/selectableItemBackground"
                 android:padding="10dp"
                 android:text="@string/feedback"
                 android:textColor="@color/black"
@@ -286,5 +290,7 @@
                 android:src="@drawable/ic_arrow_right_more_category" />
 
         </RelativeLayout>
+
     </RelativeLayout>
+
 </androidx.core.widget.NestedScrollView>

@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -183,6 +184,7 @@ public class LoginActivity extends AppCompatActivity {
                     callApiLoginUser("google");
                 }
             } catch (ApiException e) {
+                Log.e("MaLoi", e.getMessage().toString());
                 Toast.makeText(getApplicationContext(), "Something went wrong", Toast.LENGTH_LONG).show();
             }
         } else {

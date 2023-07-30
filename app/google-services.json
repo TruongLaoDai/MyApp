@@ -1,34 +1,33 @@
 {
   "project_info": {
-    "project_number": "770022093076",
-    "firebase_url": "https://app-watching-mov-1666688592081-default-rtdb.firebaseio.com",
-    "project_id": "app-watching-mov-1666688592081",
-    "storage_bucket": "app-watching-mov-1666688592081.appspot.com"
+    "project_number": "722307297370",
+    "project_id": "movie-4c18c",
+    "storage_bucket": "movie-4c18c.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:770022093076:android:e9ad78ef52af49dbf61201",
+        "mobilesdk_app_id": "1:722307297370:android:4b33080ab5255b7502a863",
         "android_client_info": {
           "package_name": "com.smile.watchmovie"
         }
       },
       "oauth_client": [
         {
-          "client_id": "770022093076-i8ca22os0rirditc31glgopa2c19sbvj.apps.googleusercontent.com",
+          "client_id": "722307297370-erk9mej0oub85blhdpmodjcdfj9vbfda.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBOWOk-egArg7HEwvXkdyb16kXXDK2PlWk"
+          "current_key": "AIzaSyCREq7NRzejSNGi0LxWvffBeVeCiCnNUxM"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "770022093076-i8ca22os0rirditc31glgopa2c19sbvj.apps.googleusercontent.com",
+              "client_id": "722307297370-erk9mej0oub85blhdpmodjcdfj9vbfda.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

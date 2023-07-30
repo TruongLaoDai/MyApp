@@ -1,58 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#ECF3F6"
     android:orientation="vertical"
     android:weightSum="10"
-    tools:context=".activity.MainActivity"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    tools:context=".activity.MainActivity">
 
     <LinearLayout
-        android:layout_weight="1"
         android:id="@+id/tool_bar_home"
-        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_weight="1"
         android:background="#44B9ED"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:visibility="gone">
+
         <androidx.cardview.widget.CardView
-            android:layout_marginStart="10dp"
-            android:layout_gravity="center"
-            app:cardCornerRadius="23dp"
             android:layout_width="45dp"
-            android:layout_height="45dp">
+            android:layout_height="45dp"
+            android:layout_gravity="center"
+            android:layout_marginStart="10dp"
+            app:cardCornerRadius="23dp">
+
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/icon_login_logout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:padding="5dp"
                 android:scaleType="centerCrop"
-                android:src="@drawable/iv_hello"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:src="@drawable/iv_hello" />
+
         </androidx.cardview.widget.CardView>
 
         <TextView
             android:id="@+id/tv_user"
-            android:textColor="@color/black"
-            android:gravity="left"
-            android:padding="5dp"
-            android:textSize="14sp"
-            android:text="@string/app_name"
-            android:textStyle="bold"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
             android:layout_marginStart="10dp"
             android:layout_weight="2"
-            android:visibility="invisible"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"/>
+            android:gravity="left"
+            android:padding="5dp"
+            android:text="@string/app_name"
+            android:textColor="@color/black"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:visibility="invisible" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/iv_logo_app"
-            android:layout_weight="1"
             android:layout_width="0dp"
-            android:layout_gravity="center|right"
-            android:scaleType="centerInside"
             android:layout_height="wrap_content"
+            android:layout_gravity="center|right"
+            android:layout_weight="1"
+            android:scaleType="centerInside"
             android:src="@drawable/logo_app"
             tools:ignore="NestedWeights" />
 
@@ -60,17 +63,17 @@
 
     <com.smile.watchmovie.custom.CustomViewPager
         android:id="@+id/view_pager"
-        android:background="@color/white"
-        android:layout_weight="10"
         android:layout_width="match_parent"
-        android:layout_height="0dp" />
+        android:layout_height="0dp"
+        android:layout_weight="10"
+        android:background="@color/white" />
 
     <RelativeLayout
         android:id="@+id/splash_layout"
-        android:orientation="vertical"
-        android:background="@color/white"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        android:orientation="vertical">
 
         <ImageView
             android:layout_width="150dp"
@@ -80,31 +83,33 @@
             android:src="@drawable/logo_app" />
 
         <TextView
-            android:text="From"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_above="@+id/tv_name_owner"
             android:layout_centerInParent="true"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:text="@string/design_by" />
 
         <TextView
             android:id="@+id/tv_name_owner"
-            android:text="@string/nameOwner"
-            android:textStyle="bold"
-            android:textSize="20sp"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="30dp"
-            android:textColor="@color/com_facebook_messenger_blue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_centerInParent="true"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="30dp"
+            android:text="@string/nameOwner"
+            android:textColor="@color/com_facebook_messenger_blue"
+            android:textSize="20sp"
+            android:textStyle="bold" />
     </RelativeLayout>
+
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_nav"
-        android:layout_weight="0"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:menu="@menu/menu_bottom_nav"
+        android:layout_weight="0"
         app:itemIconTint="@color/custom_color_bottom_nav"
-        app:itemTextColor="@color/custom_color_bottom_nav"/>
+        app:itemTextColor="@color/custom_color_bottom_nav"
+        app:menu="@menu/menu_bottom_nav" />
+
 </LinearLayout>

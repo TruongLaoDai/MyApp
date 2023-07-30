@@ -8,12 +8,15 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 
+import com.smile.watchmovie.EventBus.EventNotifyLogout;
 import com.smile.watchmovie.R;
-import com.smile.watchmovie.databinding.ActivityChoosePaymentBinding;
 import com.smile.watchmovie.databinding.ActivityPrivateSettingBinding;
 
-public class PrivateSettingActivity extends AppCompatActivity {
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
+public class PrivateSettingActivity extends AppCompatActivity {
     private ActivityPrivateSettingBinding binding;
 
     @Override
@@ -23,28 +26,43 @@ public class PrivateSettingActivity extends AppCompatActivity {
 
         binding = ActivityPrivateSettingBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        setupToolBar();
 
-        binding.settingPlayFilm.setOnClickListener(v -> {
-            Intent intent = new Intent(PrivateSettingActivity.this, SettingPlayFilmActivity.class);
-            startActivity(intent);
-        });
+        binding.settingPlayFilm.setOnClickListener(v ->
+                startActivity(new Intent(PrivateSettingActivity.this, SettingPlayFilmActivity.class))
+        );
 
         SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
         String idUser = sharedPreferences.getString("idUser", "");
 
-        if(idUser.equals("")) {
+        if (idUser.equals("")) {
             binding.settingAccount.setVisibility(View.GONE);
         }
-        binding.settingAccount.setOnClickListener(v -> {
-            Intent intent = new Intent(PrivateSettingActivity.this, InfoAccountActivity.class);
-            startActivity(intent);
-        });
+
+        binding.settingAccount.setOnClickListener(v ->
+                startActivity(new Intent(PrivateSettingActivity.this, InfoAccountActivity.class))
+        );
+
+        binding.toolBar.setNavigationOnClickListener(view -> finish());
     }
 
-    private void setupToolBar() {
-        binding.toolBar.setTitle("Cài đặt cá nhân");
-        binding.toolBar.setNavigationIcon(R.drawable.ic_arrow_back_white);
-        binding.toolBar.setNavigationOnClickListener(v -> finish());
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (!EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().register(this);
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEvent(EventNotifyLogout isLogout) {
+        if (isLogout.isLogout()) {
+            binding.settingAccount.setVisibility(View.GONE);
+        }
     }
 }

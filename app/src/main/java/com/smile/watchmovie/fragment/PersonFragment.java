@@ -71,17 +71,16 @@ public class PersonFragment extends Fragment {
             mMainActivity.startActivity(intent);
         });
 
-        binding.tvSetting.setOnClickListener(v -> {
-            Intent intent = new Intent(mMainActivity, PrivateSettingActivity.class);
-            mMainActivity.startActivity(intent);
-        });
+        binding.tvSetting.setOnClickListener(v ->
+                requireActivity().startActivity(new Intent(requireActivity(), PrivateSettingActivity.class))
+        );
 
         binding.tvFeedback.setOnClickListener(v ->
-                Toast.makeText(mMainActivity, getString(R.string.feature_deploying), Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireActivity(), getString(R.string.feature_deploying), Toast.LENGTH_SHORT).show()
         );
 
         binding.tvHelp.setOnClickListener(v ->
-                Toast.makeText(mMainActivity, getString(R.string.feature_deploying), Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireActivity(), getString(R.string.feature_deploying), Toast.LENGTH_SHORT).show()
         );
 
         binding.loutPay.setOnClickListener(v -> mMainActivity.startActivity(new Intent(mMainActivity, ChoosePaymentActivity.class)));
@@ -95,7 +94,7 @@ public class PersonFragment extends Fragment {
                 if (weatherResponse != null) {
                     if (weatherResponse.getMain() != null) {
                         TemperatureHumidity main = weatherResponse.getMain();
-                        binding.tvWeather.setText(main.getTemp()+"°C"+" tại Hà Nội");
+                        binding.tvWeather.setText(main.getTemp() + "°C" + " tại Hà Nội");
                         List<Weather> weathers = weatherResponse.getWeather();
                         binding.tvWeatherDetail.setText(weathers.get(0).getMain());
                     }
@@ -122,7 +121,7 @@ public class PersonFragment extends Fragment {
             binding.ivVip.setVisibility(View.GONE);
             binding.tvTitlePayDetail.setText(R.string.buy_title);
         }
-        if(!nameUser.equals(""))
+        if (!nameUser.equals(""))
             binding.tvNameAccount.setText(nameUser);
         else
             binding.tvNameAccount.setText(mMainActivity.getString(R.string.login));
