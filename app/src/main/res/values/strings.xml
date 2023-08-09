@@ -131,4 +131,7 @@
     <string name="sex">Giới tính</string>
     <string name="male">Nam</string>
     <string name="female">Nữ</string>
+    
+    <string name="not_logged_in_message">Bạn cần đăng nhập để thực hiện tính năng này</string>
+    <string name="notify_empty">Mục yêu thích rỗng</string>
 </resources>

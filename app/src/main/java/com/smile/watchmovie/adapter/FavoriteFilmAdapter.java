@@ -35,6 +35,7 @@ public class FavoriteFilmAdapter extends RecyclerView.Adapter<FavoriteFilmAdapte
     public FavoriteFilmAdapter(Context context) {
         this.context = context;
     }
+
     @SuppressLint("NotifyDataSetChanged")
     public void setData(QuerySnapshot queryDocumentSnapshots) {
         this.queryDocumentSnapshots = queryDocumentSnapshots;
@@ -68,11 +69,7 @@ public class FavoriteFilmAdapter extends RecyclerView.Adapter<FavoriteFilmAdapte
                 .into(holder.binding.ivImageFilm);
 
         holder.binding.tvDayWatched.setVisibility(View.VISIBLE);
-        holder.binding.tvDurationWatched.setVisibility(View.VISIBLE);
         holder.binding.ivMoreAction.setVisibility(View.VISIBLE);
-        holder.binding.tvEpisodesTotal.setVisibility(View.GONE);
-        holder.binding.tvViewNumber.setVisibility(View.GONE);
-
         holder.binding.tvDayWatched.setText(context.getString(R.string.day_favorite, filmFavorite.getDateReact()));
 
         if (filmFavorite.getIdFilm() % 2 == 0) {
@@ -117,7 +114,6 @@ public class FavoriteFilmAdapter extends RecyclerView.Adapter<FavoriteFilmAdapte
     }
 
     public static class FavoriteFilmViewHolder extends RecyclerView.ViewHolder {
-
         private final ItemFilmHistoryBinding binding;
 
         public FavoriteFilmViewHolder(@NonNull ItemFilmHistoryBinding binding) {

@@ -40,7 +40,6 @@
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/iv_empty"
         android:layout_below="@id/tool_bar"
-        android:src="@drawable/img_empty"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 

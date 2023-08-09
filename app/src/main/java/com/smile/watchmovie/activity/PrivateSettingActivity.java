@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.smile.watchmovie.EventBus.EventNotifyLogout;
-import com.smile.watchmovie.R;
 import com.smile.watchmovie.databinding.ActivityPrivateSettingBinding;
 
 import org.greenrobot.eventbus.EventBus;
@@ -22,8 +21,6 @@ public class PrivateSettingActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_private_setting);
-
         binding = ActivityPrivateSettingBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 

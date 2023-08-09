@@ -201,6 +201,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/tv_download"
+                android:foreground="?android:attr/selectableItemBackground"
                 android:padding="10dp"
                 android:text="@string/film_favorite"
                 android:textColor="@color/black"

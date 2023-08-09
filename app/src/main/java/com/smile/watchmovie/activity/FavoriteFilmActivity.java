@@ -1,9 +1,6 @@
 package com.smile.watchmovie.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -14,12 +11,10 @@ import android.view.View;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.smile.watchmovie.R;
 import com.smile.watchmovie.adapter.FavoriteFilmAdapter;
 import com.smile.watchmovie.databinding.ActivityFavoriteFilmBinding;
 import com.smile.watchmovie.fragment.DeleteBottomSheetFragment;
 import com.smile.watchmovie.model.FilmReaction;
-import com.smile.watchmovie.model.HistoryWatchFilm;
 
 public class FavoriteFilmActivity extends AppCompatActivity {
     private ActivityFavoriteFilmBinding binding;
@@ -30,9 +25,8 @@ public class FavoriteFilmActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_favorite_film);
-
         binding = ActivityFavoriteFilmBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
         SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
         idUser = sharedPreferences.getString("idUser", "");
@@ -40,36 +34,30 @@ public class FavoriteFilmActivity extends AppCompatActivity {
         favoriteFilmAdapter = new FavoriteFilmAdapter(this);
         favoriteFilmAdapter.setUnFavoriteListener(this::openUnFavoriteFilm);
 
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, RecyclerView.VERTICAL, false);
-        RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
-        binding.rcvFavorite.setLayoutManager(linearLayoutManager);
-        binding.rcvFavorite.addItemDecoration(itemDecoration);
-
         binding.rcvFavorite.setAdapter(favoriteFilmAdapter);
+        binding.toolBar.setNavigationOnClickListener(view -> finish());
 
         FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
         collectionReferenceFavorite = firebaseFirestore.collection("WatchFilm");
 
-        binding.ivBack.setOnClickListener(v -> onBackPressed());
-
-
-        setContentView(binding.getRoot());
         getFilmFavorite();
     }
+
     @SuppressLint({"StringFormatMatches", "NotifyDataSetChanged"})
     public void getFilmFavorite() {
+        binding.progressLoadFavoriteHome.setVisibility(View.VISIBLE);
         collectionReferenceFavorite.document("tblfilmfavorite").collection(idUser).get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         QuerySnapshot snapshot = task.getResult();
-                        favoriteFilmAdapter.setData(snapshot);
-                        if(snapshot.size() > 0) {
-                            binding.ivEmptyData.setVisibility(View.GONE);
+                        binding.progressLoadFavoriteHome.setVisibility(View.GONE);
+                        if (!snapshot.isEmpty()) {
+                            favoriteFilmAdapter.setData(snapshot);
                         } else {
-                            binding.ivEmptyData.setVisibility(View.VISIBLE);
+                            binding.rcvFavorite.setVisibility(View.GONE);
+                            binding.tvContent.setVisibility(View.VISIBLE);
                         }
                     }
-                    binding.progressLoadFavoriteHome.setVisibility(View.INVISIBLE);
                 });
     }
 

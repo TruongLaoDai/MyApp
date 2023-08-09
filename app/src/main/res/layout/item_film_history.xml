@@ -8,7 +8,6 @@
     android:layout_marginTop="10dp"
     android:layout_marginBottom="10dp">
 
-
     <RelativeLayout
         android:id="@+id/lout_image"
         android:layout_width="140dp"
@@ -80,46 +79,13 @@
             tools:text="Vo than chua te" />
 
         <TextView
-            android:id="@+id/tv_episodesTotal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="25dp"
-            android:layout_below="@+id/tv_name_film"
-            android:layout_marginTop="5dp"
-            android:gravity="center_vertical"
-            android:textSize="14sp"
-            tools:text="1 tập" />
-
-        <TextView
-            android:id="@+id/tv_view_number"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="25dp"
-            android:layout_below="@+id/tv_episodesTotal"
-            android:layout_marginTop="5dp"
-            android:gravity="center_vertical"
-            tools:text="8.0" />
-
-        <TextView
-            android:id="@+id/tv_duration_watched"
-            android:visibility="gone"
-            tools:visibility="visible"
-            android:layout_marginEnd="25dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/tv_view_number"
-            android:layout_marginTop="5dp"
-            android:gravity="center_vertical"
-            tools:text="8.0" />
-
-        <TextView
             android:id="@+id/tv_day_watched"
             android:visibility="gone"
             tools:visibility="visible"
             android:layout_marginEnd="25dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/tv_duration_watched"
+            android:layout_below="@+id/tv_name_film"
             android:layout_marginTop="5dp"
             android:gravity="center_vertical"
             tools:text="8.0" />

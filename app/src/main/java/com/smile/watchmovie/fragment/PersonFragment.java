@@ -27,12 +27,13 @@ import com.smile.watchmovie.model.TemperatureHumidity;
 import com.smile.watchmovie.model.Weather;
 import com.smile.watchmovie.model.WeatherResponse;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-
 
 public class PersonFragment extends Fragment {
 
@@ -67,8 +68,11 @@ public class PersonFragment extends Fragment {
         );
 
         binding.tvFavorite.setOnClickListener(v -> {
-            Intent intent = new Intent(mMainActivity, FavoriteFilmActivity.class);
-            mMainActivity.startActivity(intent);
+            if (idUser == null || idUser.equals("")) {
+                Toast.makeText(requireActivity(), getString(R.string.not_logged_in_message), Toast.LENGTH_SHORT).show();
+            } else {
+                requireActivity().startActivity(new Intent(requireActivity(), FavoriteFilmActivity.class));
+            }
         });
 
         binding.tvSetting.setOnClickListener(v ->
