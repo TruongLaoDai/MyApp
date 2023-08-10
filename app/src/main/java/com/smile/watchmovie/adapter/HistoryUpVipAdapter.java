@@ -1,35 +1,28 @@
 package com.smile.watchmovie.adapter;
 
-import android.content.Context;
+import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.smile.watchmovie.databinding.ItemFilmDetailBinding;
 import com.smile.watchmovie.databinding.ItemHistoryPaymentBinding;
-import com.smile.watchmovie.model.FilmMainHome;
 import com.smile.watchmovie.model.HistoryUpVip;
 import com.smile.watchmovie.utils.OtherUtils;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 public class HistoryUpVipAdapter extends RecyclerView.Adapter<HistoryUpVipAdapter.HistoryUpVipViewHolder> {
+    private final List<HistoryUpVip> historyUpVipList = new ArrayList<>();
 
-    private final Context context;
-    private List<HistoryUpVip> historyUpVipList;
-
-    public HistoryUpVipAdapter(Context context) {
-        this.context = context;
+    public HistoryUpVipAdapter() {
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     public void setData(List<HistoryUpVip> historyUpVipList) {
-        this.historyUpVipList = historyUpVipList;
+        this.historyUpVipList.addAll(historyUpVipList);
         notifyDataSetChanged();
     }
 
@@ -43,15 +36,17 @@ public class HistoryUpVipAdapter extends RecyclerView.Adapter<HistoryUpVipAdapte
     @Override
     public void onBindViewHolder(@NonNull HistoryUpVipViewHolder holder, int position) {
         HistoryUpVip historyUpVip = historyUpVipList.get(position);
+
         if (historyUpVip == null) {
             return;
         }
 
-        if(historyUpVip.getIs_vip().equals("1")) {
+        if (historyUpVip.getIs_vip().equals("1")) {
             holder.binding.tvTypePremium.setText("Gói tháng");
         } else {
             holder.binding.tvTypePremium.setText("Gói năm");
         }
+
         OtherUtils otherUtils = new OtherUtils();
         holder.binding.tvStatus.setText(otherUtils.formatCommonTime(historyUpVip.getDateRegister(), historyUpVip.getIs_vip()));
 
@@ -60,15 +55,11 @@ public class HistoryUpVipAdapter extends RecyclerView.Adapter<HistoryUpVipAdapte
 
     @Override
     public int getItemCount() {
-        if(historyUpVipList != null) {
-            return historyUpVipList.size();
-        }
-        return 0;
+        return historyUpVipList.size();
     }
 
     public static class HistoryUpVipViewHolder extends RecyclerView.ViewHolder {
-
-        private ItemHistoryPaymentBinding binding;
+        private final ItemHistoryPaymentBinding binding;
 
         public HistoryUpVipViewHolder(@NonNull ItemHistoryPaymentBinding binding) {
             super(binding.getRoot());

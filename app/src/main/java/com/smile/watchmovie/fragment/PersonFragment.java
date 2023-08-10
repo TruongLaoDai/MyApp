@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -13,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.smile.watchmovie.EventBus.EventNotifyLogout;
 import com.smile.watchmovie.activity.ChoosePaymentActivity;
 import com.smile.watchmovie.activity.FavoriteFilmActivity;
 import com.smile.watchmovie.activity.HistoryWatchFilmActivity;
@@ -28,6 +30,8 @@ import com.smile.watchmovie.model.Weather;
 import com.smile.watchmovie.model.WeatherResponse;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.List;
 
@@ -36,7 +40,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class PersonFragment extends Fragment {
-
     private FragmentPersonBinding binding;
     private MainActivity mMainActivity;
     String nameUser, idUser;
@@ -59,8 +62,11 @@ public class PersonFragment extends Fragment {
 
     private void onClickItem() {
         binding.tvHistory.setOnClickListener(v -> {
-            Intent intent = new Intent(mMainActivity, HistoryWatchFilmActivity.class);
-            mMainActivity.startActivity(intent);
+            if (idUser == null || idUser.equals("")) {
+                Toast.makeText(requireActivity(), getString(R.string.not_logged_in_message), Toast.LENGTH_SHORT).show();
+            } else {
+                requireActivity().startActivity(new Intent(requireActivity(), HistoryWatchFilmActivity.class));
+            }
         });
 
         binding.tvDownload.setOnClickListener(v ->
@@ -87,7 +93,13 @@ public class PersonFragment extends Fragment {
                 Toast.makeText(requireActivity(), getString(R.string.feature_deploying), Toast.LENGTH_SHORT).show()
         );
 
-        binding.loutPay.setOnClickListener(v -> mMainActivity.startActivity(new Intent(mMainActivity, ChoosePaymentActivity.class)));
+        binding.loutPay.setOnClickListener(v -> {
+            if (idUser == null || idUser.equals("")) {
+                Toast.makeText(requireActivity(), getString(R.string.not_logged_in_message), Toast.LENGTH_SHORT).show();
+            } else {
+                requireActivity().startActivity(new Intent(requireActivity(), ChoosePaymentActivity.class));
+            }
+        });
     }
 
     public void showWeather() {
@@ -141,5 +153,26 @@ public class PersonFragment extends Fragment {
                     }
                 }
         );
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEvent(EventNotifyLogout isLogout) {
+        if (isLogout.isLogout()) {
+            idUser = "";
+        }
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (!EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().register(this);
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
     }
 }

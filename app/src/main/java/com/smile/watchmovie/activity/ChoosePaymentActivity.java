@@ -3,23 +3,17 @@ package com.smile.watchmovie.activity;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.annotation.SuppressLint;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.StrictMode;
-import android.view.Gravity;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.Button;
-import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.smile.watchmovie.R;
@@ -40,7 +34,6 @@ import vn.zalopay.sdk.ZaloPaySDK;
 import vn.zalopay.sdk.listeners.PayOrderListener;
 
 public class ChoosePaymentActivity extends AppCompatActivity {
-
     private ActivityChoosePaymentBinding binding;
     private String token;
     private String idUser, documentId;
@@ -62,6 +55,7 @@ public class ChoosePaymentActivity extends AppCompatActivity {
 
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
+
         SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
         editor = sharedPreferences.edit();
 
@@ -72,12 +66,18 @@ public class ChoosePaymentActivity extends AppCompatActivity {
 
         setUpFireBase();
 
+        /* Hiển thị thông tin người dùng */
         binding.tvNameAccount.setText(nameUser);
+        GoogleSignInAccount signInAccount = GoogleSignIn.getLastSignedInAccount(this);
+        if (signInAccount != null) {
+            Glide.with(this).load(signInAccount.getPhotoUrl()).into(binding.ivAccount);
+        }
 
-        binding.ivBack.setOnClickListener(v -> onBackPressed());
+        binding.toolBar.setNavigationOnClickListener(view -> finish());
 
         ZaloPaySDK.init(2553, Environment.SANDBOX);
 
+        /* Mua nhấn mua theo tháng */
         binding.loutBuyMonthly.setOnClickListener(v -> {
             price = "47000";
             type_vip = "1";
@@ -88,6 +88,7 @@ public class ChoosePaymentActivity extends AppCompatActivity {
             }
         });
 
+        /* Mua nhấn theo năm */
         binding.loutBuyYearly.setOnClickListener(v -> {
             price = "439000";
             type_vip = "2";
@@ -98,16 +99,10 @@ public class ChoosePaymentActivity extends AppCompatActivity {
             }
         });
 
-        if (idUser.equals("")) {
-            openDialogRequireLoginUser();
-        }
-        binding.btnBuy.setEnabled(!idUser.equals(""));
-        binding.ivHistoryPay.setEnabled(!idUser.equals(""));
-
         binding.ivHistoryPay.setOnClickListener(v -> startActivity(new Intent(ChoosePaymentActivity.this, HistoryBuyPremiumActivity.class)));
 
-        binding.btnBuy.setOnClickListener(v ->
-                {
+        /* Nhấn mua */
+        binding.btnBuy.setOnClickListener(v -> {
                     if ((is_vip.equals("1") && type_vip.equals("1")) || (is_vip.equals("2") && type_vip.equals("2"))) {
                         new AlertDialog.Builder(ChoosePaymentActivity.this)
                                 .setTitle("Bạn đã mua gói")
@@ -118,21 +113,12 @@ public class ChoosePaymentActivity extends AppCompatActivity {
                         new AlertDialog.Builder(ChoosePaymentActivity.this)
                                 .setTitle("Bạn có chắc chắn mua?")
                                 .setMessage("Bạn đã là thành viên vip nếu bạn mua tiếp gói trước sẽ mất hiệu lực!")
-                                .setPositiveButton("OK", (dialog, which) -> {
-                                    payForUpVip();
-                                }).setNegativeButton("Hủy", null).show();
+                                .setPositiveButton("OK", (dialog, which) -> payForUpVip()).setNegativeButton("Hủy", null).show();
                     } else {
                         payForUpVip();
                     }
                 }
         );
-        //demo refund
-        binding.ivAccount.setOnClickListener(v -> {
-            if(type_vip.equals("1"))
-                refundWhenUpdateVipError("47000", payId);
-            else
-                refundWhenUpdateVipError("439000", payId);
-        });
     }
 
     private void setUpFireBase() {
@@ -167,46 +153,6 @@ public class ChoosePaymentActivity extends AppCompatActivity {
                         .setPositiveButton("OK", null).show();
             }
         });
-    }
-
-    @SuppressLint("SetTextI18n")
-    private void openDialogRequireLoginUser() {
-        final Dialog dialog = new Dialog(this);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.layout_dialog_watch_film_from_time);
-        dialog.setCancelable(false);
-
-        Window window = dialog.getWindow();
-        if (window == null) {
-            return;
-        }
-
-        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
-        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-
-        WindowManager.LayoutParams windowAttributes = window.getAttributes();
-        windowAttributes.gravity = Gravity.CENTER;
-        window.setAttributes(windowAttributes);
-
-        TextView tv_at_time = dialog.findViewById(R.id.tv_at_time);
-        Button btn_yes = dialog.findViewById(R.id.btn_yes);
-        Button btn_no = dialog.findViewById(R.id.btn_no);
-
-        tv_at_time.setText("Bạn cần đăng nhập để thực hiện thanh toán!");
-
-        btn_yes.setOnClickListener(v -> {
-            Intent intent = new Intent(ChoosePaymentActivity.this, LoginActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
-            dialog.dismiss();
-        });
-
-        btn_no.setOnClickListener(v -> {
-            dialog.dismiss();
-            finish();
-        });
-        dialog.show();
     }
 
     private void callApiUpdateUserToVip(String id_user, String is_vip) {
@@ -275,7 +221,6 @@ public class ChoosePaymentActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
-
 
     @Override
     protected void onNewIntent(Intent intent) {

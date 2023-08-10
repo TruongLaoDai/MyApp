@@ -75,16 +75,4 @@ public class FavoriteFilmActivity extends AppCompatActivity {
                 .delete();
         getFilmFavorite();
     }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        finish();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        getFilmFavorite();
-    }
 }

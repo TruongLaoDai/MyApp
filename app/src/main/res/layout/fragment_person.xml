@@ -75,8 +75,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/lout_account"
-            android:layout_marginHorizontal="5dp"
             android:background="#F8C5C5"
+            android:foreground="?android:attr/selectableItemBackground"
             android:padding="10dp">
 
             <ImageView
@@ -112,31 +112,29 @@
                 android:id="@+id/go"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
                 android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
                 android:layout_marginEnd="20dp"
                 android:paddingVertical="10dp"
                 android:text="@string/go"
                 android:textColor="@color/white"
                 android:textSize="16sp" />
 
-            <ImageView
+            <androidx.appcompat.widget.AppCompatImageView
                 android:layout_width="20dp"
                 android:layout_height="20dp"
-                android:layout_alignParentTop="true"
                 android:layout_alignParentEnd="true"
-                android:layout_marginTop="12dp"
+                android:layout_centerVertical="true"
                 android:layout_marginEnd="5dp"
+                android:gravity="center_vertical"
                 android:src="@drawable/ic_arrow_right_more" />
 
-            <ImageView
+            <androidx.appcompat.widget.AppCompatImageView
                 android:layout_width="20dp"
                 android:layout_height="20dp"
-                android:layout_alignParentTop="true"
                 android:layout_alignParentEnd="true"
-                android:layout_marginTop="12dp"
+                android:layout_centerVertical="true"
                 android:src="@drawable/ic_arrow_right_more" />
-
 
         </RelativeLayout>
 
@@ -154,6 +152,7 @@
                 android:id="@+id/tv_history"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:foreground="?android:attr/selectableItemBackground"
                 android:padding="10dp"
                 android:text="@string/history"
                 android:textColor="@color/black"
@@ -169,18 +168,12 @@
                 android:layout_marginEnd="10dp"
                 android:src="@drawable/ic_arrow_right_more_category" />
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rcv_history"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/tv_history"
-                android:layout_marginStart="10dp" />
-
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tv_download"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/rcv_history"
+                android:layout_below="@+id/iv_more_history"
+                android:foreground="?android:attr/selectableItemBackground"
                 android:padding="10dp"
                 android:text="@string/downloaded_film"
                 android:textColor="@color/black"

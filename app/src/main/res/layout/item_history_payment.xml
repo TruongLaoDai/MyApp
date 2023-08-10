@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginStart="10dp"
     android:layout_marginTop="10dp"
     android:layout_marginEnd="10dp"
     android:background="@drawable/botron_background"
@@ -16,7 +17,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:gravity="center"
-        android:text="Gói tháng"
+        android:text="@string/monthly_package"
         android:textColor="@color/black"
         android:textSize="20sp"
         android:textStyle="bold" />
@@ -24,12 +25,12 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="5dp">
+        android:layout_marginTop="10dp">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Trạng thái:"
+            android:text="@string/status"
             android:textColor="@color/black" />
 
         <TextView
@@ -37,8 +38,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
-            tools:text="Trạng thái"
-            android:textColor="@color/black" />
+            android:textColor="@color/black"
+            tools:text="Hoạt động" />
     </LinearLayout>
 
     <LinearLayout
@@ -47,18 +48,18 @@
         android:layout_marginTop="5dp">
 
         <TextView
-            android:textColor="@color/black"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Ngày đăng kí:" />
+            android:text="@string/date_register"
+            android:textColor="@color/black" />
 
         <TextView
             android:id="@+id/tv_date_start"
-            android:textColor="@color/black"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
-            tools:text="Trạng thái" />
+            android:textColor="@color/black"
+            tools:text="10/08/2023" />
     </LinearLayout>
 
 </LinearLayout>

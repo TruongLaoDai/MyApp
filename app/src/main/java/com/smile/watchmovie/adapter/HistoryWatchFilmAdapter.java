@@ -76,12 +76,12 @@ public class HistoryWatchFilmAdapter extends RecyclerView.Adapter<HistoryWatchFi
                 .into(holder.binding.ivImageFilm);
 
         holder.binding.tvDayWatched.setVisibility(View.VISIBLE);
-        holder.binding.tvDurationWatched.setVisibility(View.VISIBLE);
+//        holder.binding.tvDurationWatched.setVisibility(View.VISIBLE);
         holder.binding.ivMoreAction.setVisibility(View.VISIBLE);
-        holder.binding.tvEpisodesTotal.setVisibility(View.GONE);
-        holder.binding.tvViewNumber.setVisibility(View.GONE);
+//        holder.binding.tvEpisodesTotal.setVisibility(View.GONE);
+//        holder.binding.tvViewNumber.setVisibility(View.GONE);
 
-        holder.binding.tvDurationWatched.setText(context.getString(R.string.duration_watch, messagePlayAtTime(historyWatchFilm.getDuration())));
+//        holder.binding.tvDurationWatched.setText(context.getString(R.string.duration_watch, messagePlayAtTime(historyWatchFilm.getDuration())));
         holder.binding.tvDayWatched.setText(context.getString(R.string.day_watch, historyWatchFilm.getDayWatch()));
 
         if (historyWatchFilm.getId_film() % 2 == 0) {
