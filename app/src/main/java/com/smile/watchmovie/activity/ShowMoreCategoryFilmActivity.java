@@ -2,13 +2,10 @@ package com.smile.watchmovie.activity;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.View;
 import android.widget.Toast;
 
@@ -17,54 +14,41 @@ import com.smile.watchmovie.adapter.FilmSearchAdapter;
 import com.smile.watchmovie.api.ApiService;
 import com.smile.watchmovie.databinding.ActivityShowMoreCategoryFilmBinding;
 import com.smile.watchmovie.model.FilmArrayResponse;
-import com.smile.watchmovie.model.FilmMainHome;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class ShowMoreCategoryFilmActivity extends AppCompatActivity {
-
     private ActivityShowMoreCategoryFilmBinding binding;
-    private FilmSearchAdapter mFilmSearchAdapter;
+    private FilmSearchAdapter listFilmAdapter;
     private boolean mIsLoading = false;
-    private int mCurrentPage = 0;
+    private int currentPage = 0;
     private int categoryId;
-    private List<FilmMainHome> mFilmList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_show_more_category_film);
-
         binding = ActivityShowMoreCategoryFilmBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        mFilmList = new ArrayList<>();
-
-        mFilmSearchAdapter = new FilmSearchAdapter(this);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, RecyclerView.VERTICAL, false);
-        RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
-        binding.rcvFilmCategory.setLayoutManager(linearLayoutManager);
-        binding.rcvFilmCategory.addItemDecoration(itemDecoration);
-
         categoryId = getIntent().getIntExtra("categoryId", 0);
-
         setupToolBar();
+
+        listFilmAdapter = new FilmSearchAdapter(this);
+        binding.rcvFilmCategory.setAdapter(listFilmAdapter);
+
+        callApiGetByCategoryListMovie(categoryId, 0);
 
         binding.rcvFilmCategory.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
                 if (!mIsLoading) {
-                    LinearLayoutManager linearLayoutManager1 = (LinearLayoutManager) binding.rcvFilmCategory.getLayoutManager();
-                    if (linearLayoutManager1 != null && linearLayoutManager1.findLastCompletelyVisibleItemPosition() == mFilmList.size() - 1) {
+                    LinearLayoutManager linearLayoutManager = (LinearLayoutManager) binding.rcvFilmCategory.getLayoutManager();
+                    if (linearLayoutManager != null && linearLayoutManager.findLastCompletelyVisibleItemPosition() == listFilmAdapter.filmMainHomeList.size() - 1) {
                         mIsLoading = true;
-                        binding.loadMore.setVisibility(View.VISIBLE);
-                        mCurrentPage += 1;
+                        currentPage += 1;
                         loadNextPage(categoryId);
                     }
                 }
@@ -72,13 +56,10 @@ public class ShowMoreCategoryFilmActivity extends AppCompatActivity {
         });
 
         binding.reloadLout.setOnRefreshListener(() -> {
-            callApiGetByCategoryListMovie(categoryId, 0);
-            new Handler().postDelayed(() -> {
-                binding.reloadLout.setRefreshing(false);
-            }, 3000);
+            currentPage = 0;
+            listFilmAdapter.clearData();
+            callApiGetByCategoryListMovie(categoryId, currentPage);
         });
-
-        callApiGetByCategoryListMovie(categoryId, 0);
     }
 
     private void setupToolBar() {
@@ -105,54 +86,33 @@ public class ShowMoreCategoryFilmActivity extends AppCompatActivity {
                 binding.toolBar.setTitle("Phiêu lưu");
                 break;
         }
-        binding.toolBar.setNavigationIcon(R.drawable.ic_arrow_back);
+
         binding.toolBar.setNavigationOnClickListener(v -> finish());
     }
 
     public void callApiGetByCategoryListMovie(int categoryId, int page) {
-        ApiService.apiService.getFilmByCategory(getString(R.string.wsToken), categoryId, page, 5).enqueue(new Callback<FilmArrayResponse>() {
-            @SuppressLint("NotifyDataSetChanged")
+        binding.loadHomePage.setVisibility(View.VISIBLE);
+        ApiService.apiService.getFilmByCategory(getString(R.string.wsToken), categoryId, page, 10).enqueue(new Callback<FilmArrayResponse>() {
             @Override
             public void onResponse(@NonNull Call<FilmArrayResponse> call, @NonNull Response<FilmArrayResponse> response) {
-                FilmArrayResponse movieArrayResponse = response.body();
-                if (movieArrayResponse != null) {
-                    if (binding.loadHomePage.getVisibility() == View.VISIBLE) {
-                        binding.loadHomePage.setVisibility(View.INVISIBLE);
-                    }
-                    if (binding.loadMore.getVisibility() == View.VISIBLE) {
-                        binding.loadMore.setVisibility(View.INVISIBLE);
-                    }
-                    if (movieArrayResponse.getData() != null) {
-                        mFilmList.addAll(movieArrayResponse.getData());
-                    } else {
-                        Toast.makeText(ShowMoreCategoryFilmActivity.this, "Đã hiển thị hết film", Toast.LENGTH_LONG).show();
-                    }
-                    if (page == 0) {
-                        mFilmSearchAdapter.setData(mFilmList);
-                        binding.rcvFilmCategory.setAdapter(mFilmSearchAdapter);
-                    }
-                    mFilmSearchAdapter.notifyDataSetChanged();
-                    if (mFilmList.size() > 0 && movieArrayResponse.getData().size() == 0) {
-                        Toast.makeText(ShowMoreCategoryFilmActivity.this, "Đã hiển thị hết film", Toast.LENGTH_LONG).show();
-                    }
-                } else {
-                    Toast.makeText(ShowMoreCategoryFilmActivity.this, "Đã hiển thị hết film", Toast.LENGTH_LONG).show();
+                binding.loadHomePage.setVisibility(View.GONE);
+                binding.reloadLout.setRefreshing(false);
+                if (response.body() != null && response.body().getData() != null) {
+                    listFilmAdapter.updateData(response.body().getData());
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<FilmArrayResponse> call, @NonNull Throwable t) {
-                binding.loadMore.setVisibility(View.INVISIBLE);
-                Toast.makeText(ShowMoreCategoryFilmActivity.this, "Error Get Film", Toast.LENGTH_SHORT).show();
+                binding.loadHomePage.setVisibility(View.GONE);
+                binding.reloadLout.setRefreshing(false);
+                Toast.makeText(ShowMoreCategoryFilmActivity.this, "Lấy danh sách phim không thành công", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
     private void loadNextPage(int categoryId) {
-        Handler handler = new Handler();
-        handler.postDelayed(() -> {
-            mIsLoading = false;
-            callApiGetByCategoryListMovie(categoryId, mCurrentPage);
-        }, 3500);
+        mIsLoading = false;
+        callApiGetByCategoryListMovie(categoryId, currentPage);
     }
 }

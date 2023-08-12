@@ -20,6 +20,7 @@ import com.smile.watchmovie.model.FilmMainHome;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -30,15 +31,22 @@ import retrofit2.Response;
 
 public class FilmSearchAdapter extends RecyclerView.Adapter<FilmSearchAdapter.FilmSearchViewHolder> {
     private final Context context;
-    private List<FilmMainHome> filmMainHomeList;
+    public final List<FilmMainHome> filmMainHomeList;
 
     public FilmSearchAdapter(Context context) {
         this.context = context;
+        this.filmMainHomeList = new ArrayList<>();
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    public void setData(List<FilmMainHome> movieMainHomeList) {
-        this.filmMainHomeList = movieMainHomeList;
+    public void clearData() {
+        this.filmMainHomeList.clear();
+        notifyDataSetChanged();
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    public void updateData(List<FilmMainHome> list) {
+        this.filmMainHomeList.addAll(list);
         notifyDataSetChanged();
     }
 

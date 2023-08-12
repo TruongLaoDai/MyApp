@@ -7,16 +7,10 @@ import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
-import com.smile.watchmovie.activity.MainActivity;
 import com.smile.watchmovie.activity.ShowMoreCategoryFilmActivity;
 import com.smile.watchmovie.adapter.FilmAdapter;
 import com.smile.watchmovie.api.ApiService;
@@ -32,7 +26,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class HomeFragment extends Fragment {
-
     private FragmentHomeBinding binding;
     private FilmAdapter mFilmAdapter1;
     private FilmAdapter mFilmAdapter2;
@@ -41,7 +34,6 @@ public class HomeFragment extends Fragment {
     private FilmAdapter mFilmAdapter5;
     private FilmAdapter mFilmAdapter6;
     private FilmAdapter mFilmAdapter7;
-    private MainActivity mMainActivity;
     private int callAgaint = 0;
     private List<FilmMainHome> movieCategory13;
     private List<FilmMainHome> movieCategory6;
@@ -58,18 +50,16 @@ public class HomeFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        mMainActivity = (MainActivity) getActivity();
         binding = FragmentHomeBinding.inflate(inflater, container, false);
 
-        mFilmAdapter1 = new FilmAdapter(mMainActivity);
-        mFilmAdapter2 = new FilmAdapter(mMainActivity);
-        mFilmAdapter3 = new FilmAdapter(mMainActivity);
-        mFilmAdapter4 = new FilmAdapter(mMainActivity);
-        mFilmAdapter5 = new FilmAdapter(mMainActivity);
-        mFilmAdapter6 = new FilmAdapter(mMainActivity);
-        mFilmAdapter7 = new FilmAdapter(mMainActivity);
+        mFilmAdapter1 = new FilmAdapter(requireActivity());
+        mFilmAdapter2 = new FilmAdapter(requireActivity());
+        mFilmAdapter3 = new FilmAdapter(requireActivity());
+        mFilmAdapter4 = new FilmAdapter(requireActivity());
+        mFilmAdapter5 = new FilmAdapter(requireActivity());
+        mFilmAdapter6 = new FilmAdapter(requireActivity());
+        mFilmAdapter7 = new FilmAdapter(requireActivity());
 
-        List<FilmMainHome> movieMainHomeList = new ArrayList<>();
         movieCategory13 = new ArrayList<>();
         movieCategory6 = new ArrayList<>();
         movieCategory4 = new ArrayList<>();
@@ -77,21 +67,6 @@ public class HomeFragment extends Fragment {
         movieCategory12 = new ArrayList<>();
         movieCategory14 = new ArrayList<>();
         movieCategory15 = new ArrayList<>();
-
-        LinearLayoutManager linearLayoutManager1 = new LinearLayoutManager(mMainActivity, RecyclerView.HORIZONTAL, false);
-        binding.rcvFilm1.setLayoutManager(linearLayoutManager1);
-        LinearLayoutManager linearLayoutManager2 = new LinearLayoutManager(mMainActivity, RecyclerView.HORIZONTAL, false);
-        binding.rcvFilm2.setLayoutManager(linearLayoutManager2);
-        LinearLayoutManager linearLayoutManager3 = new LinearLayoutManager(mMainActivity, RecyclerView.HORIZONTAL, false);
-        binding.rcvFilm3.setLayoutManager(linearLayoutManager3);
-        LinearLayoutManager linearLayoutManager4 = new LinearLayoutManager(mMainActivity, RecyclerView.HORIZONTAL, false);
-        binding.rcvFilm4.setLayoutManager(linearLayoutManager4);
-        LinearLayoutManager linearLayoutManager5 = new LinearLayoutManager(mMainActivity, RecyclerView.HORIZONTAL, false);
-        binding.rcvFilm5.setLayoutManager(linearLayoutManager5);
-        LinearLayoutManager linearLayoutManager6 = new LinearLayoutManager(mMainActivity, RecyclerView.HORIZONTAL, false);
-        binding.rcvFilm6.setLayoutManager(linearLayoutManager6);
-        LinearLayoutManager linearLayoutManager7 = new LinearLayoutManager(mMainActivity, RecyclerView.HORIZONTAL, false);
-        binding.rcvFilm7.setLayoutManager(linearLayoutManager7);
 
         callApiGetHomeFilmByCategory(15, 0);
         binding.getRoot().setOnRefreshListener(() -> {
@@ -102,37 +77,37 @@ public class HomeFragment extends Fragment {
         });
 
         binding.moreCartonMovie.setOnClickListener(v -> {
-            Intent intent = new Intent(mMainActivity, ShowMoreCategoryFilmActivity.class);
+            Intent intent = new Intent(requireActivity(), ShowMoreCategoryFilmActivity.class);
             intent.putExtra("categoryId", 14);
             startActivity(intent);
         });
         binding.moreActionMovie.setOnClickListener(v -> {
-            Intent intent = new Intent(mMainActivity, ShowMoreCategoryFilmActivity.class);
+            Intent intent = new Intent(requireActivity(), ShowMoreCategoryFilmActivity.class);
             intent.putExtra("categoryId", 6);
             startActivity(intent);
         });
         binding.moreHorrorMovie.setOnClickListener(v -> {
-            Intent intent = new Intent(mMainActivity, ShowMoreCategoryFilmActivity.class);
+            Intent intent = new Intent(requireActivity(), ShowMoreCategoryFilmActivity.class);
             intent.putExtra("categoryId", 4);
             startActivity(intent);
         });
         binding.moreThrillerMovie.setOnClickListener(v -> {
-            Intent intent = new Intent(mMainActivity, ShowMoreCategoryFilmActivity.class);
+            Intent intent = new Intent(requireActivity(), ShowMoreCategoryFilmActivity.class);
             intent.putExtra("categoryId", 11);
             startActivity(intent);
         });
         binding.moreComedyMovie.setOnClickListener(v -> {
-            Intent intent = new Intent(mMainActivity, ShowMoreCategoryFilmActivity.class);
+            Intent intent = new Intent(requireActivity(), ShowMoreCategoryFilmActivity.class);
             intent.putExtra("categoryId", 12);
             startActivity(intent);
         });
         binding.moreRomanticMovie.setOnClickListener(v -> {
-            Intent intent = new Intent(mMainActivity, ShowMoreCategoryFilmActivity.class);
+            Intent intent = new Intent(requireActivity(), ShowMoreCategoryFilmActivity.class);
             intent.putExtra("categoryId", 13);
             startActivity(intent);
         });
         binding.moreAdventureMovie.setOnClickListener(v -> {
-            Intent intent = new Intent(mMainActivity, ShowMoreCategoryFilmActivity.class);
+            Intent intent = new Intent(requireActivity(), ShowMoreCategoryFilmActivity.class);
             intent.putExtra("categoryId", 15);
             startActivity(intent);
         });
@@ -142,12 +117,11 @@ public class HomeFragment extends Fragment {
 
     public void callApiGetHomeFilmByCategory(int categoryId, int page) {
         ApiService.apiService.getFilmByCategory("7da353b8a3246f851e0ee436d898a26d", categoryId, page, 5).enqueue(new Callback<FilmArrayResponse>() {
-
             @Override
             public void onResponse(@NonNull Call<FilmArrayResponse> call, @NonNull Response<FilmArrayResponse> response) {
                 FilmArrayResponse movieArrayResponse = response.body();
                 if (movieArrayResponse != null) {
-                    switch (categoryId){
+                    switch (categoryId) {
                         case 14:
                             movieCategory14.addAll(movieArrayResponse.getData());
                             mFilmAdapter1.setData(movieArrayResponse.getData());
@@ -186,26 +160,22 @@ public class HomeFragment extends Fragment {
                             callApiGetHomeFilmByCategory(12, 0);
                             break;
                         case 15:
-                            if(callAgaint < 2) {
+                            if (callAgaint < 2) {
                                 movieCategory15.addAll(movieArrayResponse.getData());
                                 mFilmAdapter7.setData(movieArrayResponse.getData());
                                 binding.rcvFilm7.setAdapter(mFilmAdapter7);
                                 callApiGetHomeFilmByCategory(13, 0);
                                 break;
-                            }else{
+                            } else {
                                 binding.loadHomePage.setVisibility(View.INVISIBLE);
                                 break;
                             }
                     }
                 }
-                else{
-                    Toast.makeText(mMainActivity, "Đã hiển thị hết film", Toast.LENGTH_LONG).show();
-                }
             }
 
             @Override
             public void onFailure(@NonNull Call<FilmArrayResponse> call, @NonNull Throwable t) {
-                //Toast.makeText(mMainActivity, "Error Get Film", Toast.LENGTH_SHORT).show();
             }
         });
     }

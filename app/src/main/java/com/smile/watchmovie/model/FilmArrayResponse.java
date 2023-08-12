@@ -1,11 +1,9 @@
 package com.smile.watchmovie.model;
 
 import com.google.gson.annotations.SerializedName;
-
 import java.util.List;
 
 public class FilmArrayResponse {
-
     @SerializedName("errorCode")
     private String errorCode;
     @SerializedName("message")

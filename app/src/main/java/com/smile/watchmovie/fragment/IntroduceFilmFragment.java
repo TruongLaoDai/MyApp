@@ -280,7 +280,7 @@ public class IntroduceFilmFragment extends Fragment {
                         Toast.makeText(mWatchFilmActivity, "Đã hiển thị hết film", Toast.LENGTH_LONG).show();
                     }
                     if (page == 0) {
-                        mFilmSearchAdapter.setData(mFilmList);
+//                        mFilmSearchAdapter.setData(mFilmList);
                         binding.rcvMore.setAdapter(mFilmSearchAdapter);
                     }
                     mFilmSearchAdapter.notifyDataSetChanged();
