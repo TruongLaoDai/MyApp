@@ -24,9 +24,9 @@
 
     <LinearLayout
         android:id="@+id/title_login"
-        android:layout_below="@+id/iv_hello"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/iv_hello"
         android:layout_marginTop="20dp"
         android:orientation="vertical">
 
@@ -50,12 +50,11 @@
             android:textSize="15sp" />
     </LinearLayout>
 
-
     <LinearLayout
         android:id="@+id/login_with_face"
-        android:layout_below="@+id/title_login"
         android:layout_width="match_parent"
         android:layout_height="40dp"
+        android:layout_below="@+id/title_login"
         android:layout_marginStart="40dp"
         android:layout_marginTop="30dp"
         android:layout_marginEnd="40dp"
@@ -91,10 +90,10 @@
     <LinearLayout
         android:id="@+id/login_with_google"
         android:layout_width="match_parent"
-        android:layout_below="@+id/login_with_face"
         android:layout_height="40dp"
-        android:layout_marginTop="20dp"
+        android:layout_below="@+id/login_with_face"
         android:layout_marginStart="40dp"
+        android:layout_marginTop="20dp"
         android:layout_marginEnd="40dp"
         android:background="@drawable/bg_arrow_cicle"
         android:backgroundTint="@color/ic_launcher_background"
@@ -127,11 +126,11 @@
     <LinearLayout
         android:id="@+id/other"
         android:layout_width="match_parent"
-        android:layout_below="@+id/login_with_google"
-        android:layout_marginTop="40dp"
         android:layout_height="20dp"
+        android:layout_below="@+id/login_with_google"
         android:layout_gravity="center"
         android:layout_marginStart="60dp"
+        android:layout_marginTop="40dp"
         android:layout_marginEnd="60dp"
         android:orientation="horizontal">
 
@@ -167,87 +166,81 @@
     <LinearLayout
         android:id="@+id/login_other"
         android:layout_width="match_parent"
-        android:layout_below="@+id/other"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:layout_marginTop="30dp">
+        android:layout_below="@+id/other"
+        android:layout_marginTop="30dp"
+        android:gravity="center">
 
         <LinearLayout
-            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:gravity="center"
-            android:padding="10dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:orientation="vertical"
+            android:padding="10dp">
+
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/login_with_twitter"
-                android:src="@drawable/ic_twitter"
                 android:layout_width="30dp"
-                android:layout_height="30dp"/>
+                android:layout_height="30dp"
+                android:src="@drawable/ic_twitter" />
 
             <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/login_with_twitter"
                 android:layout_marginTop="5dp"
                 android:text="@string/twitter"
-                android:textColor="@color/black"
-                android:layout_below="@id/login_with_twitter"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:textColor="@color/black" />
 
         </LinearLayout>
 
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_gravity="center"
-        android:gravity="center"
-        android:padding="10dp"
-        android:layout_marginStart="20dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/login_with_email"
-            android:src="@drawable/ic_email"
-            android:layout_width="30dp"
-            android:layout_height="30dp"/>
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:text="@string/Email"
-            android:textColor="@color/black"
-            android:layout_marginTop="5dp"
-            android:layout_below="@id/login_with_email"
+        <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-    </LinearLayout>
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="20dp"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="10dp">
 
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_gravity="center"
-        android:gravity="center"
-        android:padding="10dp"
-        android:layout_marginStart="20dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/login_with_phone"
-            android:src="@drawable/ic_phone"
-            android:layout_width="30dp"
-            android:layout_height="30dp"/>
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/login_with_email"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/ic_email" />
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:text="@string/phone"
-            android:layout_marginTop="5dp"
-            android:textColor="@color/black"
-            android:layout_below="@id/login_with_phone"
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/login_with_email"
+                android:layout_marginTop="5dp"
+                android:text="@string/Email"
+                android:textColor="@color/black" />
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="20dp"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="10dp">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/login_with_phone"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/ic_phone" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/login_with_phone"
+                android:layout_marginTop="5dp"
+                android:text="@string/phone"
+                android:textColor="@color/black" />
+        </LinearLayout>
     </LinearLayout>
-
-    </LinearLayout>
-
-    <ProgressBar
-        android:id="@+id/loading_login"
-        android:visibility="invisible"
-        android:layout_centerInParent="true"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
-
 </RelativeLayout>

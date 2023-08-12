@@ -8,7 +8,6 @@
     android:layout_marginTop="10dp"
     android:layout_marginBottom="10dp">
 
-
     <RelativeLayout
         android:id="@+id/lout_image"
         android:layout_width="140dp"
@@ -29,11 +28,11 @@
 
             <RelativeLayout
                 android:id="@+id/lout_premium"
-                android:background="@drawable/bg_premium_home"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="center"
-                android:layout_gravity="end">
+                android:layout_gravity="end"
+                android:background="@drawable/bg_premium_home"
+                android:gravity="center">
 
                 <TextView
                     android:id="@+id/tv_premium"
@@ -45,35 +44,37 @@
                     android:layout_marginBottom="2dp"
                     android:layout_toEndOf="@+id/iv_premium"
                     android:padding="2dp"
+                    android:text="@string/premium"
                     android:textColor="@color/white"
-                    android:textStyle="bold"
-                    android:text="@string/premium" />
+                    android:textStyle="bold" />
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/iv_premium"
-                    android:tint="@color/white"
+                    android:layout_width="20dp"
+                    android:layout_height="wrap_content"
                     android:padding="2dp"
                     android:src="@drawable/ic_premium"
-                    android:layout_width="20dp"
-                    android:layout_height="wrap_content"/>
+                    android:tint="@color/white" />
 
             </RelativeLayout>
+
         </androidx.cardview.widget.CardView>
 
     </RelativeLayout>
 
     <RelativeLayout
         android:id="@+id/loat_detail_film"
-        android:layout_marginStart="10dp"
-        android:layout_toEndOf="@+id/lout_image"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_toEndOf="@+id/lout_image">
+
         <TextView
             android:id="@+id/tv_name_film"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="20dp"
             android:layout_marginTop="5dp"
+            android:layout_marginEnd="20dp"
             android:textColor="@color/black"
             android:textSize="18sp"
             tools:text="Vo than chua te" />
@@ -82,9 +83,9 @@
             android:id="@+id/tv_episodesTotal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="20dp"
             android:layout_below="@+id/tv_name_film"
             android:layout_marginTop="5dp"
+            android:layout_marginEnd="20dp"
             android:gravity="center_vertical"
             android:textSize="14sp"
             tools:text="1 tập" />
@@ -93,30 +94,31 @@
             android:id="@+id/tv_view_number"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="20dp"
             android:layout_below="@+id/tv_episodesTotal"
             android:layout_marginTop="5dp"
+            android:layout_marginEnd="20dp"
             android:gravity="center_vertical"
             tools:text="8.0" />
 
         <TextView
             android:id="@+id/tv_created"
-            android:layout_marginEnd="20dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/tv_view_number"
             android:layout_marginTop="5dp"
+            android:layout_marginEnd="20dp"
             android:gravity="center_vertical"
             tools:text="8.0" />
+
     </RelativeLayout>
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/iv_more_action"
-        android:visibility="gone"
-        tools:visibility="visible"
-        android:layout_marginTop="5dp"
-        android:layout_alignEnd="@+id/loat_detail_film"
-        android:src="@drawable/ic_more_action"
         android:layout_width="30dp"
-        android:layout_height="30dp"/>
+        android:layout_height="30dp"
+        android:layout_alignEnd="@+id/loat_detail_film"
+        android:layout_marginTop="5dp"
+        android:src="@drawable/ic_more_action"
+        android:visibility="gone"
+        tools:visibility="visible" />
 </RelativeLayout>

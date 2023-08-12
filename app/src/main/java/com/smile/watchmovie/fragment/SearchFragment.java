@@ -16,7 +16,6 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.smile.watchmovie.activity.MainActivity;
 import com.smile.watchmovie.adapter.FilmSearchAdapter;
 import com.smile.watchmovie.custom.PaginationScrollListener;
 import com.smile.watchmovie.api.ApiService;
@@ -32,87 +31,57 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class SearchFragment extends Fragment {
-
     private FragmentSearchBinding binding;
     private FilmSearchAdapter mFilmSearchAdapter;
-    private MainActivity mMainActivity;
     private boolean mIsLoading;
     private boolean mIsLastPage;
-    private int mCurrentPage=0;
-    private final int mTotalPage=20;
-    private String key;
+    private int mCurrentPage = 0;
+    private final int mTotalPage = 20;
     private List<FilmMainHome> movieMainHomeList;
 
     @SuppressLint("NotifyDataSetChanged")
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-
         binding = FragmentSearchBinding.inflate(inflater, container, false);
-        mMainActivity = (MainActivity) getActivity();
 
-        mFilmSearchAdapter = new FilmSearchAdapter(mMainActivity);
-
-        binding.loadMore.setVisibility(View.INVISIBLE);
-        binding.loadSearchPage.setVisibility(View.INVISIBLE);
+        mFilmSearchAdapter = new FilmSearchAdapter(requireActivity());
         movieMainHomeList = new ArrayList<>();
-
         binding.searchView.clearFocus();
 
         binding.searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @SuppressLint("SetTextI18n")
             @Override
             public boolean onQueryTextSubmit(String query) {
-                binding.loadSearchPage.setVisibility(View.VISIBLE);
-                key = query;
-                movieMainHomeList.clear();
-                if(query.equals("")){
-                    binding.loadSearchPage.setVisibility(View.INVISIBLE);
-                    binding.tvTitle.setText("Bạn hãy nhập tên phim cần tìm!");
+                if (query.equals("")) {
                     binding.tvTitle.setVisibility(View.VISIBLE);
+                    binding.loadSearchPage.setVisibility(View.VISIBLE);
+                    binding.rcvFilm.setVisibility(View.GONE);
+                    movieMainHomeList.clear();
                     mFilmSearchAdapter.setData(movieMainHomeList);
-                    binding.rcvFilm.setAdapter(mFilmSearchAdapter);
-                }
-                else {
-                    binding.tvTitle.setVisibility(View.INVISIBLE);
+                } else {
+                    binding.tvTitle.setVisibility(View.GONE);
+                    binding.loadSearchPage.setVisibility(View.VISIBLE);
                     callApiSearchFilm(query, 0);
                 }
                 return false;
             }
 
-            @SuppressLint("SetTextI18n")
             @Override
             public boolean onQueryTextChange(String newText) {
-                new Handler().postDelayed(() -> {
-                    binding.loadSearchPage.setVisibility(View.VISIBLE);
-                    key = newText;
-                    movieMainHomeList.clear();
-                    if(newText.equals("")){
-                        binding.loadSearchPage.setVisibility(View.INVISIBLE);
-                        binding.tvTitle.setText("Bạn hãy nhập tên phim cần tìm!");
-                        binding.tvTitle.setVisibility(View.VISIBLE);
-                        mFilmSearchAdapter.setData(movieMainHomeList);
-                        binding.rcvFilm.setAdapter(mFilmSearchAdapter);
-                    }
-                    else {
-                        binding.tvTitle.setVisibility(View.INVISIBLE);
-                        callApiSearchFilm(newText, 0);
-                    }
-                }, 2000);
                 return false;
             }
         });
 
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mMainActivity, RecyclerView.VERTICAL, false);
-        RecyclerView.ItemDecoration itemDecoration=new DividerItemDecoration(mMainActivity, DividerItemDecoration.VERTICAL);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(requireActivity(), RecyclerView.VERTICAL, false);
+        RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(requireActivity(), DividerItemDecoration.VERTICAL);
         binding.rcvFilm.setLayoutManager(linearLayoutManager);
         binding.rcvFilm.addItemDecoration(itemDecoration);
         binding.rcvFilm.addOnScrollListener(new PaginationScrollListener(linearLayoutManager) {
             @Override
             public void loadMoreItems() {
-                mIsLoading=true;
-                binding.loadMore.setVisibility(View.VISIBLE);
-                mCurrentPage+=1;
+                mIsLoading = true;
+                mCurrentPage += 1;
                 loadNextPage();
             }
 
@@ -126,6 +95,7 @@ public class SearchFragment extends Fragment {
                 return mIsLastPage;
             }
         });
+
         return binding.getRoot();
     }
 
@@ -134,14 +104,12 @@ public class SearchFragment extends Fragment {
             @SuppressLint({"NotifyDataSetChanged", "SetTextI18n"})
             @Override
             public void onResponse(@NonNull Call<FilmArrayResponse> call, @NonNull Response<FilmArrayResponse> response) {
+                binding.loadSearchPage.setVisibility(View.GONE);
                 FilmArrayResponse movieArrayResponse = response.body();
                 if (movieArrayResponse != null) {
-                    if(!key.equals("")) {
-                        if(binding.loadSearchPage.getVisibility() == View.VISIBLE){
+                    if (!key.equals("")) {
+                        if (binding.loadSearchPage.getVisibility() == View.VISIBLE) {
                             binding.loadSearchPage.setVisibility(View.INVISIBLE);
-                        }
-                        if(binding.loadMore.getVisibility() == View.VISIBLE) {
-                            binding.loadMore.setVisibility(View.INVISIBLE);
                         }
                         movieMainHomeList.addAll(movieArrayResponse.getData());
                         if (page == 0) {
@@ -150,13 +118,12 @@ public class SearchFragment extends Fragment {
                         }
                         mFilmSearchAdapter.notifyDataSetChanged();
                         if (movieMainHomeList.size() > 0 && movieArrayResponse.getData().size() == 0) {
-                            Toast.makeText(mMainActivity, "Đã hiển thị hết film", Toast.LENGTH_LONG).show();
+                            Toast.makeText(requireActivity(), "Đã hiển thị hết film", Toast.LENGTH_LONG).show();
                         } else if (movieMainHomeList.size() == 0) {
                             binding.tvTitle.setVisibility(View.VISIBLE);
                             binding.tvTitle.setText("Không có phim bạn cần tìm!");
                         }
-                    }
-                    else if(binding.searchView.toString().equals("")){
+                    } else if (binding.searchView.toString().equals("")) {
                         movieMainHomeList.clear();
                         mFilmSearchAdapter.notifyDataSetChanged();
                         binding.rcvFilm.setAdapter(mFilmSearchAdapter);
@@ -169,20 +136,20 @@ public class SearchFragment extends Fragment {
 
             @Override
             public void onFailure(@NonNull Call<FilmArrayResponse> call, @NonNull Throwable t) {
-                Toast.makeText(mMainActivity, "Error Get Film", Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireActivity(), "Tìm kiếm không thành công", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
 
-    private void loadNextPage(){
-        Handler handler=new Handler();
+    private void loadNextPage() {
+        Handler handler = new Handler();
         handler.postDelayed(() -> {
-            mIsLoading=false;
-            callApiSearchFilm(key, mCurrentPage);
-            if(mCurrentPage==mTotalPage){
-                mIsLastPage=true;
+            mIsLoading = false;
+            callApiSearchFilm("key", mCurrentPage);
+            if (mCurrentPage == mTotalPage) {
+                mIsLastPage = true;
             }
-        },3000);
+        }, 3000);
     }
 }

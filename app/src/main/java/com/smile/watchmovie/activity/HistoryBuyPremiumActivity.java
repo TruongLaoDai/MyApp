@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class HistoryBuyPremiumActivity extends AppCompatActivity {
-
     private ActivityHistoryBuyPremiumBinding binding;
     private HistoryUpVipAdapter historyUpVipAdapter;
     private List<HistoryUpVip> historyUpVipList;

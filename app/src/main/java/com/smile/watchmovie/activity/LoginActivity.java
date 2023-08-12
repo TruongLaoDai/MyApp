@@ -1,6 +1,5 @@
 package com.smile.watchmovie.activity;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -9,16 +8,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.Toast;
 
-import com.facebook.AccessToken;
-import com.facebook.CallbackManager;
-import com.facebook.FacebookCallback;
-import com.facebook.FacebookException;
-import com.facebook.GraphRequest;
-import com.facebook.login.LoginManager;
-import com.facebook.login.LoginResult;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -26,140 +17,98 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.smile.watchmovie.R;
 import com.smile.watchmovie.databinding.ActivityLoginBinding;
 import com.smile.watchmovie.model.User;
 
-import org.json.JSONException;
-
-import java.util.Collections;
-
 public class LoginActivity extends AppCompatActivity {
-
     GoogleSignInOptions gso;
     GoogleSignInClient gsc;
     ActivityLoginBinding binding;
-    CallbackManager callBackManager;
-    private String username, password, full_name, picture;
+    private String username, userId, full_name;
     private SharedPreferences.Editor editor;
     private CollectionReference collectionReference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
-
         binding = ActivityLoginBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        username = "";
-        password = "";
-        full_name = "";
-        picture = "";
 
         SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
         editor = sharedPreferences.edit();
 
+        /* Khởi tạo FireStore Database  */
         FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
         collectionReference = firebaseFirestore.collection("WatchFilm");
 
+        /* Khởi tạo đăng nhập bằng tài khoản Google */
         gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build();
         gsc = GoogleSignIn.getClient(this, gso);
 
-        callBackManager = CallbackManager.Factory.create();
+        binding.ivBack.setOnClickListener(v -> finish());
 
-        binding.ivBack.setOnClickListener(v -> onBackPressed());
         binding.loginWithGoogle.setOnClickListener(v -> signIn());
 
-        LoginManager.getInstance().registerCallback(callBackManager,
-                new FacebookCallback<LoginResult>() {
-                    @Override
-                    public void onSuccess(LoginResult loginResult) {
-                        AccessToken accessToken;
-                        accessToken = AccessToken.getCurrentAccessToken();
-                        AccessToken finalAccessToken = accessToken;
-                        GraphRequest request = GraphRequest.newMeRequest(
-                                accessToken,
-                                (object, response) -> {
-                                    // Application code
-                                    try {
-                                        assert object != null;
-                                        username = (String) object.get("name");
-                                        assert finalAccessToken != null;
-                                        password = finalAccessToken.getUserId();
-                                        full_name = username;
-                                        binding.loadingLogin.setVisibility(View.VISIBLE);
-                                        picture = object.getJSONObject("picture")
-                                                .getJSONObject("data")
-                                                .getString("url");
-                                        callApiLoginUser("facebook");
-                                    } catch (JSONException e) {
-                                        e.printStackTrace();
-                                    }
-                                });
-                        Bundle parameters = new Bundle();
-                        parameters.putString("fields", "id,name,link, picture.type(large)");
-                        request.setParameters(parameters);
-                        request.executeAsync();
-                    }
-
-                    @Override
-                    public void onCancel() {
-                        // App code
-                    }
-
-                    @Override
-                    public void onError(@NonNull FacebookException exception) {
-                        // App code
-                    }
-                });
-
-        binding.loginWithFace.setOnClickListener(v -> LoginManager.getInstance().logInWithReadPermissions(LoginActivity.this, Collections.singletonList("public_profile")));
+        binding.loginWithFace.setOnClickListener(v -> Toast.makeText(this, R.string.feature_deploying, Toast.LENGTH_SHORT).show());
     }
 
-    public void callApiRegisterUser(String type) {
-        User user = new User(password, username, full_name, "", "", "", "0");
-        collectionReference.document("tbluser").collection("user"+password)
-                .add(user)
-                .addOnCompleteListener(task -> {
-                    user.setDocumentId(task.getResult().getId());
-                    saveToSharedPreferences(user);
-                    navigateToMainActivity(type);
-                });
-    }
-
-    public void callApiLoginUser(String type) {
-        collectionReference.document("tbluser").collection("user"+password).whereEqualTo("id", password)
+    public void addAccountOfUserToFireStore(String type) {
+        collectionReference.document("tbluser").collection("user" + userId)
+                .whereEqualTo("username", username)
                 .get()
-                .addOnSuccessListener(queryDocumentSnapshots -> {
-                    binding.loadingLogin.setVisibility(View.GONE);
-                    if(queryDocumentSnapshots.getDocuments().size() > 0) {
-                        DocumentSnapshot doc = queryDocumentSnapshots.getDocuments().get(0);
-                        User user = doc.toObject(User.class);
-                        if(user != null) {
-                            user.setDocumentId(doc.getId());
-                            saveToSharedPreferences(user);
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        QuerySnapshot querySnapshot = task.getResult();
+                        if (querySnapshot != null && !querySnapshot.isEmpty()) {
+                            /* Lấy thông tin truy vấn */
+                            String documentId = querySnapshot.getDocuments().get(0).getId();
+                            User user = querySnapshot.getDocuments().get(0).toObject(User.class);
+                            if (user != null) {
+                                user.setDocumentId(documentId);
+                            }
+
+                            /* Lưu thông tin người dùng lại DB */
+                            if (user != null) {
+                                saveToSharedPreferences(user);
+                            }
+
+                            /* Khởi động lại app */
                             navigateToMainActivity(type);
+
+                            Log.e("FireStore", "Thông tin người dùng đã tồn tại");
                         } else {
-                            callApiRegisterUser(type);
+                            User user = new User(userId, username, full_name, "", "", "", "0");
+                            collectionReference.document("tbluser")
+                                    .collection("user" + userId)
+                                    .add(user)
+                                    .addOnSuccessListener(documentReference -> {
+                                        String documentId = documentReference.getId();
+                                        user.setDocumentId(documentId);
+
+                                        /* Lưu thông tin người dùng lại DB */
+                                        saveToSharedPreferences(user);
+
+                                        /* Khởi động lại app */
+                                        navigateToMainActivity(type);
+
+                                        Log.d("Firestore", "Thêm thông tin người dùng thành công");
+                                    })
+                                    .addOnFailureListener(e -> Log.w("Firestore", "Thêm thông tin người dùng thất bại"));
                         }
                     } else {
-                        callApiRegisterUser(type);
+                        Log.w("FireStore", "Truy vấn thông tin không thành công");
                     }
-                })
-                .addOnFailureListener(e -> {
-                    binding.loadingLogin.setVisibility(View.GONE);
-                    Toast.makeText(this, "Login fail", Toast.LENGTH_SHORT).show();
                 });
     }
 
     private void saveToSharedPreferences(User user) {
         editor.putString("idUser", user.getId());
-        editor.putString("documentId", user.getDocumentId());
         editor.putString("isVip", user.isIs_vip());
         editor.putString("name", user.getFull_name());
-        editor.putString("picture", picture);
+        editor.putString("documentId", user.getDocumentId());
         editor.apply();
     }
 
@@ -178,32 +127,21 @@ public class LoginActivity extends AppCompatActivity {
                 GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(this);
                 if (acct != null) {
                     username = acct.getEmail();
-                    password = acct.getId();
+                    userId = acct.getId();
                     full_name = acct.getDisplayName();
-                    binding.loadingLogin.setVisibility(View.VISIBLE);
-                    callApiLoginUser("google");
+                    addAccountOfUserToFireStore("google");
                 }
             } catch (ApiException e) {
-                Log.e("MaLoi", e.getMessage().toString());
-                Toast.makeText(getApplicationContext(), "Something went wrong", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "Đăng nhập không thành công", Toast.LENGTH_SHORT).show();
             }
-        } else {
-            callBackManager.onActivityResult(requestCode, resultCode, data);
         }
     }
 
     private void navigateToMainActivity(String type) {
-        finish();
-        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-        Toast.makeText(getApplicationContext(), "Login Success", Toast.LENGTH_LONG).show();
         editor.putString("typeLogin", type);
         editor.apply();
-        startActivity(intent);
-    }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
+        Toast.makeText(getApplicationContext(), "Đăng nhập thành công", Toast.LENGTH_SHORT).show();
+        startActivity(new Intent(LoginActivity.this, MainActivity.class));
         finish();
     }
 }

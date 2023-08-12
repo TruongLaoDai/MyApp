@@ -1,7 +1,5 @@
 package com.smile.watchmovie.model;
 
-
-
 import com.smile.watchmovie.utils.AppInfo;
 import com.smile.watchmovie.zalo.Helper.Helpers;
 import com.smile.watchmovie.zalo.HttpProvider;
@@ -52,7 +50,6 @@ public class CreateOrder {
 
      public JSONObject createOrder(String amount) throws Exception {
         CreateOrderData input = new CreateOrderData(amount);
-
         RequestBody formBody = new FormBody.Builder()
                 .add("app_id", input.AppId)
                 .add("app_user", input.AppUser)
@@ -65,7 +62,6 @@ public class CreateOrder {
                 .add("description", input.Description)
                 .add("mac", input.Mac)
                 .build();
-
          return HttpProvider.sendPost(AppInfo.URL_CREATE_ORDER, formBody);
     }
 }

@@ -36,7 +36,7 @@ import vn.zalopay.sdk.listeners.PayOrderListener;
 public class ChoosePaymentActivity extends AppCompatActivity {
     private ActivityChoosePaymentBinding binding;
     private String token;
-    private String idUser, documentId;
+    private String idUser;
     private String payId;
     private String price, type_vip;
     private SharedPreferences.Editor editor;
@@ -45,16 +45,16 @@ public class ChoosePaymentActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_choose_payment);
-
         binding = ActivityChoosePaymentBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
         price = "47000";
         type_vip = "1";
 
+        /* Khởi tạo ZaloPay */
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
+        ZaloPaySDK.init(2553, Environment.SANDBOX);
 
         SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
         editor = sharedPreferences.edit();
@@ -62,7 +62,6 @@ public class ChoosePaymentActivity extends AppCompatActivity {
         idUser = sharedPreferences.getString("idUser", "");
         String nameUser = sharedPreferences.getString("name", "");
         String is_vip = sharedPreferences.getString("isVip", "");
-        documentId = sharedPreferences.getString("documentId", "");
 
         setUpFireBase();
 
@@ -74,8 +73,6 @@ public class ChoosePaymentActivity extends AppCompatActivity {
         }
 
         binding.toolBar.setNavigationOnClickListener(view -> finish());
-
-        ZaloPaySDK.init(2553, Environment.SANDBOX);
 
         /* Mua nhấn mua theo tháng */
         binding.loutBuyMonthly.setOnClickListener(v -> {
@@ -106,13 +103,13 @@ public class ChoosePaymentActivity extends AppCompatActivity {
                     if ((is_vip.equals("1") && type_vip.equals("1")) || (is_vip.equals("2") && type_vip.equals("2"))) {
                         new AlertDialog.Builder(ChoosePaymentActivity.this)
                                 .setTitle("Bạn đã mua gói")
-                                .setMessage("Bạn đã mua gói trước đây hãy đợi khi gói hết hạn để mua tiếp")
+                                .setMessage("Bạn đã mua gói trước đây. Hãy đợi đến khi gói hết hạn để mua tiếp")
                                 .setPositiveButton("OK", (dialog, which) -> {
                                 }).show();
                     } else if (is_vip.equals("1") || is_vip.equals("2")) {
                         new AlertDialog.Builder(ChoosePaymentActivity.this)
                                 .setTitle("Bạn có chắc chắn mua?")
-                                .setMessage("Bạn đã là thành viên vip nếu bạn mua tiếp gói trước sẽ mất hiệu lực!")
+                                .setMessage("Bạn đã là thành viên vip. Nếu bạn mua tiếp, gói trước sẽ bị mất hiệu lực!")
                                 .setPositiveButton("OK", (dialog, which) -> payForUpVip()).setNegativeButton("Hủy", null).show();
                     } else {
                         payForUpVip();
@@ -127,7 +124,9 @@ public class ChoosePaymentActivity extends AppCompatActivity {
     }
 
     private void payForUpVip() {
+        /* Tạo đơn hàng */
         createOrder(price);
+
         ZaloPaySDK.getInstance().payOrder(ChoosePaymentActivity.this, token, "demozpdk://app", new PayOrderListener() {
             @Override
             public void onPaymentSucceeded(final String transactionId, final String transToken, final String appTransID) {
@@ -149,34 +148,26 @@ public class ChoosePaymentActivity extends AppCompatActivity {
             public void onPaymentError(ZaloPayError zaloPayError, String zpTransToken, String appTransID) {
                 new AlertDialog.Builder(ChoosePaymentActivity.this)
                         .setTitle("Thanh toán lỗi")
-                        .setMessage("Có một vài vấn đề trong khi thanh toán bạn hãy thử lại!")
+                        .setMessage("Có một vài vấn đề trong khi thanh toán. Bạn hãy thử lại sau nhé!")
                         .setPositiveButton("OK", null).show();
             }
         });
     }
 
     private void callApiUpdateUserToVip(String id_user, String is_vip) {
-        collectionReference.document("tbluser").collection("user" + id_user).document(documentId)
-                .update("is_vip", is_vip)
-                .addOnCompleteListener(task -> {
-                    Date date = new Date();
-                    SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
-                    HistoryUpVip historyUpVip = new HistoryUpVip(is_vip, format.format(date));
-                    collectionReference.document("tblhistoryupvip").collection("user" + id_user)
-                            .add(historyUpVip)
-                            .addOnCompleteListener(task1 -> {
-                                editor.putString("isVip", type_vip);
-                                editor.apply();
-                                new AlertDialog.Builder(ChoosePaymentActivity.this)
-                                        .setTitle("Thanh toán thành công")
-                                        .setMessage("Bây giờ bạn có thể trải nghiệm tất cả phim miễn phí!")
-                                        .setPositiveButton("OK", (dialog, which) -> {
-                                        }).show();
-                            })
-                            .addOnFailureListener(e -> {
-                                refundWhenUpdateVipError(price, payId);
-                                Toast.makeText(ChoosePaymentActivity.this, "Error update", Toast.LENGTH_SHORT).show();
-                            });
+        Date date = new Date();
+        SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
+        HistoryUpVip historyUpVip = new HistoryUpVip(is_vip, format.format(date));
+        collectionReference.document("tblhistoryupvip").collection("user" + id_user)
+                .add(historyUpVip)
+                .addOnCompleteListener(task1 -> {
+                    editor.putString("isVip", type_vip);
+                    editor.apply();
+                    new AlertDialog.Builder(ChoosePaymentActivity.this)
+                            .setTitle("Thanh toán thành công")
+                            .setMessage("Bây giờ bạn có thể trải nghiệm tất cả phim miễn phí!")
+                            .setPositiveButton("OK", (dialog, which) -> {
+                            }).show();
                 })
                 .addOnFailureListener(e -> {
                     refundWhenUpdateVipError(price, payId);
@@ -186,7 +177,6 @@ public class ChoosePaymentActivity extends AppCompatActivity {
 
     public void createOrder(String price) {
         CreateOrder orderApi = new CreateOrder();
-
         try {
             JSONObject data = orderApi.createOrder(price);
             String code = data.getString("return_code");

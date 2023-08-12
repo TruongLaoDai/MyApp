@@ -6,8 +6,8 @@
     <string name="facebook_client_token">4db1dd7b95804ee77a1c83b7c9793c46</string>
     <string name="film_start">%1$d*</string>
     <string name="episode_film">%1$d</string>
-    <string name="one_episode">1 Tập</string>
-    <string name="episode_total">%1$d Tập</string>
+    <string name="one_episode">Phim ngắn</string>
+    <string name="episode_total">Phim bộ: %1$d tập</string>
     <string name="image_logo_app">logo_app</string>
     <string name="image_play_film">image_play_film</string>
     <string name="xem_phim">Xem phim</string>
@@ -15,11 +15,11 @@
     <string name="directors">Đạo diễn: </string>
     <string name="detail">Chi tiết</string>
     <string name="image_film">Image Film</string>
-    <string name="tb_edit_text">Bạn hãy nhập tên phim cần tìm!</string>
+    <string name="tb_edit_text">Danh sách tìm kiếm trống</string>
     <string name="hint">Tên phim…</string>
     <string name="login_facebook">Đăng nhập bằng Facebook</string>
-    <string name="title_login">Đăng nhập vào WatchFilm</string>
-    <string name="text_gt_login">Đăng nhập để trải nghiệm film tốt hơn</string>
+    <string name="title_login">Đăng nhập vào Phim hay</string>
+    <string name="text_gt_login">Đăng nhập để trải nghiệm phim tốt hơn</string>
     <string name="login_google">Đăng nhập bằng Google</string>
     <string name="login_orther">hoặc đăng nhập bằng</string>
     <string name="twitter">Twitter</string>
@@ -85,7 +85,7 @@
     <string name="dration_watched">Đã xem: %1$d%</string>
     <string name="buy_premium">Mua Premium</string>
     <string name="buy_title">Mua Premium để xem trước vô số nội dung</string>
-    <string name="account_vip">Bạn đã là thành viên vip hãy vào kiểm tra gói hoặc nâng cấp gói đã sử dụng nào</string>
+    <string name="account_vip">Bạn đã là thành viên vip. Hãy vào kiểm tra gói hoặc nâng cấp gói đã sử dụng nào</string>
     <string name="go">Go</string>
     <string name="title_buy">Mua Premium để xem toàn bộ phim miễn phí</string>
     <string name="type_premium">Gói Premium</string>
@@ -108,7 +108,7 @@
     <string name="update">Cập nhật</string>
     <string name="duration_watch">Bạn đã xem đến: %1$s</string>
     <string name="day_created">Ngày tạo: %1$s</string>
-    <string name="day_watch">Ngày xem: %1$s</string>
+    <string name="day_watch">Ngày ra mắt: %1$s</string>
     <string name="day_favorite">Ngày thêm: %1$s</string>
     <string name="delete">Xóa</string>
     <string name="cancel">Hủy</string>

@@ -1,6 +1,5 @@
 package com.smile.watchmovie.model;
 
-// Java version "1.8.0_201"
 import com.smile.watchmovie.utils.AppInfo;
 import com.smile.watchmovie.zalo.Helper.Helpers;
 import com.smile.watchmovie.zalo.HttpProvider;

@@ -4,14 +4,12 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.facebook.login.LoginManager;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -20,7 +18,6 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.smile.watchmovie.EventBus.EventNotifyLogout;
-import com.smile.watchmovie.R;
 import com.smile.watchmovie.databinding.ActivityInfoAccountBinding;
 import com.smile.watchmovie.model.User;
 
@@ -31,19 +28,15 @@ import java.util.Map;
 import java.util.Objects;
 
 public class InfoAccountActivity extends AppCompatActivity {
-
     private ActivityInfoAccountBinding binding;
-    private String id_user;
+    private String id_user, documentId;
     private SharedPreferences.Editor editor;
     private GoogleSignInClient gsc;
     private CollectionReference collectionReference;
-    private String documentId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_info_account);
-
         binding = ActivityInfoAccountBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
@@ -83,8 +76,6 @@ public class InfoAccountActivity extends AppCompatActivity {
                             editor.apply();
                             if (type_login.equals("google")) {
                                 logOutWithGoogle();
-                            } else {
-                                logOutWithFacebook();
                             }
                         }).setNegativeButton("Hủy", null)
                         .show());
@@ -151,7 +142,8 @@ public class InfoAccountActivity extends AppCompatActivity {
 
         binding.loadUpdateUser.setVisibility(View.VISIBLE);
 
-        collectionReference.document("tbluser").collection("user" + id_user)
+        collectionReference.document("tbluser")
+                .collection("user" + id_user)
                 .document(documentId)
                 .update(userInfoUpdate)
                 .addOnCompleteListener(task -> {
@@ -170,11 +162,5 @@ public class InfoAccountActivity extends AppCompatActivity {
             Toast.makeText(this, "Đăng xuất thành công", Toast.LENGTH_SHORT).show();
             finish();
         });
-    }
-
-    private void logOutWithFacebook() {
-        LoginManager.getInstance().logOut();
-        startActivity(new Intent(InfoAccountActivity.this, LoginActivity.class));
-        finish();
     }
 }

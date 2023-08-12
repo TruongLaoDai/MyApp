@@ -9,8 +9,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ApiConfig {
-
-    public static Retrofit getClient(String baseUrl){
+    public static Retrofit getClient(String baseUrl) {
         Gson gson = new GsonBuilder()
                 .setDateFormat("yyyy-MM-dd HH:mm:ss")
                 .create();

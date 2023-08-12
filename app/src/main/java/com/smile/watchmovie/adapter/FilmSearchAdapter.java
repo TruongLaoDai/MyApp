@@ -29,7 +29,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class FilmSearchAdapter extends RecyclerView.Adapter<FilmSearchAdapter.FilmSearchViewHolder> {
-
     private final Context context;
     private List<FilmMainHome> filmMainHomeList;
 
@@ -46,8 +45,7 @@ public class FilmSearchAdapter extends RecyclerView.Adapter<FilmSearchAdapter.Fi
     @NonNull
     @Override
     public FilmSearchViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        return new FilmSearchViewHolder(ItemFilmDetailBinding.inflate(inflater, parent, false));
+        return new FilmSearchViewHolder(ItemFilmDetailBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false));
     }
 
     private String dateCreated(String date) {
@@ -73,14 +71,19 @@ public class FilmSearchAdapter extends RecyclerView.Adapter<FilmSearchAdapter.Fi
                 .error(R.drawable.ic_baseline_broken_image_gray)
                 .placeholder(R.drawable.ic_baseline_image_gray)
                 .into(holder.itemFilmDetailBinding.ivImageFilm);
+
+        /* Số tập phim */
         int episodesTotal = filmMainHome.getEpisodesTotal();
         if (episodesTotal == 0) {
             holder.itemFilmDetailBinding.tvEpisodesTotal.setText(context.getString(R.string.one_episode));
         } else {
             holder.itemFilmDetailBinding.tvEpisodesTotal.setText(context.getString(R.string.episode_total, filmMainHome.getEpisodesTotal()));
         }
+
+        /* Số lượt xem */
         holder.itemFilmDetailBinding.tvViewNumber.setText(context.getString(R.string.tv_view_number, filmMainHome.getViewNumber()));
 
+        /* Kiểm tra phim vip hay không */
         if (filmMainHome.getId() % 2 == 0) {
             holder.itemFilmDetailBinding.loutPremium.setVisibility(ViewGroup.VISIBLE);
         } else {
@@ -89,9 +92,8 @@ public class FilmSearchAdapter extends RecyclerView.Adapter<FilmSearchAdapter.Fi
 
         holder.itemFilmDetailBinding.tvCreated.setText(context.getString(R.string.day_watch, dateCreated(filmMainHome.getCreated())));
         holder.itemFilmDetailBinding.tvNameFilm.setText(filmMainHome.getName());
-        holder.itemFilmDetailBinding.layoutFilm.setOnClickListener(view ->
-                playFilm(filmMainHome)
-        );
+
+        holder.itemFilmDetailBinding.layoutFilm.setOnClickListener(view -> playFilm(filmMainHome));
     }
 
     private void playFilm(FilmMainHome filmMainHome) {
@@ -101,19 +103,15 @@ public class FilmSearchAdapter extends RecyclerView.Adapter<FilmSearchAdapter.Fi
             public void onResponse(@NonNull Call<FilmDetailResponse> call, @NonNull Response<FilmDetailResponse> response) {
                 FilmDetailResponse cinema = response.body();
                 if (cinema != null) {
-                    FilmMainHome filmPlay;
-                    filmPlay = cinema.getData();
                     Intent intent = new Intent(context, WatchFilmActivity.class);
-                    intent.putExtra("film", filmPlay);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    intent.putExtra("film", cinema.getData());
                     context.startActivity(intent);
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<FilmDetailResponse> call, @NonNull Throwable t) {
-                Toast.makeText(context, "Error Get Film", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "Tải dữ liệu phim không thành công", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -127,7 +125,6 @@ public class FilmSearchAdapter extends RecyclerView.Adapter<FilmSearchAdapter.Fi
     }
 
     public static class FilmSearchViewHolder extends RecyclerView.ViewHolder {
-
         private final ItemFilmDetailBinding itemFilmDetailBinding;
 
         public FilmSearchViewHolder(@NonNull ItemFilmDetailBinding itemFilmDetailBinding) {
