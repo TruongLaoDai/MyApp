@@ -3,7 +3,6 @@ package com.smile.watchmovie.adapter;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.Toast;
@@ -26,7 +25,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class FilmAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-
     private final Context context;
     private List<FilmMainHome> filmMainHomeList;
 
@@ -82,8 +80,6 @@ public class FilmAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     filmPlay = cinema.getData();
                     Intent intent = new Intent(context, WatchFilmActivity.class);
                     intent.putExtra("film", filmPlay);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     context.startActivity(intent);
                 }
             }
@@ -91,7 +87,6 @@ public class FilmAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             @Override
             public void onFailure(@NonNull Call<FilmDetailResponse> call, @NonNull Throwable t) {
                 Toast.makeText(context, "Error Get Film", Toast.LENGTH_SHORT).show();
-
             }
         });
     }
@@ -105,7 +100,6 @@ public class FilmAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
     public static class FilmViewHolder extends RecyclerView.ViewHolder {
-
         private final ItemFilmBinding itemFilmBinding;
 
         public FilmViewHolder(@NonNull ItemFilmBinding itemFilmBinding) {

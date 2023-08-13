@@ -197,6 +197,7 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
 
         binding.exoplayerView.findViewById(R.id.tv_speed_play_vertical).setOnClickListener(v -> playSpeedFilm());
 
+        /* Kiểm tra tk đã đk vip và bộ phim có phải là phim vip hay không */
         if (isVip.equals("0") && filmMainHome.getId() % 2 == 0) {
             setUpWhenVip();
         }
@@ -496,12 +497,11 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
 
     private void setUpWhenVip() {
         player.setPlayWhenReady(false);
-
         DefaultTimeBar exoProgress = binding.exoplayerView.findViewById(R.id.exo_progress);
         ImageView exopPlay = binding.exoplayerView.findViewById(R.id.exo_play);
         exoProgress.setEnabled(false);
         exopPlay.setEnabled(false);
-        openDialogWatchFilmAtTime("Bạn hãy đăng kí Vip để xem phim", 0, 2);
+        openDialogWatchFilmAtTime("Bạn cần nâng cấp lên tài khoản vip để có thể xem bộ phim này", 0, 2);
     }
 
     private void lockScreen(boolean check_lock_screen) {

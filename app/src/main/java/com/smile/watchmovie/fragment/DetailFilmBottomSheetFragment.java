@@ -23,7 +23,6 @@ import java.util.Date;
 import java.util.Locale;
 
 public class DetailFilmBottomSheetFragment extends BottomSheetDialogFragment {
-
     private final FilmMainHome filmDetail;
 
     public DetailFilmBottomSheetFragment(FilmMainHome filmDetail) {

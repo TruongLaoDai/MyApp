@@ -44,15 +44,15 @@ public class NotificationService extends Service {
                     if (weatherResponse.getMain() != null) {
                         TemperatureHumidity main = weatherResponse.getMain();
                         List<Weather> weathers = weatherResponse.getWeather();
-                        Intent  intent1 = new Intent(getApplicationContext(), MainActivity.class);
+                        Intent intent1 = new Intent(getApplicationContext(), MainActivity.class);
                         intent1.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent1,
                                 Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ?
-                                        PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_ONE_SHOT :PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_ONE_SHOT);
+                                        PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_ONE_SHOT : PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_ONE_SHOT);
 
                         NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), "watchmedia")
                                 .setSmallIcon(R.drawable.ic_weather)
-                                .setContentTitle(main.getTemp()+"°C"+" in Ha Noi")
+                                .setContentTitle(main.getTemp() + "°C" + " in Ha Noi")
                                 .setContentText(weathers.get(0).getMain())
                                 .setAutoCancel(true)
                                 .setDefaults(NotificationCompat.DEFAULT_ALL)
@@ -72,7 +72,6 @@ public class NotificationService extends Service {
 
             @Override
             public void onFailure(@NonNull Call<WeatherResponse> call, @NonNull Throwable t) {
-                //Toast.makeText(MainActivity.this, "Fail to get weather", Toast.LENGTH_SHORT).show();
             }
         });
         return START_NOT_STICKY;

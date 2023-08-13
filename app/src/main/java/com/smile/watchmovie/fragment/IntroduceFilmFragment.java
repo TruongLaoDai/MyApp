@@ -2,12 +2,10 @@ package com.smile.watchmovie.fragment;
 
 import android.annotation.SuppressLint;
 import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -44,13 +42,12 @@ import retrofit2.Response;
 public class IntroduceFilmFragment extends Fragment {
     private FragmentIntroduceFilmBinding binding;
     private WatchFilmActivity mWatchFilmActivity;
-    private FilmSearchAdapter mFilmSearchAdapter;
+    private FilmSearchAdapter relateMovieListAdapter;
     private String idUser;
-    private List<FilmMainHome> mFilmList;
     private FilmMainHome filmMainHome;
     private EpisodeAdapter mEpisodeAdapter;
-    private boolean mIsLoading;
-    private int mCurrentPage = 0;
+    private boolean mIsLoading = false;
+    private int currentPage = 1;
 
     private DocumentReference documentReferenceFilmFavorite;
     private DocumentReference documentReferenceFilmLike;
@@ -62,7 +59,8 @@ public class IntroduceFilmFragment extends Fragment {
     private FilmReaction mediaLike, mediaDislike, mediaFavorite;
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             ViewGroup container,
                              Bundle savedInstanceState) {
         binding = FragmentIntroduceFilmBinding.inflate(inflater, container, false);
 
@@ -71,19 +69,21 @@ public class IntroduceFilmFragment extends Fragment {
 
         if (mWatchFilmActivity != null && mWatchFilmActivity.filmMainHome != null) {
             setUpData();
+            initialFilmRelate();
+            handleEventClick();
             if (!mWatchFilmActivity.idUser.equals("")) {
-
                 setUpFireBase();
-
-                binding.loutFavorite.setOnClickListener(v -> setUpViewFavoriteFilm());
             }
             playFilmFirst();
         }
 
-        setUpView();
-        handleEventClick();
-
         return binding.getRoot();
+    }
+
+    private void initialFilmRelate() {
+        relateMovieListAdapter = new FilmSearchAdapter(requireActivity());
+        binding.rcvMore.setAdapter(relateMovieListAdapter);
+        new Handler().postDelayed(() -> callApiGetByCategoryListMovie(filmMainHome.getCategoryId(), 1), 1000);
     }
 
     private void handleEventClick() {
@@ -100,6 +100,25 @@ public class IntroduceFilmFragment extends Fragment {
         binding.loutDownload.setOnClickListener(v ->
                 Toast.makeText(mWatchFilmActivity, getString(R.string.feature_deploying), Toast.LENGTH_SHORT).show()
         );
+
+        /* Nhấn yêu thích */
+        binding.loutFavorite.setOnClickListener(v -> setUpViewFavoriteFilm());
+
+        /* Load more các phim liên quan */
+        binding.rcvMore.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if (!mIsLoading) {
+                    LinearLayoutManager linearLayoutManager = (LinearLayoutManager) binding.rcvMore.getLayoutManager();
+                    if (linearLayoutManager != null && linearLayoutManager.findLastCompletelyVisibleItemPosition() == relateMovieListAdapter.filmMainHomeList.size() - 1) {
+                        mIsLoading = true;
+                        currentPage += 1;
+                        loadNextPage(filmMainHome.getCategoryId());
+                    }
+                }
+            }
+        });
     }
 
     private void setUpData() {
@@ -108,37 +127,27 @@ public class IntroduceFilmFragment extends Fragment {
         binding.tvNameFilm.setText(filmMainHome.getName());
         binding.tvViewNumber.setText(mWatchFilmActivity.getString(R.string.tv_view_number, filmMainHome.getViewNumber()));
 
-        mEpisodeAdapter = new EpisodeAdapter(mWatchFilmActivity, this);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(mWatchFilmActivity, RecyclerView.HORIZONTAL, false);
-        binding.rcvEpisode.setLayoutManager(layoutManager);
-    }
-
-    private void setUpView() {
-        mFilmList = new ArrayList<>();
-
-        mFilmSearchAdapter = new FilmSearchAdapter(mWatchFilmActivity);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mWatchFilmActivity, RecyclerView.VERTICAL, false);
-        RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(mWatchFilmActivity, DividerItemDecoration.VERTICAL);
-        binding.rcvMore.setLayoutManager(linearLayoutManager);
-        binding.rcvMore.addItemDecoration(itemDecoration);
-
-        binding.rcvMore.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                if (!mIsLoading) {
-                    LinearLayoutManager linearLayoutManager1 = (LinearLayoutManager) binding.rcvMore.getLayoutManager();
-                    if (linearLayoutManager1 != null && linearLayoutManager1.findLastCompletelyVisibleItemPosition() == mFilmList.size() - 1) {
-                        mIsLoading = true;
-                        binding.loadMore.setVisibility(View.VISIBLE);
-                        mCurrentPage += 1;
-                        loadNextPage(filmMainHome.getCategoryId());
-                    }
-                }
+        /* Hiển thị số tập phim nếu có */
+        if (filmMainHome.getEpisodesTotal() != 0) {
+            if (filmMainHome.getSubVideoList() != null) {
+                binding.loutEpisode.setVisibility(View.VISIBLE);
+                Collections.sort(filmMainHome.getSubVideoList());
+                mEpisodeAdapter.setData(filmMainHome.getSubVideoList());
+            } else {
+                List<SubFilm> subVideoList = new ArrayList<>();
+                SubFilm subFilm = new SubFilm();
+                subFilm.setEpisode(1);
+                subFilm.setLink(filmMainHome.getLink());
+                subVideoList.add(subFilm);
+                filmMainHome.setSubVideoList(subVideoList);
+                mEpisodeAdapter.setData(subVideoList);
             }
-        });
+            binding.rcvEpisode.setAdapter(mEpisodeAdapter);
+        } else {
+            binding.loutEpisode.setVisibility(View.GONE);
+        }
 
-        callApiGetByCategoryListMovie(filmMainHome.getCategoryId(), 0);
+        mEpisodeAdapter = new EpisodeAdapter(mWatchFilmActivity, this);
     }
 
     private void clickOpenDetailFilm() {
@@ -220,7 +229,6 @@ public class IntroduceFilmFragment extends Fragment {
             currentDislike += 1;
             binding.tvDislikeNumber.setText(mWatchFilmActivity.getString(R.string.number, currentDislike));
         } else if (changeImageDislikeFilm == R.drawable.ic_disliked) {
-            binding.loutFavorite.setEnabled(true);
             changeImageDislikeFilm = R.drawable.ic_dislike;
             binding.tvDislikeNumber.setTextColor(Color.parseColor("#777776"));
             currentDislike -= 1;
@@ -267,49 +275,22 @@ public class IntroduceFilmFragment extends Fragment {
             @SuppressLint("NotifyDataSetChanged")
             @Override
             public void onResponse(@NonNull Call<FilmArrayResponse> call, @NonNull Response<FilmArrayResponse> response) {
-                FilmArrayResponse movieArrayResponse = response.body();
-                if (movieArrayResponse != null) {
-                    if (binding.loadIntro.getVisibility() == View.VISIBLE) {
-                        binding.loadIntro.setVisibility(View.INVISIBLE);
-                    }
-                    if (binding.loadMore.getVisibility() == View.VISIBLE) {
-                        binding.loadMore.setVisibility(View.INVISIBLE);
-                    }
-                    if (movieArrayResponse.getData() != null) {
-                        mFilmList.addAll(movieArrayResponse.getData());
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                            mFilmList.removeIf(filmMainHome1 -> filmMainHome1.getId() == filmMainHome.getId());
-                        }
-                    } else {
-                        Toast.makeText(mWatchFilmActivity, "Đã hiển thị hết film", Toast.LENGTH_LONG).show();
-                    }
-                    if (page == 0) {
-//                        mFilmSearchAdapter.setData(mFilmList);
-                        binding.rcvMore.setAdapter(mFilmSearchAdapter);
-                    }
-                    mFilmSearchAdapter.notifyDataSetChanged();
-                    if (mFilmList.size() > 0 && movieArrayResponse.getData().size() == 0) {
-                        Toast.makeText(mWatchFilmActivity, "", Toast.LENGTH_LONG).show();
-                    }
-                } else {
-                    Toast.makeText(mWatchFilmActivity, "Đã hiển thị hết film", Toast.LENGTH_LONG).show();
+                if (response.body() != null && response.body().getData() != null) {
+                    relateMovieListAdapter.updateData(response.body().getData());
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<FilmArrayResponse> call, @NonNull Throwable t) {
-                binding.loadMore.setVisibility(View.INVISIBLE);
-                Toast.makeText(mWatchFilmActivity, "Error Get Film", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
     private void loadNextPage(int categoryId) {
-        Handler handler = new Handler();
-        handler.postDelayed(() -> {
+        new Handler().postDelayed(() -> {
             mIsLoading = false;
-            callApiGetByCategoryListMovie(categoryId, mCurrentPage);
-        }, 3500);
+            callApiGetByCategoryListMovie(categoryId, currentPage);
+        }, 1000);
     }
 
 
