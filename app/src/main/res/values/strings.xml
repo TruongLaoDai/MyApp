@@ -11,9 +11,9 @@
     <string name="image_logo_app">logo_app</string>
     <string name="image_play_film">image_play_film</string>
     <string name="xem_phim">Xem phim</string>
-    <string name="description">Giới thiệu</string>
+    <string name="description">Tóm tắt nội dung</string>
     <string name="directors">Đạo diễn: </string>
-    <string name="detail">Chi tiết</string>
+    <string name="detail">Thông tin về bộ phim</string>
     <string name="image_film">Image Film</string>
     <string name="tb_edit_text">Danh sách tìm kiếm trống</string>
     <string name="hint">Tên phim…</string>
@@ -33,7 +33,7 @@
     <string name="kham_pha">Khám phá</string>
     <string name="ca_nhan">Cá nhân</string>
     <string name="tv_duration">%1$s / tập</string>
-    <string name="tv_view_number">%1$d Lượt xem</string>
+    <string name="tv_view_number">%1$d lượt xem</string>
     <string name="tv_created">Ngày tạo: %1$s-%2$s-%3$s</string>
     <string name="tv_star_rating">Đánh giá: %1$d*</string>
     <string name="tv_at_episode">Tập %1$d</string>

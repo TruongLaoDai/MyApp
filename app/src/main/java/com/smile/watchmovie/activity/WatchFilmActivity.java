@@ -37,6 +37,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -53,6 +54,7 @@ import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.exoplayer2.upstream.DataSource;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
+import com.google.android.material.tabs.TabLayoutMediator;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -74,7 +76,6 @@ import java.util.Locale;
 import java.util.Timer;
 
 public class WatchFilmActivity extends AppCompatActivity implements Player.Listener {
-
     private static final int MINIUM_DISTANCE = 100;
     private ActivityWatchFilmBinding binding;
     private ExoPlayer player;
@@ -107,14 +108,15 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_watch_film);
-
         binding = ActivityWatchFilmBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        timer = new Timer();
 
+        /* Lấy dữ liệu phim được gửi sang */
         filmMainHome = new FilmMainHome();
         filmMainHome = (FilmMainHome) getIntent().getSerializableExtra("film");
+
+        timer = new Timer();
+
         SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
         idUser = sharedPreferences.getString("idUser", "");
         isVip = sharedPreferences.getString("isVip", "0");
@@ -140,9 +142,19 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
     }
 
     private void setUpView() {
-        WatchFilmViewPagerAdapter mWatchFilmViewPagerAdapter = new WatchFilmViewPagerAdapter(getSupportFragmentManager(), FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
-        binding.viewWatchFilePager.setAdapter(mWatchFilmViewPagerAdapter);
-        binding.tabLayout.setupWithViewPager(binding.viewWatchFilePager);
+        /* Khởi tạo viewpager và tabLayout */
+        WatchFilmViewPagerAdapter viewPagerAdapter = new WatchFilmViewPagerAdapter(this);
+        binding.viewWatchFilePager.setAdapter(viewPagerAdapter);
+        new TabLayoutMediator(binding.tabLayout, binding.viewWatchFilePager, ((tab, position) -> {
+            switch (position) {
+                case 0:
+                    tab.setText("Giới thiệu");
+                    break;
+                case 1:
+                    tab.setText("Bình luận");
+                    break;
+            }
+        })).attach();
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             piBuilder = new PictureInPictureParams.Builder();
@@ -675,7 +687,7 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
                             try {
                                 Date todayFormat = format.parse(strToday);
                                 Date dayWatch = format.parse(historyWatchFilm.getDayWatch());
-                                if(todayFormat != null) {
+                                if (todayFormat != null) {
                                     if (todayFormat.compareTo(dayWatch) == 0) {
                                         check = 1;
                                     }

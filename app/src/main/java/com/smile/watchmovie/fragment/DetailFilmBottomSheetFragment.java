@@ -38,24 +38,24 @@ public class DetailFilmBottomSheetFragment extends BottomSheetDialogFragment {
         @SuppressLint("InflateParams") View view = LayoutInflater.from(getContext()).inflate(R.layout.frangment_detail_film, null);
         bottomSheetDialog.setContentView(view);
 
-        TextView tvNameFilm, tvCreated, tvDescription;
-        ImageView ivLogoFilm, iv_close;
+        TextView tvNameFilm, tvCreated, tvDescription, rate;
+        ImageView ivLogoFilm;
 
         tvNameFilm = view.findViewById(R.id.tv_name_film);
         tvCreated = view.findViewById(R.id.tv_created);
         tvDescription = view.findViewById(R.id.tv_description);
         ivLogoFilm = view.findViewById(R.id.img_logo_film);
-        iv_close = view.findViewById(R.id.iv_close);
+        rate = view.findViewById(R.id.rate);
 
         tvNameFilm.setText(filmDetail.getName());
-        tvCreated.setText(dateCreated(filmDetail.getCreated()));
+        tvCreated.setText("Ngày ra mắt: " + dateCreated(filmDetail.getCreated()));
+        rate.setText("Điểm đánh giá: " + filmDetail.getImdbPoint() + "/10");
         tvDescription.setText(filmDetail.getDescription());
         Glide.with(view.getContext()).load(filmDetail.getAvatar())
                 .error(R.drawable.ic_baseline_broken_image_gray)
                 .placeholder(R.drawable.ic_baseline_image_gray)
                 .into(ivLogoFilm);
-        iv_close.setOnClickListener(v -> dismiss());
-        //tvCategory
+
         return bottomSheetDialog;
     }
 

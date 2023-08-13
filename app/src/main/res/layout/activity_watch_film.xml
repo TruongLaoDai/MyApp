@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white">
@@ -25,36 +24,37 @@
             app:show_timeout="4000"
             app:shutter_background_color="#000000"
             app:surface_type="surface_view"
-            app:use_controller="true" >
+            app:use_controller="true">
 
             <ProgressBar
                 android:id="@+id/progress_bar"
                 style="@android:style/Widget.ProgressBar"
-                android:layout_gravity="center"
-                android:visibility="visible"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:visibility="visible" />
         </com.google.android.exoplayer2.ui.PlayerView>
+
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/error_watch_film"
-            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:scaleType="centerCrop"
             android:src="@drawable/ic_baseline_broken_image_24"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:visibility="gone" />
     </RelativeLayout>
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tab_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_below="@+id/layout_film"
-        app:tabMode="scrollable"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        app:tabMode="scrollable" />
 
-    <androidx.viewpager.widget.ViewPager
+    <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/view_watch_file_pager"
-        android:layout_marginTop="5dp"
-        android:layout_below="@+id/tab_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:layout_below="@+id/tab_layout"
+        android:layout_marginTop="5dp" />
 </RelativeLayout>

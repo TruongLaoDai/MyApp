@@ -7,7 +7,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Toast;
 
 import com.smile.watchmovie.R;
 import com.smile.watchmovie.adapter.FilmSearchAdapter;
@@ -106,7 +105,6 @@ public class ShowMoreCategoryFilmActivity extends AppCompatActivity {
             public void onFailure(@NonNull Call<FilmArrayResponse> call, @NonNull Throwable t) {
                 binding.loadHomePage.setVisibility(View.GONE);
                 binding.reloadLout.setRefreshing(false);
-                Toast.makeText(ShowMoreCategoryFilmActivity.this, "Lấy danh sách phim không thành công", Toast.LENGTH_SHORT).show();
             }
         });
     }

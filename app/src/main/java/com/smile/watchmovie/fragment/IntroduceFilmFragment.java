@@ -64,32 +64,42 @@ public class IntroduceFilmFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        mWatchFilmActivity = (WatchFilmActivity) getActivity();
         binding = FragmentIntroduceFilmBinding.inflate(inflater, container, false);
 
         filmMainHome = new FilmMainHome();
-        if (mWatchFilmActivity.filmMainHome != null) {
-            setUpData();
+        mWatchFilmActivity = (WatchFilmActivity) getActivity();
 
+        if (mWatchFilmActivity != null && mWatchFilmActivity.filmMainHome != null) {
+            setUpData();
             if (!mWatchFilmActivity.idUser.equals("")) {
 
                 setUpFireBase();
 
                 binding.loutFavorite.setOnClickListener(v -> setUpViewFavoriteFilm());
-
-                binding.loutLike.setOnClickListener(v -> setUpViewLikeFilm());
-
-                binding.loutDislike.setOnClickListener(v -> setUpViewDislikeFilm());
-
-                binding.loutDownload.setOnClickListener(v -> Toast.makeText(mWatchFilmActivity, getString(R.string.feature_deploying), Toast.LENGTH_SHORT).show());
             }
-
             playFilmFirst();
         }
 
         setUpView();
+        handleEventClick();
 
         return binding.getRoot();
+    }
+
+    private void handleEventClick() {
+        /* Bắt sự kiện người dùng nhấn xem mô tả phim */
+        binding.loutIntro.setOnClickListener(v -> clickOpenDetailFilm());
+
+        /* Nhấn like */
+        binding.loutLike.setOnClickListener(v -> setUpViewLikeFilm());
+
+        /* Nhấn dislike */
+        binding.loutDislike.setOnClickListener(v -> setUpViewDislikeFilm());
+
+        /* Nhấn tải phim */
+        binding.loutDownload.setOnClickListener(v ->
+                Toast.makeText(mWatchFilmActivity, getString(R.string.feature_deploying), Toast.LENGTH_SHORT).show()
+        );
     }
 
     private void setUpData() {
@@ -128,8 +138,6 @@ public class IntroduceFilmFragment extends Fragment {
             }
         });
 
-        binding.loutIntro.setOnClickListener(v -> clickOpenDetailFilm());
-
         callApiGetByCategoryListMovie(filmMainHome.getCategoryId(), 0);
     }
 
@@ -166,7 +174,6 @@ public class IntroduceFilmFragment extends Fragment {
 
     private void setUpViewLikeFilm() {
         if (changeImageLikeFilm == R.drawable.ic_like_film) {
-            Toast.makeText(mWatchFilmActivity, mWatchFilmActivity.getString(R.string.add_film_like), Toast.LENGTH_LONG).show();
             if (changeImageDislikeFilm == R.drawable.ic_disliked) {
                 currentDislike -= 1;
                 if (currentDislike == 0) {
@@ -183,7 +190,6 @@ public class IntroduceFilmFragment extends Fragment {
             currentLike += 1;
             binding.tvLikeNumber.setText(mWatchFilmActivity.getString(R.string.number, currentLike));
         } else if (changeImageLikeFilm == R.drawable.ic_liked_film) {
-            Toast.makeText(mWatchFilmActivity, mWatchFilmActivity.getString(R.string.remove_film_like), Toast.LENGTH_LONG).show();
             changeImageLikeFilm = R.drawable.ic_like_film;
             binding.tvLikeNumber.setTextColor(Color.parseColor("#777776"));
             currentLike -= 1;
@@ -213,7 +219,6 @@ public class IntroduceFilmFragment extends Fragment {
             binding.tvDislikeNumber.setTextColor(Color.parseColor("#2A48E8"));
             currentDislike += 1;
             binding.tvDislikeNumber.setText(mWatchFilmActivity.getString(R.string.number, currentDislike));
-            Toast.makeText(mWatchFilmActivity, mWatchFilmActivity.getString(R.string.add_film_dislike), Toast.LENGTH_LONG).show();
         } else if (changeImageDislikeFilm == R.drawable.ic_disliked) {
             binding.loutFavorite.setEnabled(true);
             changeImageDislikeFilm = R.drawable.ic_dislike;
@@ -224,7 +229,6 @@ public class IntroduceFilmFragment extends Fragment {
             } else {
                 binding.tvDislikeNumber.setText(mWatchFilmActivity.getString(R.string.number, currentDislike));
             }
-            Toast.makeText(mWatchFilmActivity, mWatchFilmActivity.getString(R.string.remove_film_dislike), Toast.LENGTH_LONG).show();
         }
         binding.ivDislike.setImageResource(changeImageDislikeFilm);
     }
@@ -316,10 +320,10 @@ public class IntroduceFilmFragment extends Fragment {
                 .get().addOnSuccessListener(queryDocumentSnapshots -> {
                     if (queryDocumentSnapshots.size() > 0) {
                         this.mediaFavorite = queryDocumentSnapshots.getDocuments().get(0).toObject(FilmReaction.class);
-                        if(mediaFavorite != null) {
+                        if (mediaFavorite != null) {
                             statusFavorite = 2;
                             this.mediaFavorite.setDocumentId(queryDocumentSnapshots.getDocuments().get(0).getId());
-                            if(this.mediaFavorite.getType_reaction() == 1) {
+                            if (this.mediaFavorite.getType_reaction() == 1) {
                                 changeImageFavoriteFilm = R.drawable.ic_added_favorite;
                                 binding.ivAddFavorite.setImageResource(changeImageFavoriteFilm);
                                 binding.tvFavorite.setTextColor(Color.parseColor("#2A48E8"));
@@ -349,10 +353,10 @@ public class IntroduceFilmFragment extends Fragment {
                 .get().addOnSuccessListener(queryDocumentSnapshots -> {
                     if (queryDocumentSnapshots.size() > 0) {
                         this.mediaLike = queryDocumentSnapshots.getDocuments().get(0).toObject(FilmReaction.class);
-                        if(mediaLike != null) {
+                        if (mediaLike != null) {
                             statusLike = 2;
                             this.mediaLike.setDocumentId(queryDocumentSnapshots.getDocuments().get(0).getId());
-                            if(this.mediaLike.getType_reaction() == 1) {
+                            if (this.mediaLike.getType_reaction() == 1) {
                                 changeImageDislikeFilm = R.drawable.ic_dislike;
                                 changeImageLikeFilm = R.drawable.ic_liked_film;
                                 binding.ivLike.setImageResource(changeImageLikeFilm);
@@ -395,10 +399,10 @@ public class IntroduceFilmFragment extends Fragment {
                 .get().addOnSuccessListener(queryDocumentSnapshots -> {
                     if (queryDocumentSnapshots.size() > 0) {
                         this.mediaDislike = queryDocumentSnapshots.getDocuments().get(0).toObject(FilmReaction.class);
-                        if(mediaDislike != null) {
+                        if (mediaDislike != null) {
                             statusDislike = 2;
                             this.mediaDislike.setDocumentId(queryDocumentSnapshots.getDocuments().get(0).getId());
-                            if(this.mediaDislike.getType_reaction() == 1) {
+                            if (this.mediaDislike.getType_reaction() == 1) {
                                 changeImageDislikeFilm = R.drawable.ic_disliked;
                                 changeImageLikeFilm = R.drawable.ic_like_film;
                                 binding.ivDislike.setImageResource(changeImageDislikeFilm);
@@ -435,17 +439,17 @@ public class IntroduceFilmFragment extends Fragment {
     }
 
     private void updateFavorite() {
-        if(statusFavorite == 1 && changeImageFavoriteFilm == R.drawable.ic_added_favorite) {
+        if (statusFavorite == 1 && changeImageFavoriteFilm == R.drawable.ic_added_favorite) {
             documentReferenceFilmFavorite
                     .collection(idUser)
                     .document(this.mediaFavorite.getDocumentId())
                     .update("type_reaction", 1);
-        } else if(statusFavorite == 2 && changeImageFavoriteFilm == R.drawable.ic_add_favorite) {
+        } else if (statusFavorite == 2 && changeImageFavoriteFilm == R.drawable.ic_add_favorite) {
             documentReferenceFilmFavorite
                     .collection(idUser)
                     .document(this.mediaFavorite.getDocumentId())
                     .delete();
-        } else if(statusFavorite ==0 && changeImageFavoriteFilm == R.drawable.ic_added_favorite) {
+        } else if (statusFavorite == 0 && changeImageFavoriteFilm == R.drawable.ic_added_favorite) {
             SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
             FilmReaction mediaReaction = new FilmReaction(filmMainHome.getId(), filmMainHome.getAvatar(), filmMainHome.getName(), format.format(new Date()), 1);
             documentReferenceFilmFavorite.collection(idUser).add(mediaReaction);
@@ -453,38 +457,38 @@ public class IntroduceFilmFragment extends Fragment {
     }
 
     private void updateFilmLike() {
-        if(statusLike == 1 && changeImageLikeFilm == R.drawable.ic_liked_film) {
+        if (statusLike == 1 && changeImageLikeFilm == R.drawable.ic_liked_film) {
             documentReferenceFilmLike
-                    .collection(filmMainHome.getId()+"")
+                    .collection(filmMainHome.getId() + "")
                     .document(this.mediaLike.getDocumentId())
                     .update("type_reaction", 1);
-        } else if(statusLike == 2 && changeImageLikeFilm == R.drawable.ic_like_film) {
+        } else if (statusLike == 2 && changeImageLikeFilm == R.drawable.ic_like_film) {
             documentReferenceFilmLike
-                    .collection(filmMainHome.getId()+"")
+                    .collection(filmMainHome.getId() + "")
                     .document(this.mediaLike.getDocumentId())
                     .delete();
-        } else if(statusLike ==0 && changeImageLikeFilm == R.drawable.ic_liked_film) {
+        } else if (statusLike == 0 && changeImageLikeFilm == R.drawable.ic_liked_film) {
             SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
             FilmReaction mediaReaction = new FilmReaction(idUser, format.format(new Date()), 1);
-            documentReferenceFilmLike.collection(filmMainHome.getId()+"").add(mediaReaction);
+            documentReferenceFilmLike.collection(filmMainHome.getId() + "").add(mediaReaction);
         }
     }
 
     private void updateFilmDisLike() {
-        if(statusDislike == 1 && changeImageDislikeFilm == R.drawable.ic_disliked) {
+        if (statusDislike == 1 && changeImageDislikeFilm == R.drawable.ic_disliked) {
             documentReferenceFilmDislike
-                    .collection(filmMainHome.getId()+"")
+                    .collection(filmMainHome.getId() + "")
                     .document(this.mediaDislike.getDocumentId())
                     .update("type_reaction", 1);
-        } else if(statusDislike == 2 && changeImageDislikeFilm == R.drawable.ic_dislike) {
+        } else if (statusDislike == 2 && changeImageDislikeFilm == R.drawable.ic_dislike) {
             documentReferenceFilmDislike
-                    .collection(filmMainHome.getId()+"")
+                    .collection(filmMainHome.getId() + "")
                     .document(this.mediaDislike.getDocumentId())
                     .delete();
-        } else if(statusDislike ==0 && changeImageDislikeFilm == R.drawable.ic_disliked) {
+        } else if (statusDislike == 0 && changeImageDislikeFilm == R.drawable.ic_disliked) {
             SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
             FilmReaction mediaReaction = new FilmReaction(idUser, format.format(new Date()), 1);
-            documentReferenceFilmDislike.collection(filmMainHome.getId()+"").add(mediaReaction);
+            documentReferenceFilmDislike.collection(filmMainHome.getId() + "").add(mediaReaction);
         }
     }
 

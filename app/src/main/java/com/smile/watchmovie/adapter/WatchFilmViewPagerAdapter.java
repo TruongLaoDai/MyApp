@@ -1,46 +1,30 @@
 package com.smile.watchmovie.adapter;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentStatePagerAdapter;
+import androidx.fragment.app.FragmentActivity;
+import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 import com.smile.watchmovie.fragment.CommentFragment;
 import com.smile.watchmovie.fragment.IntroduceFilmFragment;
 
-public class WatchFilmViewPagerAdapter extends FragmentStatePagerAdapter {
-    public WatchFilmViewPagerAdapter(@NonNull FragmentManager fm, int behavior) {
-        super(fm, behavior);
+public class WatchFilmViewPagerAdapter extends FragmentStateAdapter {
+
+    public WatchFilmViewPagerAdapter(@NonNull FragmentActivity fragmentActivity) {
+        super(fragmentActivity);
     }
 
     @NonNull
     @Override
-    public Fragment getItem(int position) {
-        switch (position){
-            case 1:
-                return new CommentFragment();
-            case 0:
-            default:
-                return new IntroduceFilmFragment();
+    public Fragment createFragment(int position) {
+        if (position == 1) {
+            return new CommentFragment();
         }
+        return new IntroduceFilmFragment();
     }
 
     @Override
-    public int getCount() {
+    public int getItemCount() {
         return 2;
-    }
-
-    @Nullable
-    @Override
-    public CharSequence getPageTitle(int position) {
-        switch (position){
-            case 0:
-                return "Giới thiệu";
-            case 1:
-                return "Bình luận";
-            default:
-                return "null";
-        }
     }
 }
