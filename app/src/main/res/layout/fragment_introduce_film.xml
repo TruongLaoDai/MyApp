@@ -18,9 +18,11 @@
                 android:id="@+id/lout_intro"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
                 android:foreground="?android:attr/selectableItemBackground"
                 android:orientation="horizontal"
+                android:paddingStart="10dp"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
                 android:weightSum="10">
 
                 <LinearLayout
@@ -226,32 +228,40 @@
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
             </RelativeLayout>
 
-            <RelativeLayout
-                android:id="@+id/lout_more"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+            <androidx.core.widget.NestedScrollView
+                android:id="@+id/NSV_listVideoRelative"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:layout_below="@+id/lout_episode"
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="5dp">
 
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/tv_title_more"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/dexuat"
-                    android:textColor="@color/black"
-                    android:textSize="17sp"
-                    android:textStyle="bold" />
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rcv_more"
+                <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_below="@+id/tv_title_more"
-                    android:orientation="vertical"
-                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+                    android:layout_height="match_parent">
 
-            </RelativeLayout>
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/tv_title_more"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/dexuat"
+                        android:textColor="@color/black"
+                        android:textSize="17sp"
+                        android:textStyle="bold" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rcv_more"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_below="@+id/tv_title_more"
+                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+                </RelativeLayout>
+
+            </androidx.core.widget.NestedScrollView>
+
         </RelativeLayout>
+
     </androidx.core.widget.NestedScrollView>
+
 </RelativeLayout>

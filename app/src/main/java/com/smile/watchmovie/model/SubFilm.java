@@ -8,7 +8,6 @@ import java.util.Date;
 import java.util.List;
 
 public class SubFilm implements Serializable, Comparable<SubFilm>{
-
     @SerializedName("id")
     @Expose
     private int id;

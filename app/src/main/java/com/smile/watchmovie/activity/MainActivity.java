@@ -52,6 +52,8 @@ public class MainActivity extends AppCompatActivity {
         ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(this);
 
         binding.viewPager.setAdapter(viewPagerAdapter);
+        binding.viewPager.setUserInputEnabled(false);
+
         binding.viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
             public void onPageSelected(int position) {
@@ -69,6 +71,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
         binding.bottomNav.setOnNavigationItemSelectedListener(item -> {
             switch (item.getItemId()) {
                 case R.id.action_home:

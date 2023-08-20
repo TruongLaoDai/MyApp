@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white">
@@ -8,32 +9,18 @@
     <RelativeLayout
         android:id="@+id/layout_film"
         android:layout_width="match_parent"
-        android:layout_height="230dp"
-        android:background="@color/black"
-        android:gravity="center">
+        android:layout_height="202dp">
 
         <com.google.android.exoplayer2.ui.PlayerView
             android:id="@+id/exoplayer_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#000000"
+            android:background="@color/black"
+            android:keepScreenOn="true"
             app:controller_layout_id="@layout/custom_playback_view"
-            app:hide_on_touch="true"
             app:player_layout_id="@layout/exo_player_view"
             app:resize_mode="fit"
-            app:show_timeout="4000"
-            app:shutter_background_color="#000000"
-            app:surface_type="surface_view"
-            app:use_controller="true">
-
-            <ProgressBar
-                android:id="@+id/progress_bar"
-                style="@android:style/Widget.ProgressBar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:visibility="visible" />
-        </com.google.android.exoplayer2.ui.PlayerView>
+            app:use_controller="true" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/error_watch_film"
@@ -41,7 +28,9 @@
             android:layout_height="match_parent"
             android:scaleType="centerCrop"
             android:src="@drawable/ic_baseline_broken_image_24"
-            android:visibility="gone" />
+            android:visibility="gone"
+            tools:visibility="gone" />
+
     </RelativeLayout>
 
     <com.google.android.material.tabs.TabLayout
@@ -52,9 +41,8 @@
         app:tabMode="scrollable" />
 
     <androidx.viewpager2.widget.ViewPager2
-        android:id="@+id/view_watch_file_pager"
+        android:id="@+id/view_pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/tab_layout"
-        android:layout_marginTop="5dp" />
+        android:layout_below="@+id/tab_layout" />
 </RelativeLayout>

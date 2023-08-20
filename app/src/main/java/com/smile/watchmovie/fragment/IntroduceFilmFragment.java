@@ -1,15 +1,11 @@
 package com.smile.watchmovie.fragment;
 
-import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
-import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,13 +42,7 @@ public class IntroduceFilmFragment extends Fragment {
     private String idUser;
     private FilmMainHome filmMainHome;
     private EpisodeAdapter mEpisodeAdapter;
-    private boolean mIsLoading = false;
-    private int currentPage = 1;
-
-    private DocumentReference documentReferenceFilmFavorite;
-    private DocumentReference documentReferenceFilmLike;
-    private DocumentReference documentReferenceFilmDislike;
-
+    private DocumentReference documentReferenceFilmFavorite, documentReferenceFilmLike, documentReferenceFilmDislike;
     private int changeImageFavoriteFilm, changeImageDislikeFilm, changeImageLikeFilm;
     private int currentLike, currentDislike;
     private int statusLike, statusDislike, statusFavorite;
@@ -83,7 +73,7 @@ public class IntroduceFilmFragment extends Fragment {
     private void initialFilmRelate() {
         relateMovieListAdapter = new FilmSearchAdapter(requireActivity());
         binding.rcvMore.setAdapter(relateMovieListAdapter);
-        new Handler().postDelayed(() -> callApiGetByCategoryListMovie(filmMainHome.getCategoryId(), 1), 1000);
+        callApiGetByCategoryListMovie(filmMainHome.getCategoryId(), 1);
     }
 
     private void handleEventClick() {
@@ -103,26 +93,11 @@ public class IntroduceFilmFragment extends Fragment {
 
         /* Nhấn yêu thích */
         binding.loutFavorite.setOnClickListener(v -> setUpViewFavoriteFilm());
-
-        /* Load more các phim liên quan */
-        binding.rcvMore.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                if (!mIsLoading) {
-                    LinearLayoutManager linearLayoutManager = (LinearLayoutManager) binding.rcvMore.getLayoutManager();
-                    if (linearLayoutManager != null && linearLayoutManager.findLastCompletelyVisibleItemPosition() == relateMovieListAdapter.filmMainHomeList.size() - 1) {
-                        mIsLoading = true;
-                        currentPage += 1;
-                        loadNextPage(filmMainHome.getCategoryId());
-                    }
-                }
-            }
-        });
     }
 
     private void setUpData() {
         filmMainHome = mWatchFilmActivity.filmMainHome;
+        mEpisodeAdapter = new EpisodeAdapter(mWatchFilmActivity, this);
 
         binding.tvNameFilm.setText(filmMainHome.getName());
         binding.tvViewNumber.setText(mWatchFilmActivity.getString(R.string.tv_view_number, filmMainHome.getViewNumber()));
@@ -146,8 +121,6 @@ public class IntroduceFilmFragment extends Fragment {
         } else {
             binding.loutEpisode.setVisibility(View.GONE);
         }
-
-        mEpisodeAdapter = new EpisodeAdapter(mWatchFilmActivity, this);
     }
 
     private void clickOpenDetailFilm() {
@@ -271,8 +244,7 @@ public class IntroduceFilmFragment extends Fragment {
     }
 
     public void callApiGetByCategoryListMovie(int categoryId, int page) {
-        ApiService.apiService.getFilmByCategory("7da353b8a3246f851e0ee436d898a26d", categoryId, page, 5).enqueue(new Callback<FilmArrayResponse>() {
-            @SuppressLint("NotifyDataSetChanged")
+        ApiService.apiService.getFilmByCategory("7da353b8a3246f851e0ee436d898a26d", categoryId, page, 10).enqueue(new Callback<FilmArrayResponse>() {
             @Override
             public void onResponse(@NonNull Call<FilmArrayResponse> call, @NonNull Response<FilmArrayResponse> response) {
                 if (response.body() != null && response.body().getData() != null) {
@@ -285,14 +257,6 @@ public class IntroduceFilmFragment extends Fragment {
             }
         });
     }
-
-    private void loadNextPage(int categoryId) {
-        new Handler().postDelayed(() -> {
-            mIsLoading = false;
-            callApiGetByCategoryListMovie(categoryId, currentPage);
-        }, 1000);
-    }
-
 
     public void isFilmFavorite() {
         documentReferenceFilmFavorite
@@ -471,13 +435,5 @@ public class IntroduceFilmFragment extends Fragment {
             FilmReaction mediaReaction = new FilmReaction(idUser, format.format(new Date()), 1);
             documentReferenceFilmDislike.collection(filmMainHome.getId() + "").add(mediaReaction);
         }
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        updateFilmLike();
-        updateFavorite();
-        updateFilmDisLike();
     }
 }

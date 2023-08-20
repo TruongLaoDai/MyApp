@@ -31,7 +31,6 @@ public class HomeFragment extends Fragment {
     private FilmAdapter mFilmAdapter5;
     private FilmAdapter mFilmAdapter6;
     private FilmAdapter mFilmAdapter7;
-    //    private int callAgaint = 0;
 
     public HomeFragment() {
     }
@@ -51,13 +50,6 @@ public class HomeFragment extends Fragment {
         mFilmAdapter7 = new FilmAdapter(requireActivity());
 
         callApiGetHomeFilmByCategory(15, 0);
-
-//        binding.getRoot().setOnRefreshListener(() -> {
-//            callApiGetHomeFilmByCategory(15, 0);
-//            new Handler().postDelayed(() -> {
-//                binding.getRoot().setRefreshing(false);
-//            }, 3000);
-//        });
 
         binding.moreCartonMovie.setOnClickListener(v -> {
             Intent intent = new Intent(requireActivity(), ShowMoreCategoryFilmActivity.class);
@@ -114,7 +106,6 @@ public class HomeFragment extends Fragment {
                         case 14:
                             mFilmAdapter1.setData(movieArrayResponse.getData());
                             binding.rcvFilm1.setAdapter(mFilmAdapter1);
-//                            callAgaint += 1;
                             callApiGetHomeFilmByCategory(15, 0);
                             break;
                         case 6:
@@ -143,15 +134,10 @@ public class HomeFragment extends Fragment {
                             callApiGetHomeFilmByCategory(12, 0);
                             break;
                         case 15:
-//                            if (callAgaint < 2) {
                             mFilmAdapter7.setData(movieArrayResponse.getData());
                             binding.rcvFilm7.setAdapter(mFilmAdapter7);
                             callApiGetHomeFilmByCategory(13, 0);
                             break;
-//                            } else {
-//                                binding.loadHomePage.setVisibility(View.INVISIBLE);
-//                                break;
-//                            }
                     }
                 }
             }

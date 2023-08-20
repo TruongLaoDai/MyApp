@@ -126,10 +126,7 @@ public class FilmSearchAdapter extends RecyclerView.Adapter<FilmSearchAdapter.Fi
 
     @Override
     public int getItemCount() {
-        if (filmMainHomeList != null) {
-            return filmMainHomeList.size();
-        }
-        return 0;
+        return filmMainHomeList.size();
     }
 
     public static class FilmSearchViewHolder extends RecyclerView.ViewHolder {
