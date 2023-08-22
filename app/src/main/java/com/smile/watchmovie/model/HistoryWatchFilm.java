@@ -12,6 +12,7 @@ public class HistoryWatchFilm {
 
     public HistoryWatchFilm() {
     }
+
     public HistoryWatchFilm(int id_film, long duration, String dayWatch, String avatarFilm, String nameFilm) {
         this.id_film = id_film;
         this.duration = duration;

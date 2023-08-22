@@ -3,11 +3,9 @@ package com.smile.watchmovie.activity;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
-import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
@@ -21,7 +19,6 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.MediaItem;
@@ -30,6 +27,7 @@ import com.google.android.exoplayer2.Player;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.smile.watchmovie.R;
 import com.smile.watchmovie.adapter.WatchFilmViewPagerAdapter;
 import com.smile.watchmovie.databinding.ActivityWatchFilmBinding;
@@ -37,7 +35,6 @@ import com.smile.watchmovie.model.FilmMainHome;
 import com.smile.watchmovie.model.HistoryWatchFilm;
 import com.smile.watchmovie.model.SubFilm;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Date;
@@ -51,7 +48,7 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
     public FilmMainHome filmMainHome;
     private CollectionReference collectionReference;
     public String idUser, isVip;
-    private boolean isFullScreen = false;
+    private boolean isFullScreen = false, existHistory = false;
     private float speed;
     private PlaybackParameters playbackParameters;
     private boolean auto_play, full_screen;
@@ -81,6 +78,7 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
 
         /* Thiết lập phát phim và các đề xuất */
         if (filmMainHome != null) {
+            setupFirebase();
             prepareVideo();
             controllerTimeVideo();
             setFullScreen();
@@ -88,6 +86,14 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
         }
 
         initialInfoRelate();
+    }
+
+    private void setupFirebase() {
+        if (!idUser.equals("")) {
+            FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
+            collectionReference = firebaseFirestore.collection("WatchFilm");
+            loadTimeWatched();
+        }
     }
 
     private void prepareVideo() {
@@ -225,56 +231,10 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
         })).attach();
     }
 
-//        if (!idUser.equals("")) {
-//            FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
-//            collectionReference = firebaseFirestore.collection("WatchFilm");
-//            historyWatchFilm();
-//        }
-
-//        setUpCustomPlayFilm();
-//
-//        setOnTouchExoplayer();
-//
-//        ivFullScreen = binding.exoplayerView.findViewById(R.id.scaling);
-//        ivFullScreen.setOnClickListener(v -> {
-//            if (checkFullScreen) {
-//            } else {
-//            }
-//        });
-//        ivUnlockScreen = binding.exoplayerView.findViewById(R.id.iv_unlock);
-//        ivUnlockScreen.setOnClickListener(v -> {
-//            if (!checkLockScreen) {
-//                ivUnlockScreen.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_baseline_lock_24));
-//            } else {
-//                ivUnlockScreen.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_round_lock_open_24));
-//            }
-//            checkLockScreen = !checkLockScreen;
-//            lockScreen(checkLockScreen);
-//        });
-//
-//        binding.exoplayerView.findViewById(R.id.iv_speed_play_vertical).setOnClickListener(v -> playSpeedFilm());
-//
-//        binding.exoplayerView.findViewById(R.id.tv_speed_play_vertical).setOnClickListener(v -> playSpeedFilm());
-//
-//        if (!auto_play)
-//            player.setPlayWhenReady(false);
-//    }
-
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-//        if (!idUser.equals("")) {
-//            SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
-//            Date date = new Date();
-//            HistoryWatchFilm historyWatchFilm = new HistoryWatchFilm(filmMainHome.getId(), player.getCurrentPosition(), format.format(date), filmMainHome.getAvatar(), filmMainHome.getName());
-//            if (player.getCurrentPosition() > 30000) {
-//                if (check == 0) {
-//                    collectionReference.document("tblhistorywatchfilm").collection(idUser).add(historyWatchFilm);
-//                } else {
-//                    updateDataTimeWatchFilm(historyWatchFilm);
-//                }
-//            }
-//        }
+        saveHistoryWatch();
         if (player != null) {
             if (player.isPlaying()) {
                 player.stop();
@@ -283,20 +243,35 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
         }
     }
 
-    private void updateDataTimeWatchFilm(HistoryWatchFilm historyWatchFilm) {
+    private void saveHistoryWatch() {
+        if (!idUser.equals("") && player.getCurrentPosition() >= 30000) {
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
+            Date date = new Date();
+            String dateWatch = simpleDateFormat.format(date);
+            long timeWatch = player.getCurrentPosition();
+            if (existHistory) {
+                historyWatchFilm.setDayWatch(dateWatch);
+                historyWatchFilm.setDuration(timeWatch);
+                updateDataTimeWatchFilm(historyWatchFilm);
+            } else {
+                HistoryWatchFilm historyWatchFilm = new HistoryWatchFilm(filmMainHome.getId(), timeWatch, dateWatch, filmMainHome.getAvatar(), filmMainHome.getName());
+                collectionReference.document("tblhistorywatchfilm").collection(idUser).add(historyWatchFilm);
+            }
+        }
+    }
+
+    private void updateDataTimeWatchFilm(HistoryWatchFilm history) {
         collectionReference.document("tblhistorywatchfilm").collection(idUser)
-                .document(this.historyWatchFilm.getDocumentID())
-                .update("duration", historyWatchFilm.getDuration(),
-                        "dayWatch", historyWatchFilm.getDayWatch());
+                .document(history.getDocumentID())
+                .update("duration", history.getDuration(), "dayWatch", history.getDayWatch());
     }
 
     private String messagePlayAtTime(long time) {
         int hour = (int) (time / 1000 / 3600);
         int minute = (int) ((time / 1000 - hour * 3600) / 60);
         int second = (int) (time / 1000 - hour * 3600 - minute * 60);
-        return "Bạn có muốn xem phim từ " + hour + ":" + minute + ":" + second;
+        return "Bạn có muốn tiếp tục xem bộ phim tại thời điểm: " + hour + ":" + minute + ":" + second + " hay không?";
     }
-
 
     private void showDialog(String title, int type, long time) {
         final Dialog dialog = new Dialog(this);
@@ -333,43 +308,26 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
         }
 
         btn_yes.setOnClickListener(v -> {
-//            if (type == 1) {
-//                player.setPlayWhenReady(true);
-//                player.seekTo(time);
-//            }
+            player.seekTo(time);
+            existHistory = true;
             dialog.dismiss();
         });
 
         btn_no.setOnClickListener(v -> dialog.dismiss());
     }
 
-    public void historyWatchFilm() {
+    public void loadTimeWatched() {
         collectionReference.document("tblhistorywatchfilm").collection(idUser).whereEqualTo("id_film", filmMainHome.getId())
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     if (queryDocumentSnapshots.getDocuments().size() > 0) {
                         DocumentSnapshot doc = queryDocumentSnapshots.getDocuments().get(0);
-                        this.historyWatchFilm = doc.toObject(HistoryWatchFilm.class);
+                        historyWatchFilm = doc.toObject(HistoryWatchFilm.class);
                         if (historyWatchFilm != null) {
                             historyWatchFilm.setDocumentID(doc.getId());
-                            Date today = new Date();
-                            SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
-                            String strToday = format.format(today);
-                            try {
-                                Date todayFormat = format.parse(strToday);
-                                Date dayWatch = format.parse(historyWatchFilm.getDayWatch());
-                                if (todayFormat != null) {
-                                    if (todayFormat.compareTo(dayWatch) == 0) {
-                                    }
-                                }
-                            } catch (ParseException e) {
-                                throw new RuntimeException(e);
-                            }
-//                            openDialogWatchFilmAtTime(messagePlayAtTime(historyWatchFilm.getDuration()), historyWatchFilm.getDuration(), 1);
-                            player.setPlayWhenReady(false);
+                            showDialog(messagePlayAtTime(historyWatchFilm.getDuration()), 2, historyWatchFilm.getDuration());
                         }
                     }
-                })
-                .addOnFailureListener(e -> Toast.makeText(this, "Get history film fail", Toast.LENGTH_SHORT).show());
+                });
     }
 }

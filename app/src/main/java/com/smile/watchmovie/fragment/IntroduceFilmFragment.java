@@ -60,11 +60,11 @@ public class IntroduceFilmFragment extends Fragment {
         if (mWatchFilmActivity != null && mWatchFilmActivity.filmMainHome != null) {
             setUpData();
             initialFilmRelate();
-            handleEventClick();
             if (!mWatchFilmActivity.idUser.equals("")) {
                 setUpFireBase();
             }
             playFilmFirst();
+            handleEventClick();
         }
 
         return binding.getRoot();
@@ -81,10 +81,22 @@ public class IntroduceFilmFragment extends Fragment {
         binding.loutIntro.setOnClickListener(v -> clickOpenDetailFilm());
 
         /* Nhấn like */
-        binding.loutLike.setOnClickListener(v -> setUpViewLikeFilm());
+        binding.loutLike.setOnClickListener(v -> {
+            if (idUser == null || idUser.equals("")) {
+                Toast.makeText(requireActivity(), "Bạn cần đăng nhập tài khoản để thực hiện tính năng này", Toast.LENGTH_SHORT).show();
+            } else {
+                setUpViewLikeFilm();
+            }
+        });
 
         /* Nhấn dislike */
-        binding.loutDislike.setOnClickListener(v -> setUpViewDislikeFilm());
+        binding.loutDislike.setOnClickListener(v -> {
+            if (idUser == null || idUser.equals("")) {
+                Toast.makeText(requireActivity(), "Bạn cần đăng nhập tài khoản để thực hiện tính năng này", Toast.LENGTH_SHORT).show();
+            } else {
+                setUpViewDislikeFilm();
+            }
+        });
 
         /* Nhấn tải phim */
         binding.loutDownload.setOnClickListener(v ->
@@ -92,13 +104,20 @@ public class IntroduceFilmFragment extends Fragment {
         );
 
         /* Nhấn yêu thích */
-        binding.loutFavorite.setOnClickListener(v -> setUpViewFavoriteFilm());
+        binding.loutFavorite.setOnClickListener(v -> {
+            if (idUser == null || idUser.equals("")) {
+                Toast.makeText(requireActivity(), "Bạn cần đăng nhập tài khoản để thực hiện tính năng này", Toast.LENGTH_SHORT).show();
+            } else {
+                setUpViewFavoriteFilm();
+            }
+        });
     }
 
     private void setUpData() {
         filmMainHome = mWatchFilmActivity.filmMainHome;
         mEpisodeAdapter = new EpisodeAdapter(mWatchFilmActivity, this);
 
+        /* Hiển thị thông tin cơ bản về phim */
         binding.tvNameFilm.setText(filmMainHome.getName());
         binding.tvViewNumber.setText(mWatchFilmActivity.getString(R.string.tv_view_number, filmMainHome.getViewNumber()));
 
@@ -136,9 +155,9 @@ public class IntroduceFilmFragment extends Fragment {
         documentReferenceFilmLike = firebaseFirestore.document("WatchFilm/tblfilmlike");
         documentReferenceFilmDislike = firebaseFirestore.document("WatchFilm/tblfilmdislike");
 
-        isFilmFavorite();
-        isFilmLike();
-        isFilmDislike();
+        loadFavorite();
+        loadLike();
+        loadDislike();
     }
 
     private void setUpViewFavoriteFilm() {
@@ -152,21 +171,23 @@ public class IntroduceFilmFragment extends Fragment {
             Toast.makeText(mWatchFilmActivity, mWatchFilmActivity.getString(R.string.remove_film_favorite), Toast.LENGTH_LONG).show();
         }
         binding.ivAddFavorite.setImageResource(changeImageFavoriteFilm);
+        updateFavorite();
     }
 
     private void setUpViewLikeFilm() {
         if (changeImageLikeFilm == R.drawable.ic_like_film) {
             if (changeImageDislikeFilm == R.drawable.ic_disliked) {
                 currentDislike -= 1;
-                if (currentDislike == 0) {
-                    binding.tvDislikeNumber.setText(mWatchFilmActivity.getString(R.string.dislike));
-                } else {
-                    binding.tvDislikeNumber.setText(mWatchFilmActivity.getString(R.string.number, currentDislike));
+                if (currentDislike < 0) {
+                    currentDislike = 0;
                 }
+
+                binding.tvDislikeNumber.setText(mWatchFilmActivity.getString(R.string.dislike));
                 changeImageDislikeFilm = R.drawable.ic_dislike;
                 binding.ivDislike.setImageResource(changeImageDislikeFilm);
                 binding.tvDislikeNumber.setTextColor(Color.parseColor("#777776"));
             }
+
             changeImageLikeFilm = R.drawable.ic_liked_film;
             binding.tvLikeNumber.setTextColor(Color.parseColor("#2A48E8"));
             currentLike += 1;
@@ -175,24 +196,26 @@ public class IntroduceFilmFragment extends Fragment {
             changeImageLikeFilm = R.drawable.ic_like_film;
             binding.tvLikeNumber.setTextColor(Color.parseColor("#777776"));
             currentLike -= 1;
-            if (currentLike == 0) {
-                binding.tvLikeNumber.setText(mWatchFilmActivity.getString(R.string.like));
-            } else {
-                binding.tvLikeNumber.setText(mWatchFilmActivity.getString(R.string.number, currentLike));
+            if (currentLike < 0) {
+                currentLike = 0;
             }
+
+            binding.tvLikeNumber.setText(mWatchFilmActivity.getString(R.string.like));
         }
         binding.ivLike.setImageResource(changeImageLikeFilm);
+        updateFilmLike();
+        updateFilmDisLike();
     }
 
     private void setUpViewDislikeFilm() {
         if (changeImageDislikeFilm == R.drawable.ic_dislike) {
             if (changeImageLikeFilm == R.drawable.ic_liked_film) {
                 currentLike -= 1;
-                if (currentLike == 0) {
-                    binding.tvLikeNumber.setText(mWatchFilmActivity.getString(R.string.like));
-                } else {
-                    binding.tvLikeNumber.setText(mWatchFilmActivity.getString(R.string.number, currentLike));
+                if (currentLike < 0) {
+                    currentLike = 0;
                 }
+
+                binding.tvLikeNumber.setText(mWatchFilmActivity.getString(R.string.like));
                 changeImageLikeFilm = R.drawable.ic_like_film;
                 binding.ivLike.setImageResource(changeImageLikeFilm);
                 binding.tvLikeNumber.setTextColor(Color.parseColor("#777776"));
@@ -205,13 +228,14 @@ public class IntroduceFilmFragment extends Fragment {
             changeImageDislikeFilm = R.drawable.ic_dislike;
             binding.tvDislikeNumber.setTextColor(Color.parseColor("#777776"));
             currentDislike -= 1;
-            if (currentDislike == 0) {
-                binding.tvDislikeNumber.setText(mWatchFilmActivity.getString(R.string.dislike));
-            } else {
-                binding.tvDislikeNumber.setText(mWatchFilmActivity.getString(R.string.number, currentDislike));
+            if (currentDislike < 0) {
+                currentDislike = 0;
             }
+            binding.tvDislikeNumber.setText(mWatchFilmActivity.getString(R.string.dislike));
         }
         binding.ivDislike.setImageResource(changeImageDislikeFilm);
+        updateFilmDisLike();
+        updateFilmLike();
     }
 
     private void playFilmFirst() {
@@ -244,7 +268,7 @@ public class IntroduceFilmFragment extends Fragment {
     }
 
     public void callApiGetByCategoryListMovie(int categoryId, int page) {
-        ApiService.apiService.getFilmByCategory("7da353b8a3246f851e0ee436d898a26d", categoryId, page, 10).enqueue(new Callback<FilmArrayResponse>() {
+        ApiService.apiService.getFilmByCategory("7da353b8a3246f851e0ee436d898a26d", categoryId, page, 15).enqueue(new Callback<FilmArrayResponse>() {
             @Override
             public void onResponse(@NonNull Call<FilmArrayResponse> call, @NonNull Response<FilmArrayResponse> response) {
                 if (response.body() != null && response.body().getData() != null) {
@@ -258,7 +282,7 @@ public class IntroduceFilmFragment extends Fragment {
         });
     }
 
-    public void isFilmFavorite() {
+    public void loadFavorite() {
         documentReferenceFilmFavorite
                 .collection(idUser)
                 .whereEqualTo("idFilm", filmMainHome.getId())
@@ -266,9 +290,9 @@ public class IntroduceFilmFragment extends Fragment {
                     if (queryDocumentSnapshots.size() > 0) {
                         this.mediaFavorite = queryDocumentSnapshots.getDocuments().get(0).toObject(FilmReaction.class);
                         if (mediaFavorite != null) {
-                            statusFavorite = 2;
                             this.mediaFavorite.setDocumentId(queryDocumentSnapshots.getDocuments().get(0).getId());
                             if (this.mediaFavorite.getType_reaction() == 1) {
+                                statusFavorite = 2;
                                 changeImageFavoriteFilm = R.drawable.ic_added_favorite;
                                 binding.ivAddFavorite.setImageResource(changeImageFavoriteFilm);
                                 binding.tvFavorite.setTextColor(Color.parseColor("#2A48E8"));
@@ -283,25 +307,20 @@ public class IntroduceFilmFragment extends Fragment {
                         changeImageFavoriteFilm = R.drawable.ic_add_favorite;
                         statusFavorite = 0;
                     }
-                })
-                .addOnFailureListener(e -> {
-                    statusFavorite = 0;
-                    changeImageFavoriteFilm = R.drawable.ic_add_favorite;
-                    Toast.makeText(mWatchFilmActivity, "Get film favorite error", Toast.LENGTH_SHORT).show();
                 });
     }
 
-    public void isFilmLike() {
+    public void loadLike() {
         documentReferenceFilmLike
                 .collection(filmMainHome.getId() + "")
                 .whereEqualTo("idUser", idUser)
                 .get().addOnSuccessListener(queryDocumentSnapshots -> {
                     if (queryDocumentSnapshots.size() > 0) {
-                        this.mediaLike = queryDocumentSnapshots.getDocuments().get(0).toObject(FilmReaction.class);
+                        mediaLike = queryDocumentSnapshots.getDocuments().get(0).toObject(FilmReaction.class);
                         if (mediaLike != null) {
-                            statusLike = 2;
-                            this.mediaLike.setDocumentId(queryDocumentSnapshots.getDocuments().get(0).getId());
-                            if (this.mediaLike.getType_reaction() == 1) {
+                            mediaLike.setDocumentId(queryDocumentSnapshots.getDocuments().get(0).getId());
+                            if (mediaLike.getType_reaction() == 1) {
+                                statusLike = 2;
                                 changeImageDislikeFilm = R.drawable.ic_dislike;
                                 changeImageLikeFilm = R.drawable.ic_liked_film;
                                 binding.ivLike.setImageResource(changeImageLikeFilm);
@@ -317,27 +336,10 @@ public class IntroduceFilmFragment extends Fragment {
                         changeImageLikeFilm = R.drawable.ic_like_film;
                         statusLike = 0;
                     }
-                })
-                .addOnFailureListener(e -> {
-                    statusLike = 0;
-                    changeImageLikeFilm = R.drawable.ic_like_film;
-                    Toast.makeText(mWatchFilmActivity, "Get film like error", Toast.LENGTH_SHORT).show();
                 });
-
-        documentReferenceFilmLike
-                .collection(filmMainHome.getId() + "")
-                .get().addOnSuccessListener(queryDocumentSnapshots -> {
-                    if (queryDocumentSnapshots.size() > 0) {
-                        currentLike = queryDocumentSnapshots.size();
-                        if (currentLike > 0) {
-                            binding.tvLikeNumber.setText(mWatchFilmActivity.getString(R.string.number, currentLike));
-                        }
-                    }
-                })
-                .addOnFailureListener(e -> Toast.makeText(mWatchFilmActivity, "Get film like error", Toast.LENGTH_SHORT).show());
     }
 
-    public void isFilmDislike() {
+    public void loadDislike() {
         documentReferenceFilmDislike
                 .collection(filmMainHome.getId() + "")
                 .whereEqualTo("idUser", idUser)
@@ -345,9 +347,9 @@ public class IntroduceFilmFragment extends Fragment {
                     if (queryDocumentSnapshots.size() > 0) {
                         this.mediaDislike = queryDocumentSnapshots.getDocuments().get(0).toObject(FilmReaction.class);
                         if (mediaDislike != null) {
-                            statusDislike = 2;
-                            this.mediaDislike.setDocumentId(queryDocumentSnapshots.getDocuments().get(0).getId());
-                            if (this.mediaDislike.getType_reaction() == 1) {
+                            mediaDislike.setDocumentId(queryDocumentSnapshots.getDocuments().get(0).getId());
+                            if (mediaDislike.getType_reaction() == 1) {
+                                statusDislike = 2;
                                 changeImageDislikeFilm = R.drawable.ic_disliked;
                                 changeImageLikeFilm = R.drawable.ic_like_film;
                                 binding.ivDislike.setImageResource(changeImageDislikeFilm);
@@ -363,24 +365,7 @@ public class IntroduceFilmFragment extends Fragment {
                         changeImageDislikeFilm = R.drawable.ic_dislike;
                         statusDislike = 0;
                     }
-                })
-                .addOnFailureListener(e -> {
-                    statusDislike = 0;
-                    changeImageDislikeFilm = R.drawable.ic_dislike;
-                    Toast.makeText(mWatchFilmActivity, "Get film dislike error", Toast.LENGTH_SHORT).show();
                 });
-
-        documentReferenceFilmDislike
-                .collection(filmMainHome.getId() + "")
-                .get().addOnSuccessListener(queryDocumentSnapshots -> {
-                    if (queryDocumentSnapshots.size() > 0) {
-                        currentDislike = queryDocumentSnapshots.size();
-                        if (currentDislike > 0) {
-                            binding.tvDislikeNumber.setText(mWatchFilmActivity.getString(R.string.number, currentDislike));
-                        }
-                    }
-                })
-                .addOnFailureListener(e -> Toast.makeText(mWatchFilmActivity, "Get film dislike error", Toast.LENGTH_SHORT).show());
     }
 
     private void updateFavorite() {
