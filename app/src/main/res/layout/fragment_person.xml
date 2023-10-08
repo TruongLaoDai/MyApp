@@ -212,6 +212,7 @@
                 android:src="@drawable/ic_arrow_right_more_category" />
         </RelativeLayout>
 
+        <!-- Giao diện cài đặt, trợ giúp, phản hồi -->
         <RelativeLayout
             android:id="@+id/lout_setting"
             android:layout_width="match_parent"
@@ -232,13 +233,13 @@
                 android:textColor="@color/black"
                 android:textSize="15sp" />
 
-            <ImageView
+            <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/iv_more_setting"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignTop="@+id/tv_setting"
                 android:layout_alignBottom="@+id/tv_setting"
-                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
                 android:layout_marginEnd="10dp"
                 android:src="@drawable/ic_arrow_right_more_category" />
 
@@ -253,13 +254,13 @@
                 android:textColor="@color/black"
                 android:textSize="15sp" />
 
-            <ImageView
+            <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/iv_more_help"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignTop="@+id/tv_help"
                 android:layout_alignBottom="@+id/tv_help"
-                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
                 android:layout_marginEnd="10dp"
                 android:src="@drawable/ic_arrow_right_more_category" />
 
@@ -274,13 +275,13 @@
                 android:textColor="@color/black"
                 android:textSize="15sp" />
 
-            <ImageView
+            <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/iv_more_feedback"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignTop="@+id/tv_feedback"
                 android:layout_alignBottom="@+id/tv_feedback"
-                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
                 android:layout_marginEnd="10dp"
                 android:src="@drawable/ic_arrow_right_more_category" />
 
