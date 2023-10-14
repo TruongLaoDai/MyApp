@@ -8,7 +8,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 
-import com.smile.watchmovie.EventBus.EventNotifyLogout;
 import com.smile.watchmovie.databinding.ActivityPrivateSettingBinding;
 
 import org.greenrobot.eventbus.EventBus;
@@ -56,10 +55,10 @@ public class PrivateSettingActivity extends AppCompatActivity {
         EventBus.getDefault().unregister(this);
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onEvent(EventNotifyLogout isLogout) {
-        if (isLogout.isLogout()) {
-            binding.settingAccount.setVisibility(View.GONE);
-        }
-    }
+//    @Subscribe(threadMode = ThreadMode.MAIN)
+//    public void onEvent(EventNotifyLogout isLogout) {
+//        if (isLogout.isLogout()) {
+//            binding.settingAccount.setVisibility(View.GONE);
+//        }
+//    }
 }

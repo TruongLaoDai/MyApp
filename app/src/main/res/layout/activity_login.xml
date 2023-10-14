@@ -2,10 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:weightSum="10"
-    tools:context=".activity.LoginActivity">
+    android:layout_height="match_parent">
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/iv_hello"
@@ -27,10 +24,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/iv_hello"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="15dp"
         android:orientation="vertical">
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -40,88 +37,48 @@
             android:textSize="25sp"
             android:textStyle="bold" />
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="8dp"
             android:gravity="center"
             android:text="@string/text_gt_login"
             android:textSize="15sp" />
+
     </LinearLayout>
 
-    <LinearLayout
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/login_with_face"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
+        android:layout_height="45dp"
         android:layout_below="@+id/title_login"
         android:layout_marginStart="40dp"
         android:layout_marginTop="30dp"
         android:layout_marginEnd="40dp"
-        android:layout_weight="0.6"
         android:background="@drawable/bg_arrow_cicle"
-        android:backgroundTint="#0C5191"
-        android:orientation="horizontal"
-        android:weightSum="10">
+        android:drawableStart="@drawable/icon_facebook"
+        android:paddingStart="10dp"
+        android:text="@string/login_facebook"
+        android:textAllCaps="false"
+        android:textSize="15sp"
+        tools:ignore="RtlSymmetry" />
 
-        <androidx.appcompat.widget.AppCompatImageView
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp"
-            android:layout_weight="1.72"
-            android:src="@drawable/ic_facebook"
-            tools:ignore="NestedWeights" />
-
-        <TextView
-            android:id="@+id/tv_signin_with_face"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:layout_margin="10dp"
-            android:layout_weight="8"
-            android:gravity="center"
-            android:text="@string/login_facebook"
-            android:textColor="@color/white"
-            android:textSize="15sp"
-            android:textStyle="bold" />
-    </LinearLayout>
-
-    <LinearLayout
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/login_with_google"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
+        android:layout_height="45dp"
         android:layout_below="@+id/login_with_face"
         android:layout_marginStart="40dp"
         android:layout_marginTop="20dp"
         android:layout_marginEnd="40dp"
         android:background="@drawable/bg_arrow_cicle"
-        android:backgroundTint="@color/ic_launcher_background"
-        android:orientation="horizontal"
-        android:weightSum="10">
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp"
-            android:layout_weight="1.72"
-            android:src="@drawable/iv_google"
-            tools:ignore="NestedWeights" />
-
-        <TextView
-            android:id="@+id/tv_signin_with_google"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:layout_margin="10dp"
-            android:layout_weight="8"
-            android:gravity="center"
-            android:text="@string/login_google"
-            android:textColor="@color/white"
-            android:textSize="15sp"
-            android:textStyle="bold" />
-    </LinearLayout>
+        android:drawableStart="@drawable/icon_google"
+        android:paddingStart="10dp"
+        android:text="@string/login_google"
+        android:textAllCaps="false"
+        android:textSize="15sp"
+        tools:ignore="RtlSymmetry" />
 
     <LinearLayout
         android:id="@+id/other"
@@ -129,9 +86,9 @@
         android:layout_height="20dp"
         android:layout_below="@+id/login_with_google"
         android:layout_gravity="center"
-        android:layout_marginStart="60dp"
+        android:layout_marginStart="40dp"
         android:layout_marginTop="40dp"
-        android:layout_marginEnd="60dp"
+        android:layout_marginEnd="40dp"
         android:orientation="horizontal">
 
         <View
@@ -151,7 +108,7 @@
             android:layout_marginEnd="10dp"
             android:layout_weight="2"
             android:gravity="center"
-            android:text="@string/login_orther"
+            android:text="@string/login_other"
             android:textColor="@color/gray" />
 
         <View
@@ -168,7 +125,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/other"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="20dp"
         android:gravity="center">
 
         <LinearLayout
@@ -188,7 +145,6 @@
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/login_with_twitter"
                 android:layout_marginTop="5dp"
                 android:text="@string/twitter"
                 android:textColor="@color/black" />
@@ -213,7 +169,6 @@
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/login_with_email"
                 android:layout_marginTop="5dp"
                 android:text="@string/Email"
                 android:textColor="@color/black" />
@@ -237,10 +192,12 @@
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/login_with_phone"
                 android:layout_marginTop="5dp"
                 android:text="@string/phone"
                 android:textColor="@color/black" />
+
         </LinearLayout>
+
     </LinearLayout>
+
 </RelativeLayout>

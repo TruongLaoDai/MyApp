@@ -21,13 +21,17 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.smile.watchmovie.R;
 import com.smile.watchmovie.databinding.ActivityLoginBinding;
-import com.smile.watchmovie.model.User;
+import com.smile.watchmovie.eventBus.EventNotifyLogIn;
+import com.smile.watchmovie.model.UserInfo;
 
+import org.greenrobot.eventbus.EventBus;
+
+/* Link hướng dẫn đăng nhập Google: https://developers.google.com/identity/sign-in/android/sign-in?hl=vi */
 public class LoginActivity extends AppCompatActivity {
     GoogleSignInOptions gso;
     GoogleSignInClient gsc;
     ActivityLoginBinding binding;
-    private String username, userId, full_name;
+    private String userId, full_name;
     private SharedPreferences.Editor editor;
     private CollectionReference collectionReference;
 
@@ -42,10 +46,12 @@ public class LoginActivity extends AppCompatActivity {
 
         /* Khởi tạo FireStore Database  */
         FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
-        collectionReference = firebaseFirestore.collection("WatchFilm");
+        collectionReference = firebaseFirestore.collection(getString(R.string.name_database_firebase));
 
         /* Khởi tạo đăng nhập bằng tài khoản Google */
-        gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build();
+        gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .build();
         gsc = GoogleSignIn.getClient(this, gso);
 
         binding.ivBack.setOnClickListener(v -> finish());
@@ -55,48 +61,43 @@ public class LoginActivity extends AppCompatActivity {
         binding.loginWithFace.setOnClickListener(v -> Toast.makeText(this, R.string.feature_deploying, Toast.LENGTH_SHORT).show());
     }
 
-    public void addAccountOfUserToFireStore(String type) {
-        collectionReference.document("tbluser").collection("user" + userId)
-                .whereEqualTo("username", username)
+    private void addAccountOfUserToFireStore() {
+        collectionReference.document(getString(R.string.table_user)).collection("user" + userId)
+                .whereEqualTo("id", userId)
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         QuerySnapshot querySnapshot = task.getResult();
                         if (querySnapshot != null && !querySnapshot.isEmpty()) {
+
                             /* Lấy thông tin truy vấn */
                             String documentId = querySnapshot.getDocuments().get(0).getId();
-                            User user = querySnapshot.getDocuments().get(0).toObject(User.class);
-                            if (user != null) {
-                                user.setDocumentId(documentId);
+                            UserInfo userInfo = querySnapshot.getDocuments().get(0).toObject(UserInfo.class);
+
+                            if (userInfo != null) {
+                                userInfo.setDocumentId(documentId);
+
+                                /* Lưu thông tin người dùng đã tồn tại trên FireBase vào DB */
+                                saveToSharedPreferences(userInfo);
+
+                                notifyLogIn();
                             }
-
-                            /* Lưu thông tin người dùng lại DB */
-                            if (user != null) {
-                                saveToSharedPreferences(user);
-                            }
-
-                            /* Khởi động lại app */
-                            navigateToMainActivity(type);
-
-                            Log.e("FireStore", "Thông tin người dùng đã tồn tại");
                         } else {
-                            User user = new User(userId, username, full_name, "", "", "", "0");
-                            collectionReference.document("tbluser")
+                            UserInfo userInfo = new UserInfo(userId, full_name, "", "", "", "0", "");
+                            collectionReference.document(getString(R.string.table_user))
                                     .collection("user" + userId)
-                                    .add(user)
+                                    .add(userInfo)
                                     .addOnSuccessListener(documentReference -> {
+
                                         String documentId = documentReference.getId();
-                                        user.setDocumentId(documentId);
+                                        userInfo.setDocumentId(documentId);
 
                                         /* Lưu thông tin người dùng lại DB */
-                                        saveToSharedPreferences(user);
+                                        saveToSharedPreferences(userInfo);
 
-                                        /* Khởi động lại app */
-                                        navigateToMainActivity(type);
-
-                                        Log.d("Firestore", "Thêm thông tin người dùng thành công");
+                                        notifyLogIn();
                                     })
-                                    .addOnFailureListener(e -> Log.w("Firestore", "Thêm thông tin người dùng thất bại"));
+                                    .addOnFailureListener(e -> Log.e("Firestore", "Thêm người dùng thất bại"));
                         }
                     } else {
                         Log.w("FireStore", "Truy vấn thông tin không thành công");
@@ -104,10 +105,10 @@ public class LoginActivity extends AppCompatActivity {
                 });
     }
 
-    private void saveToSharedPreferences(User user) {
+    private void saveToSharedPreferences(UserInfo user) {
         editor.putString("idUser", user.getId());
-        editor.putString("isVip", user.isIs_vip());
-        editor.putString("name", user.getFull_name());
+        editor.putString("name", user.getFullName());
+        editor.putString("isVip", user.isVip());
         editor.putString("documentId", user.getDocumentId());
         editor.apply();
     }
@@ -126,22 +127,20 @@ public class LoginActivity extends AppCompatActivity {
                 task.getResult(ApiException.class);
                 GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(this);
                 if (acct != null) {
-                    username = acct.getEmail();
                     userId = acct.getId();
                     full_name = acct.getDisplayName();
-                    addAccountOfUserToFireStore("google");
+                    addAccountOfUserToFireStore();
                 }
             } catch (ApiException e) {
-                Toast.makeText(getApplicationContext(), "Đăng nhập không thành công", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.notify_login_google_fail), Toast.LENGTH_SHORT).show();
+                Log.e("TAG", "signInResult:failed code=" + e.getStatusCode());
             }
         }
     }
 
-    private void navigateToMainActivity(String type) {
-        editor.putString("typeLogin", type);
-        editor.apply();
-        Toast.makeText(getApplicationContext(), "Đăng nhập thành công", Toast.LENGTH_SHORT).show();
-        startActivity(new Intent(LoginActivity.this, MainActivity.class));
+    private void notifyLogIn() {
+        EventBus.getDefault().post(new EventNotifyLogIn(true));
+        Toast.makeText(this, "Đăng nhập thành công", Toast.LENGTH_SHORT).show();
         finish();
     }
 }

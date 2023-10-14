@@ -21,10 +21,10 @@
     <string name="title_login">Đăng nhập vào Phim hay</string>
     <string name="text_gt_login">Đăng nhập để trải nghiệm phim tốt hơn</string>
     <string name="login_google">Đăng nhập bằng Google</string>
-    <string name="login_orther">hoặc đăng nhập bằng</string>
+    <string name="login_other">Hoặc đăng nhập bằng</string>
     <string name="twitter">Twitter</string>
     <string name="Email">Email</string>
-    <string name="phone">Điện thoại</string>
+    <string name="phone">Phone</string>
     <string name="tap">Tập phim</string>
     <string name="dexuat">Đề xuất cho bạn</string>
     <string name="trang_chu">Trang chủ</string>
@@ -37,8 +37,6 @@
     <string name="tv_created">Ngày tạo: %1$s-%2$s-%3$s</string>
     <string name="tv_star_rating">Đánh giá: %1$d*</string>
     <string name="tv_at_episode">Tập %1$d</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="history">Video đã xem</string>
     <string name="title_size">Danh sách trống</string>
     <string name="fav_film">Phim yêu thích</string>
@@ -113,18 +111,6 @@
     <string name="delete">Xóa</string>
     <string name="cancel">Hủy</string>
     <string name="design_by">Được thiết kế bởi</string>
-
-    <string-array name="categorys">
-        <item>Phim mới</item>
-        <item>Hoạt hình</item>
-        <item>Hành động</item>
-        <item>Kinh dị</item>
-        <item>Trinh thám</item>
-        <item>Hài kịch</item>
-        <item>Lãng mạn</item>
-        <item>Phiêu lưu</item>
-    </string-array>
-
     <string name="privacy_setting">Cài đặt cá nhân</string>
     <string name="movie_setting">Cài đặt phát chiếu</string>
     <string name="info_account_2">Thông tin tài khoản</string>
@@ -140,4 +126,10 @@
     <string name="monthly_package">Gói tháng</string>
     <string name="status">Trạng thái:</string>
     <string name="date_register">Ngày đăng kí:</string>
+
+    <string name="notify_login_google_fail">Đăng nhập không thành công</string>
+    
+    <string name="table_user">tbluser</string>
+    <string name="name_database_firebase">WatchFilm</string>
+    <string name="name_database_sharedPreferences">MyPrefs</string>
 </resources>

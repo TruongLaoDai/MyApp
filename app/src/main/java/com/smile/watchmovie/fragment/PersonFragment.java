@@ -17,7 +17,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.smile.watchmovie.EventBus.EventNotifyLogout;
+import com.smile.watchmovie.eventBus.EventNotifyLogIn;
 import com.smile.watchmovie.activity.ChoosePaymentActivity;
 import com.smile.watchmovie.activity.FavoriteFilmActivity;
 import com.smile.watchmovie.activity.HistoryWatchFilmActivity;
@@ -40,20 +40,17 @@ import retrofit2.Response;
 public class PersonFragment extends Fragment {
     private FragmentPersonBinding binding;
     String nameUser, idUser, is_vip;
+    private SharedPreferences sharedPreferences;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         binding = FragmentPersonBinding.inflate(inflater, container, false);
-
-        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
-        idUser = sharedPreferences.getString("idUser", "");
-        nameUser = sharedPreferences.getString("name", "");
-        is_vip = sharedPreferences.getString("isVip", "0");
-
+        sharedPreferences = requireActivity().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+        getInfoUserInDB();
+        setupInfo();
         onClickItem();
         showWeather();
-        setupInfo();
 
         return binding.getRoot();
     }
@@ -69,14 +66,11 @@ public class PersonFragment extends Fragment {
 
         if (!nameUser.equals("")) {
             binding.tvNameAccount.setText(nameUser);
+            binding.ivAvtAccount.setVisibility(View.VISIBLE);
+            loadAvatarUser();
         } else {
             binding.ivAvtAccount.setVisibility(View.GONE);
             binding.tvNameAccount.setText(requireActivity().getString(R.string.login));
-        }
-
-        GoogleSignInAccount signInAccount = GoogleSignIn.getLastSignedInAccount(requireActivity());
-        if (signInAccount != null) {
-            Glide.with(this).load(signInAccount.getPhotoUrl()).into(binding.ivAvtAccount);
         }
     }
 
@@ -148,13 +142,21 @@ public class PersonFragment extends Fragment {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onEvent(EventNotifyLogout isLogout) {
-        if (isLogout.isLogout()) {
-            idUser = "";
-            binding.ivVip.setVisibility(View.GONE);
-            binding.ivAvtAccount.setVisibility(View.GONE);
-            binding.tvNameAccount.setText(requireActivity().getString(R.string.login));
-            binding.tvTitlePayDetail.setText(R.string.buy_title);
+    public void onEvent(EventNotifyLogIn isLogIn) {
+        getInfoUserInDB();
+        setupInfo();
+    }
+
+    private void getInfoUserInDB() {
+        idUser = sharedPreferences.getString("idUser", "");
+        nameUser = sharedPreferences.getString("name", "");
+        is_vip = sharedPreferences.getString("isVip", "0");
+    }
+
+    private void loadAvatarUser() {
+        GoogleSignInAccount signInAccount = GoogleSignIn.getLastSignedInAccount(requireActivity());
+        if (signInAccount != null) {
+            Glide.with(this).load(signInAccount.getPhotoUrl()).into(binding.ivAvtAccount);
         }
     }
 

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="corner_avatar_user">
+        <item name="cornerSize">30%</item>
+    </style>
+</resources>

@@ -23,7 +23,6 @@ import retrofit2.Response;
 
 public class HomeFragment extends Fragment {
     private FragmentHomeBinding binding;
-
     private FilmAdapter mFilmAdapter1;
     private FilmAdapter mFilmAdapter2;
     private FilmAdapter mFilmAdapter3;

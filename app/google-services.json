@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "722307297370-03nlliaujdc1vqeuaa976d1m6m90pkhc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.smile.watchmovie",
+            "certificate_hash": "7ef1a5b84179556745eaed3313d46b37ad33d256"
+          }
+        },
+        {
           "client_id": "722307297370-erk9mej0oub85blhdpmodjcdfj9vbfda.apps.googleusercontent.com",
           "client_type": 3
         }
