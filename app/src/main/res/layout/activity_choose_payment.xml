@@ -3,8 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".activity.ChoosePaymentActivity">
+    android:layout_height="match_parent">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/tool_bar"
@@ -20,6 +19,7 @@
             android:layout_gravity="end"
             android:layout_marginEnd="10dp"
             android:src="@drawable/ic_payment_history" />
+
     </androidx.appcompat.widget.Toolbar>
 
     <RelativeLayout
@@ -30,38 +30,33 @@
         android:layout_marginStart="10dp"
         android:layout_marginTop="10dp">
 
-        <androidx.cardview.widget.CardView
-            android:id="@+id/lout_iv_account"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:cardCornerRadius="25dp">
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/iv_account"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:src="@drawable/icon_avatar" />
-
-        </androidx.cardview.widget.CardView>
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/iv_account"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:scaleType="centerCrop"
+            app:shapeAppearanceOverlay="@style/corner_avatar_50"
+            tools:src="@drawable/icon_avatar" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_name_account"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
-            android:layout_toEndOf="@+id/lout_iv_account"
+            android:layout_toEndOf="@+id/iv_account"
             android:textColor="@color/black"
             android:textSize="16sp"
             android:textStyle="bold"
-            tools:text="@string/buy_premium" />
+            tools:text="Trường Lão Đại" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/tv_name_account"
             android:layout_marginStart="10dp"
-            android:layout_toEndOf="@+id/lout_iv_account"
+            android:layout_toEndOf="@+id/iv_account"
             android:text="@string/title_buy" />
+
     </RelativeLayout>
 
     <RelativeLayout
@@ -115,6 +110,7 @@
                     android:text="@string/price_monthly"
                     android:textColor="#E55151"
                     android:textStyle="bold" />
+
             </RelativeLayout>
 
             <RelativeLayout
@@ -148,6 +144,7 @@
 
             </RelativeLayout>
         </LinearLayout>
+
     </RelativeLayout>
 
     <androidx.appcompat.widget.AppCompatTextView
@@ -168,6 +165,7 @@
         android:layout_marginTop="10dp"
         android:background="@drawable/bg_buy_premium"
         android:text="@string/buy"
+        android:textAllCaps="false"
         android:textColor="@color/white"
         android:textStyle="bold" />
 
@@ -186,6 +184,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/tv_title_benefit"
-        android:layout_marginTop="5dp"
         android:src="@drawable/ic_benefit_uer_vip" />
+
 </RelativeLayout>

@@ -99,11 +99,7 @@ public class PersonFragment extends Fragment {
                 requireActivity().startActivity(new Intent(requireActivity(), PrivateSettingActivity.class))
         );
 
-        binding.tvFeedback.setOnClickListener(v ->
-                Toast.makeText(requireActivity(), getString(R.string.feature_deploying), Toast.LENGTH_SHORT).show()
-        );
-
-        binding.tvHelp.setOnClickListener(v ->
+        binding.tvHelpFeedback.setOnClickListener(v ->
                 Toast.makeText(requireActivity(), getString(R.string.feature_deploying), Toast.LENGTH_SHORT).show()
         );
 

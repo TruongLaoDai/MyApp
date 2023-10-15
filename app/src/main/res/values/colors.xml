@@ -11,4 +11,5 @@
     <color name="gray">#777776</color>
     <color name="gray_light">#F8F8F5</color>
     <color name="light_dark_bar">#74000000</color>
+    <color name="color_line_setting">#4A3C3C43</color>
 </resources>

@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/layout_person"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -14,17 +16,19 @@
             android:id="@+id/lout_account"
             android:layout_width="match_parent"
             android:layout_height="200dp"
-            android:background="@drawable/iv_hello">
+            android:background="@drawable/iv_hello"
+            android:paddingStart="15dp"
+            android:paddingEnd="15dp">
 
-            <de.hdodenhof.circleimageview.CircleImageView
+            <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/iv_avt_account"
-                android:layout_width="65dp"
-                android:layout_height="65dp"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
                 android:layout_above="@+id/tv_name_account"
-                android:layout_marginStart="15dp"
                 android:layout_marginTop="35dp"
                 android:scaleType="centerCrop"
-                android:src="@drawable/icon_avatar" />
+                android:src="@drawable/icon_avatar"
+                app:shapeAppearanceOverlay="@style/corner_avatar_50" />
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/iv_vip"
@@ -32,19 +36,15 @@
                 android:layout_height="30dp"
                 android:layout_alignStart="@+id/iv_avt_account"
                 android:layout_alignEnd="@+id/iv_avt_account"
-                android:layout_marginTop="33dp"
+                android:layout_marginTop="53dp"
                 android:src="@drawable/ic_vip" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tv_name_account"
-                android:layout_width="150dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
-                android:layout_marginStart="5dp"
-                android:layout_marginEnd="10dp"
-                android:layout_marginBottom="38dp"
-                android:padding="10dp"
-                android:singleLine="true"
+                android:layout_marginBottom="45dp"
                 android:text="@string/app_name"
                 android:textColor="@color/black"
                 android:textSize="18sp"
@@ -54,25 +54,26 @@
                 android:id="@+id/tv_weather"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_above="@+id/tv_weather_detail"
                 android:layout_alignParentEnd="true"
-                android:layout_marginTop="100dp"
-                android:layout_marginEnd="10dp"
                 android:textColor="@color/white"
-                android:textSize="16sp" />
+                android:textSize="16sp"
+                tools:text="Nhiệt độ tại Hà Nội" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tv_weather_detail"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/tv_weather"
                 android:layout_alignParentEnd="true"
-                android:layout_marginTop="10dp"
-                android:layout_marginEnd="10dp"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="45dp"
                 android:textColor="@color/white"
-                android:textSize="16sp" />
+                android:textSize="16sp"
+                tools:text="Nhiều mây" />
 
         </RelativeLayout>
 
+        <!-- Giao diện mua vip -->
         <RelativeLayout
             android:id="@+id/lout_pay"
             android:layout_width="wrap_content"
@@ -214,8 +215,8 @@
                 android:src="@drawable/ic_arrow_right_more_category" />
         </RelativeLayout>
 
-        <!-- Giao diện cài đặt, trợ giúp, phản hồi -->
-        <RelativeLayout
+        <!-- Giao diện cài đặt, trợ giúp và phản hồi -->
+        <LinearLayout
             android:id="@+id/lout_setting"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -223,71 +224,27 @@
             android:layout_marginStart="7dp"
             android:layout_marginTop="20dp"
             android:layout_marginEnd="7dp"
-            android:background="@drawable/bg_white_arrow">
+            android:background="@drawable/bg_white_arrow"
+            android:orientation="vertical">
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tv_setting"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:foreground="?android:attr/selectableItemBackground"
-                android:padding="10dp"
-                android:text="@string/setting"
-                android:textColor="@color/black"
-                android:textSize="15sp" />
+                style="@style/Button_Setting"
+                android:drawableStart="@drawable/icon_setting"
+                android:text="@string/setting" />
 
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/iv_more_setting"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignTop="@+id/tv_setting"
-                android:layout_alignBottom="@+id/tv_setting"
-                android:layout_alignParentEnd="true"
-                android:layout_marginEnd="10dp"
-                android:src="@drawable/ic_arrow_right_more_category" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/color_line_setting" />
 
             <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/tv_help"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/tv_setting"
-                android:foreground="?android:attr/selectableItemBackground"
-                android:padding="10dp"
-                android:text="@string/help"
-                android:textColor="@color/black"
-                android:textSize="15sp" />
+                android:id="@+id/tv_help_feedback"
+                style="@style/Button_Setting"
+                android:drawableStart="@drawable/icon_help_feedback"
+                android:text="@string/help" />
 
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/iv_more_help"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignTop="@+id/tv_help"
-                android:layout_alignBottom="@+id/tv_help"
-                android:layout_alignParentEnd="true"
-                android:layout_marginEnd="10dp"
-                android:src="@drawable/ic_arrow_right_more_category" />
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/tv_feedback"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/tv_help"
-                android:foreground="?android:attr/selectableItemBackground"
-                android:padding="10dp"
-                android:text="@string/feedback"
-                android:textColor="@color/black"
-                android:textSize="15sp" />
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/iv_more_feedback"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignTop="@+id/tv_feedback"
-                android:layout_alignBottom="@+id/tv_feedback"
-                android:layout_alignParentEnd="true"
-                android:layout_marginEnd="10dp"
-                android:src="@drawable/ic_arrow_right_more_category" />
-
-        </RelativeLayout>
+        </LinearLayout>
 
     </RelativeLayout>
 

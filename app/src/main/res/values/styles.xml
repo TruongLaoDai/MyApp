@@ -4,4 +4,25 @@
     <style name="corner_avatar_user">
         <item name="cornerSize">30%</item>
     </style>
+
+    <style name="corner_avatar_50">
+        <item name="cornerSize">50%</item>
+    </style>
+
+    <style name="Button_Setting">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:paddingTop">10dp</item>
+        <item name="android:paddingStart">15dp</item>
+        <item name="android:paddingBottom">10dp</item>
+        <item name="android:paddingEnd">5dp</item>
+        <item name="android:foreground">?android:attr/selectableItemBackground</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:drawableTint">@color/black</item>
+        <item name="android:drawableEnd">@drawable/ic_arrow_right_more_category</item>
+        <item name="android:drawablePadding">15dp</item>
+    </style>
+
 </resources>

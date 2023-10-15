@@ -72,8 +72,6 @@ public class ChoosePaymentActivity extends AppCompatActivity {
             Glide.with(this).load(signInAccount.getPhotoUrl()).into(binding.ivAccount);
         }
 
-        binding.toolBar.setNavigationOnClickListener(view -> finish());
-
         /* Mua nhấn mua theo tháng */
         binding.loutBuyMonthly.setOnClickListener(v -> {
             price = "47000";
@@ -116,6 +114,12 @@ public class ChoosePaymentActivity extends AppCompatActivity {
                     }
                 }
         );
+
+        handleEventClick();
+    }
+
+    private void handleEventClick() {
+        binding.toolBar.setNavigationOnClickListener(view -> finish());
     }
 
     private void setUpFireBase() {
