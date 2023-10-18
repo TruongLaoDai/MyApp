@@ -8,7 +8,9 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 
+import com.smile.watchmovie.R;
 import com.smile.watchmovie.databinding.ActivityPrivateSettingBinding;
+import com.smile.watchmovie.eventBus.EventNotifyLogIn;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -23,16 +25,16 @@ public class PrivateSettingActivity extends AppCompatActivity {
         binding = ActivityPrivateSettingBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        binding.settingPlayFilm.setOnClickListener(v ->
-                startActivity(new Intent(PrivateSettingActivity.this, SettingPlayFilmActivity.class))
-        );
-
-        SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
-        String idUser = sharedPreferences.getString("idUser", "");
+        SharedPreferences sharedPreferences = getSharedPreferences(getString(R.string.name_database_sharedPreferences), Context.MODE_PRIVATE);
+        String idUser = sharedPreferences.getString(getString(R.string.id_user), "");
 
         if (idUser.equals("")) {
             binding.settingAccount.setVisibility(View.GONE);
         }
+
+        binding.settingPlayFilm.setOnClickListener(v ->
+                startActivity(new Intent(PrivateSettingActivity.this, SettingPlayFilmActivity.class))
+        );
 
         binding.settingAccount.setOnClickListener(v ->
                 startActivity(new Intent(PrivateSettingActivity.this, InfoAccountActivity.class))
@@ -55,10 +57,10 @@ public class PrivateSettingActivity extends AppCompatActivity {
         EventBus.getDefault().unregister(this);
     }
 
-//    @Subscribe(threadMode = ThreadMode.MAIN)
-//    public void onEvent(EventNotifyLogout isLogout) {
-//        if (isLogout.isLogout()) {
-//            binding.settingAccount.setVisibility(View.GONE);
-//        }
-//    }
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEvent(EventNotifyLogIn isLogIn) {
+        if (!isLogIn.isLogIn()) {
+            binding.settingAccount.setVisibility(View.GONE);
+        }
+    }
 }

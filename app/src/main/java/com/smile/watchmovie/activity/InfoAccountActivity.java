@@ -45,8 +45,8 @@ public class InfoAccountActivity extends AppCompatActivity {
         SharedPreferences sharedPreferences = getSharedPreferences(getString(R.string.name_database_sharedPreferences), Context.MODE_PRIVATE);
         editor = sharedPreferences.edit();
 
-        id_user = sharedPreferences.getString("idUser", "");
-        documentId = sharedPreferences.getString("documentId", "");
+        id_user = sharedPreferences.getString(getString(R.string.id_user), "");
+        documentId = sharedPreferences.getString(getString(R.string.document_id), "");
 
         /* Gọi lấy thông tin user trên FireBase */
         callApiGetUser();

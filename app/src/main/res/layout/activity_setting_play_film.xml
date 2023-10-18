@@ -16,17 +16,11 @@
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/title_auto_play"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        style="@style/Button_Setting"
         android:layout_marginTop="10dp"
-        android:gravity="center_vertical"
+        android:drawableEnd="@null"
         android:paddingStart="20dp"
-        android:paddingTop="10dp"
-        android:paddingBottom="10dp"
         android:text="@string/auto_play"
-        android:textColor="@color/black"
-        android:textSize="15sp"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tool_bar" />
 
@@ -35,7 +29,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="5dp"
-        android:checked="true"
         app:layout_constraintBottom_toBottomOf="@+id/title_auto_play"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/title_auto_play" />
@@ -43,20 +36,15 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/gray_light"
+        android:background="@color/color_line_setting"
         app:layout_constraintTop_toBottomOf="@+id/title_auto_play" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/title_auto_full_screen"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
+        style="@style/Button_Setting"
+        android:drawableEnd="@null"
         android:paddingStart="20dp"
-        android:paddingTop="10dp"
-        android:paddingBottom="10dp"
         android:text="@string/auto_play_full_screen"
-        android:textColor="@color/black"
-        android:textSize="15sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/title_auto_play" />
 
@@ -72,7 +60,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/gray_light"
+        android:background="@color/color_line_setting"
         app:layout_constraintTop_toBottomOf="@+id/title_auto_full_screen" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

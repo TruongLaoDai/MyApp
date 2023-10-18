@@ -132,4 +132,6 @@
     <string name="table_user">tbluser</string>
     <string name="name_database_firebase">WatchFilm</string>
     <string name="name_database_sharedPreferences">MyPrefs</string>
+    <string name="id_user">idUser</string>
+    <string name="document_id">documentId</string>
 </resources>
