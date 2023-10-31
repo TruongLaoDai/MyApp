@@ -92,11 +92,11 @@ public class FilmSearchAdapter extends RecyclerView.Adapter<FilmSearchAdapter.Fi
         holder.itemFilmDetailBinding.tvViewNumber.setText(context.getString(R.string.tv_view_number, filmMainHome.getViewNumber()));
 
         /* Kiểm tra phim vip hay không */
-        if (filmMainHome.getId() % 2 == 0) {
-            holder.itemFilmDetailBinding.loutPremium.setVisibility(ViewGroup.VISIBLE);
-        } else {
-            holder.itemFilmDetailBinding.loutPremium.setVisibility(ViewGroup.GONE);
-        }
+//        if (filmMainHome.getId() % 2 == 0) {
+//            holder.itemFilmDetailBinding.loutPremium.setVisibility(ViewGroup.VISIBLE);
+//        } else {
+//            holder.itemFilmDetailBinding.loutPremium.setVisibility(ViewGroup.GONE);
+//        }
 
         holder.itemFilmDetailBinding.tvCreated.setText(context.getString(R.string.day_watch, dateCreated(filmMainHome.getCreated())));
         holder.itemFilmDetailBinding.tvNameFilm.setText(filmMainHome.getName());

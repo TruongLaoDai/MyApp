@@ -8,7 +8,6 @@ import java.util.Date;
 import java.util.List;
 
 public class FilmMainHome implements Serializable {
-
     @SerializedName("id")
     @Expose
     private int id;

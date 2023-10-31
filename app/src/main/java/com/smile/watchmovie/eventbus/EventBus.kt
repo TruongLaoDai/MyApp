@@ -1,3 +1,3 @@
-package com.smile.watchmovie.eventBus
+package com.smile.watchmovie.eventbus
 
 data class EventNotifyLogIn(var isLogIn: Boolean)

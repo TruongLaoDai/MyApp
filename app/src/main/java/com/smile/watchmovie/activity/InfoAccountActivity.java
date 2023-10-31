@@ -18,7 +18,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.smile.watchmovie.R;
 import com.smile.watchmovie.databinding.ActivityInfoAccountBinding;
-import com.smile.watchmovie.eventBus.EventNotifyLogIn;
+import com.smile.watchmovie.eventbus.EventNotifyLogIn;
 import com.smile.watchmovie.model.UserInfo;
 
 import org.greenrobot.eventbus.EventBus;

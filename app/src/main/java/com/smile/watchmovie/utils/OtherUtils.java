@@ -1,7 +1,11 @@
 package com.smile.watchmovie.utils;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.util.Date;
+import java.util.Locale;
 
 public class OtherUtils {
     public String formatCommonTime(String dateUpVip, String type_vip) {
@@ -12,13 +16,13 @@ public class OtherUtils {
             long daysBetween = ChronoUnit.DAYS.between(dateUpVIp, today);
 
             if (type_vip.equals("1")) {
-                if(daysBetween > 30) {
+                if (daysBetween > 30) {
                     return "Hết hạn";
                 } else {
                     return "Hoạt động";
                 }
             } else {
-                if(daysBetween > 365) {
+                if (daysBetween > 365) {
                     return "Hết hạn";
                 } else {
                     return "Hoạt động";
@@ -26,5 +30,17 @@ public class OtherUtils {
             }
         }
         return null;
+    }
+
+    public String formatTime(String date) {
+        String[] data = date.split("T");
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        try {
+            Date date1 = format.parse(data[0]);
+            SimpleDateFormat format1 = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+            return format1.format(date1);
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

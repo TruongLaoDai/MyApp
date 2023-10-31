@@ -4,111 +4,84 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/layout_film"
     android:layout_width="match_parent"
-    android:layout_height="170dp"
-    android:layout_marginTop="10dp"
-    android:layout_marginBottom="10dp">
+    android:layout_height="wrap_content"
+    android:foreground="?android:attr/selectableItemBackground"
+    android:paddingVertical="10dp">
 
     <RelativeLayout
         android:id="@+id/lout_image"
         android:layout_width="140dp"
         android:layout_height="170dp">
 
-        <androidx.cardview.widget.CardView
-            android:id="@+id/iv_image_film1"
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/iv_image_film"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:cardCornerRadius="12dp">
+            android:scaleType="centerCrop"
+            app:shapeAppearanceOverlay="@style/corner_avatar_12dp" />
 
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/iv_image_film"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/bg_film_arrow_conner"
-                android:scaleType="centerCrop" />
-
-            <RelativeLayout
-                android:id="@+id/lout_premium"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end"
-                android:background="@drawable/bg_premium_home"
-                android:gravity="center">
-
-                <TextView
-                    android:id="@+id/tv_premium"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="2dp"
-                    android:layout_marginTop="2dp"
-                    android:layout_marginEnd="2dp"
-                    android:layout_marginBottom="2dp"
-                    android:layout_toEndOf="@+id/iv_premium"
-                    android:padding="2dp"
-                    android:text="@string/premium"
-                    android:textColor="@color/white"
-                    android:textStyle="bold" />
-
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/iv_premium"
-                    android:layout_width="20dp"
-                    android:layout_height="wrap_content"
-                    android:padding="2dp"
-                    android:src="@drawable/ic_premium"
-                    android:tint="@color/white" />
-
-            </RelativeLayout>
-
-        </androidx.cardview.widget.CardView>
+        <include
+            android:id="@+id/lout_premium"
+            layout="@layout/layout_premium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true" />
 
     </RelativeLayout>
 
     <RelativeLayout
         android:id="@+id/loat_detail_film"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
         android:layout_toEndOf="@+id/lout_image">
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_name_film"
-            android:layout_width="match_parent"
+            style="@style/Text"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:layout_marginEnd="20dp"
+            android:ellipsize="end"
+            android:maxLines="2"
             android:textColor="@color/black"
             android:textSize="18sp"
-            tools:text="Vo than chua te" />
+            tools:text="Love and Hate" />
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_episodesTotal"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/tv_name_film"
-            android:layout_marginTop="5dp"
-            android:layout_marginEnd="20dp"
-            android:gravity="center_vertical"
-            android:textSize="14sp"
-            tools:text="1 tập" />
+            android:fontFamily="@font/noto_sans"
+            android:textSize="13sp"
+            tools:text="Phim ngắn" />
 
-        <TextView
-            android:id="@+id/tv_view_number"
-            android:layout_width="match_parent"
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_category"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/tv_episodesTotal"
-            android:layout_marginTop="5dp"
-            android:layout_marginEnd="20dp"
-            android:gravity="center_vertical"
-            tools:text="8.0" />
+            android:fontFamily="@font/noto_sans"
+            android:textSize="13sp"
+            tools:text="Thể loại: Tình yêu" />
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_view_number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_category"
+            android:fontFamily="@font/noto_sans"
+            android:textSize="13sp"
+            tools:text="Lượt xem: 1956" />
+
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_created"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/tv_view_number"
-            android:layout_marginTop="5dp"
-            android:layout_marginEnd="20dp"
-            android:gravity="center_vertical"
-            tools:text="8.0" />
+            android:textSize="13sp"
+            tools:text="Ngày ra mắt: 10/7/2023" />
 
     </RelativeLayout>
 
@@ -119,6 +92,6 @@
         android:layout_alignEnd="@+id/loat_detail_film"
         android:layout_marginTop="5dp"
         android:src="@drawable/ic_more_action"
-        android:visibility="gone"
-        tools:visibility="visible" />
+        android:visibility="gone" />
+
 </RelativeLayout>

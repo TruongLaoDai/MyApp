@@ -118,12 +118,6 @@
                 <data android:scheme="@string/fb_login_protocol_scheme" />
             </intent-filter>
         </activity>
-
-        <receiver android:name=".notification.NotificationReceiver" />
-
-        <service
-            android:name=".service.NotificationService"
-            android:enabled="true" />
     </application>
 
 </manifest>

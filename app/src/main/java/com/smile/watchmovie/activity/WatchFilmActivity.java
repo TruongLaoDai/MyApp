@@ -234,7 +234,7 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        saveHistoryWatch();
+//        saveHistoryWatch();
         if (player != null) {
             if (player.isPlaying()) {
                 player.stop();

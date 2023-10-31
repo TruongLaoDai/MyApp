@@ -8,7 +8,7 @@ import android.os.Bundle;
 
 import com.smile.watchmovie.R;
 import com.smile.watchmovie.databinding.ActivitySettingPlayFilmBinding;
-import com.smile.watchmovie.values.Constant;
+import com.smile.watchmovie.utils.Constant;
 
 public class SettingPlayFilmActivity extends AppCompatActivity {
     private ActivitySettingPlayFilmBinding binding;

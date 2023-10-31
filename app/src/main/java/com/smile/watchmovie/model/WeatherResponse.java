@@ -1,13 +1,9 @@
 package com.smile.watchmovie.model;
 
-import com.google.gson.annotations.SerializedName;
-
 import java.util.List;
 
 public class WeatherResponse {
-    @SerializedName("weather")
-    private List<Weather>  weather;
-    @SerializedName("main")
+    private List<Weather> weather;
     private TemperatureHumidity main;
 
     public TemperatureHumidity getMain() {

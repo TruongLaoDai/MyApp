@@ -31,9 +31,9 @@
     <string name="download">Tải xuống</string>
     <string name="favorite">Yêu thích</string>
     <string name="kham_pha">Khám phá</string>
-    <string name="ca_nhan">Cá nhân</string>
+    <string name="ca_nhan">Hồ sơ</string>
     <string name="tv_duration">%1$s / tập</string>
-    <string name="tv_view_number">%1$d lượt xem</string>
+    <string name="tv_view_number">Lượt xem: %1$d</string>
     <string name="tv_created">Ngày tạo: %1$s-%2$s-%3$s</string>
     <string name="tv_star_rating">Đánh giá: %1$d*</string>
     <string name="tv_at_episode">Tập %1$d</string>
@@ -94,7 +94,6 @@
     <string name="buy">Mua ngay</string>
     <string name="benifit_premium">Quyền lợi Premium</string>
     <string name="wsToken">7da353b8a3246f851e0ee436d898a26d</string>
-    <string name="appId">c3dd215f4ed3239d0fc98ce38ea3fcd0</string>
     <string name="premium">Premium</string>
     <string name="des_type_premium_month">* Bạn sẽ được trải nghiệm toàn bộ các phim Premium trong một tháng. Thời hạn gói bắt đầu từ lúc bạn đăng kí.</string>
     <string name="des_type_premium_year">* Bạn sẽ được trải nghiệm toàn bộ các phim Premium trong một năm. Thời hạn gói bắt đầu từ lúc bạn đăng kí.</string>
@@ -128,10 +127,13 @@
     <string name="date_register">Ngày đăng kí:</string>
 
     <string name="notify_login_google_fail">Đăng nhập không thành công</string>
-    
+
     <string name="table_user">tbluser</string>
     <string name="name_database_firebase">WatchFilm</string>
     <string name="name_database_sharedPreferences">MyPrefs</string>
     <string name="id_user">idUser</string>
     <string name="document_id">documentId</string>
+
+    <string name="title_weather">%d°C tại Hà Nội</string>
+    <string name="category_film">Thể loại: %s</string>
 </resources>

@@ -10,7 +10,7 @@ import android.view.View;
 
 import com.smile.watchmovie.R;
 import com.smile.watchmovie.databinding.ActivityPrivateSettingBinding;
-import com.smile.watchmovie.eventBus.EventNotifyLogIn;
+import com.smile.watchmovie.eventbus.EventNotifyLogIn;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
