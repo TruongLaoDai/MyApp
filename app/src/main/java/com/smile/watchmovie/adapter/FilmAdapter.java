@@ -58,14 +58,14 @@ public class FilmAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     .placeholder(R.drawable.ic_baseline_image_gray)
                     .into(((FilmViewHolder) holder).itemFilmBinding.ivImageFilm);
 
-            if (filmMainHome.getId() % 2 == 0) {
-                ((FilmViewHolder) holder).itemFilmBinding.loutPremium.setVisibility(ViewGroup.VISIBLE);
-            } else {
-                ((FilmViewHolder) holder).itemFilmBinding.loutPremium.setVisibility(ViewGroup.GONE);
-            }
+//            if (filmMainHome.getId() % 2 == 0) {
+//                ((FilmViewHolder) holder).itemFilmBinding.loutPremium.setVisibility(ViewGroup.VISIBLE);
+//            } else {
+//                ((FilmViewHolder) holder).itemFilmBinding.loutPremium.setVisibility(ViewGroup.GONE);
+//            }
 
             ((FilmViewHolder) holder).itemFilmBinding.tvNameFilm.setText(filmMainHome.getName());
-            ((FilmViewHolder) holder).itemFilmBinding.layoutFilm.setOnClickListener(view -> playFilm(filmMainHome));
+            ((FilmViewHolder) holder).itemFilmBinding.getRoot().setOnClickListener(view -> playFilm(filmMainHome));
         }
     }
 

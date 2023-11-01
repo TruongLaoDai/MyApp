@@ -6,4 +6,7 @@ class ApiHelper(private val apiService: ApiServices) {
 
     suspend fun searchFilm(header: String, keySearch: String, page: Int, size: Int) =
         apiService.searchFilm(header, keySearch, page, size)
+
+    suspend fun getFilmDetail(header: String, filmId: Int) =
+        apiService.getFilmDetail(header, filmId)
 }

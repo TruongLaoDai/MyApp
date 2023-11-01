@@ -17,6 +17,7 @@ import com.smile.watchmovie.api.RetrofitBuilder
 import com.smile.watchmovie.base.ViewModelFactory
 import com.smile.watchmovie.databinding.FragmentSearchBinding
 import com.smile.watchmovie.model.FilmMainHome
+import com.smile.watchmovie.utils.Constant
 import com.smile.watchmovie.viewmodel.SearchFragmentViewModel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -93,8 +94,12 @@ class SearchFragment : Fragment(), PagingAdapter.OnClickListener {
     }
 
     override fun playFilm(film: FilmMainHome) {
-        val intent = Intent(requireActivity(), WatchFilmActivity::class.java)
-        intent.putExtra("film", film)
-        startActivity(intent)
+        viewModel.getFilmDetail(Constant.Api.WS_TOKEN, film.id).observe(requireActivity()) {
+            it?.let {
+                val intent = Intent(requireActivity(), WatchFilmActivity::class.java)
+                intent.putExtra("film", it.data)
+                startActivity(intent)
+            }
+        }
     }
 }

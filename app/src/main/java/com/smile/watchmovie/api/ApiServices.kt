@@ -1,6 +1,7 @@
 package com.smile.watchmovie.api
 
 import com.smile.watchmovie.model.FilmArrayResponse
+import com.smile.watchmovie.model.FilmDetailResponse
 import com.smile.watchmovie.model.WeatherResponse
 import retrofit2.http.GET
 import retrofit2.http.Header
@@ -21,4 +22,10 @@ interface ApiServices {
         @Query("page") page: Int,
         @Query("size") size: Int
     ): FilmArrayResponse
+
+    @GET("api/v1/get-film-detail")
+    suspend fun getFilmDetail(
+        @Header("wsToken") header: String,
+        @Query("filmId") filmId: Int
+    ): FilmDetailResponse
 }

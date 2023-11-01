@@ -32,6 +32,7 @@ public class HomeFragment extends Fragment {
     private FilmAdapter mFilmAdapter7;
 
     public HomeFragment() {
+
     }
 
     @SuppressLint("MissingInflatedId")

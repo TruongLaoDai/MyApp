@@ -4,324 +4,298 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <RelativeLayout
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <androidx.core.widget.NestedScrollView
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:orientation="vertical">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
                 android:orientation="vertical">
 
-                <LinearLayout
+                <RelativeLayout
+                    android:id="@+id/more_carton_movie"
                     android:layout_width="match_parent"
-                    android:layout_height="230dp"
-                    android:layout_marginTop="5dp"
-                    android:orientation="vertical"
-                    android:weightSum="3">
+                    android:layout_height="wrap_content">
 
-                    <RelativeLayout
-                        android:id="@+id/more_carton_movie"
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_gravity="center"
-                        android:layout_weight="0.53">
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:text="Hoạt hình"
+                        android:textColor="@color/black"
+                        android:textSize="19sp"
+                        android:textStyle="bold" />
 
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:gravity="center_vertical"
-                            android:text="Hoạt hình"
-                            android:textColor="@color/black"
-                            android:textSize="19sp"
-                            android:textStyle="bold" />
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginEnd="5dp"
+                        android:gravity="center_vertical"
+                        android:src="@drawable/ic_arrow_right_more_category" />
 
-                        <androidx.appcompat.widget.AppCompatImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:layout_alignParentEnd="true"
-                            android:layout_marginEnd="10dp"
-                            android:gravity="center_vertical"
-                            android:src="@drawable/ic_arrow_right_more_category" />
-                    </RelativeLayout>
+                </RelativeLayout>
 
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/rcv_film1"
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_gravity="center"
-                        android:layout_marginBottom="10dp"
-                        android:layout_weight="2.6"
-                        android:background="@drawable/bg_film_arrow_conner"
-                        android:orientation="horizontal"
-                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
-                </LinearLayout>
-
-                <LinearLayout
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rcv_film1"
                     android:layout_width="match_parent"
-                    android:layout_height="230dp"
-                    android:orientation="vertical"
-                    android:weightSum="3">
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="10dp"
+                    android:orientation="horizontal"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
-                    <RelativeLayout
-                        android:id="@+id/more_action_movie"
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_gravity="center"
-                        android:layout_weight="0.5">
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:gravity="center_vertical"
-                            android:text="Hành động"
-                            android:textColor="@color/black"
-                            android:textSize="19sp"
-                            android:textStyle="bold" />
-
-                        <androidx.appcompat.widget.AppCompatImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:layout_alignParentEnd="true"
-                            android:layout_marginEnd="10dp"
-                            android:gravity="center_vertical"
-                            android:src="@drawable/ic_arrow_right_more_category" />
-                    </RelativeLayout>
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/rcv_film2"
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_gravity="center"
-                        android:layout_weight="2.5"
-                        android:background="@drawable/bg_film_arrow_conner"
-                        android:orientation="horizontal"
-                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="230dp"
-                    android:orientation="vertical"
-                    android:weightSum="3">
-
-                    <RelativeLayout
-                        android:id="@+id/more_horror_movie"
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_gravity="center"
-                        android:layout_weight="0.5">
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:gravity="center_vertical"
-                            android:text="Kinh dị"
-                            android:textColor="@color/black"
-                            android:textSize="19sp"
-                            android:textStyle="bold" />
-
-                        <androidx.appcompat.widget.AppCompatImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:layout_alignParentEnd="true"
-                            android:layout_marginEnd="10dp"
-                            android:gravity="center_vertical"
-                            android:src="@drawable/ic_arrow_right_more_category" />
-                    </RelativeLayout>
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/rcv_film3"
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_gravity="center"
-                        android:layout_weight="2.5"
-                        android:background="@drawable/bg_film_arrow_conner"
-                        android:orientation="horizontal"
-                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="230dp"
-                    android:orientation="vertical"
-                    android:weightSum="3">
-
-                    <RelativeLayout
-                        android:id="@+id/more_thriller_movie"
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_gravity="center"
-                        android:layout_weight="0.5">
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:gravity="center_vertical"
-                            android:text="Trinh thám"
-                            android:textColor="@color/black"
-                            android:textSize="19sp"
-                            android:textStyle="bold" />
-
-                        <androidx.appcompat.widget.AppCompatImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:layout_alignParentEnd="true"
-                            android:layout_marginEnd="10dp"
-                            android:gravity="center_vertical"
-                            android:src="@drawable/ic_arrow_right_more_category" />
-                    </RelativeLayout>
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/rcv_film4"
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_gravity="center"
-                        android:layout_weight="2.5"
-                        android:background="@drawable/bg_film_arrow_conner"
-                        android:orientation="horizontal"
-                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="230dp"
-                    android:orientation="vertical"
-                    android:weightSum="3">
-
-                    <RelativeLayout
-                        android:id="@+id/more_comedy_movie"
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_gravity="center"
-                        android:layout_weight="0.5">
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:gravity="center_vertical"
-                            android:text="Hài kịch"
-                            android:textColor="@color/black"
-                            android:textSize="19sp"
-                            android:textStyle="bold" />
-
-                        <androidx.appcompat.widget.AppCompatImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:layout_alignParentEnd="true"
-                            android:layout_marginEnd="10dp"
-                            android:gravity="center_vertical"
-                            android:src="@drawable/ic_arrow_right_more_category" />
-                    </RelativeLayout>
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/rcv_film5"
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_gravity="center"
-                        android:layout_weight="2.5"
-                        android:background="@drawable/bg_film_arrow_conner"
-                        android:orientation="horizontal"
-                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="230dp"
-                    android:orientation="vertical"
-                    android:weightSum="3">
-
-                    <RelativeLayout
-                        android:id="@+id/more_romantic_movie"
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_gravity="center"
-                        android:layout_weight="0.5">
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:gravity="center_vertical"
-                            android:text="Lãng mạn"
-                            android:textColor="@color/black"
-                            android:textSize="19sp"
-                            android:textStyle="bold" />
-
-                        <androidx.appcompat.widget.AppCompatImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:layout_alignParentEnd="true"
-                            android:layout_marginEnd="10dp"
-                            android:gravity="center_vertical"
-                            android:src="@drawable/ic_arrow_right_more_category" />
-                    </RelativeLayout>
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/rcv_film6"
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_gravity="center"
-                        android:layout_weight="2.5"
-                        android:background="@drawable/bg_film_arrow_conner"
-                        android:orientation="horizontal"
-                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="230dp"
-                    android:orientation="vertical"
-                    android:weightSum="3">
-
-                    <RelativeLayout
-                        android:id="@+id/more_adventure_movie"
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_gravity="center"
-                        android:layout_weight="0.5">
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:gravity="center_vertical"
-                            android:text="Phiêu lưu"
-                            android:textColor="@color/black"
-                            android:textSize="19sp"
-                            android:textStyle="bold" />
-
-                        <androidx.appcompat.widget.AppCompatImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:layout_alignParentEnd="true"
-                            android:layout_marginEnd="10dp"
-                            android:gravity="center_vertical"
-                            android:src="@drawable/ic_arrow_right_more_category" />
-                    </RelativeLayout>
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/rcv_film7"
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_gravity="center"
-                        android:layout_weight="2.5"
-                        android:background="@drawable/bg_film_arrow_conner"
-                        android:orientation="horizontal"
-                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
-                </LinearLayout>
             </LinearLayout>
-        </androidx.core.widget.NestedScrollView>
 
-        <ProgressBar
-            android:id="@+id/load_home_page"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:visibility="gone" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:orientation="vertical">
 
-    </RelativeLayout>
+                <RelativeLayout
+                    android:id="@+id/more_action_movie"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:text="Hành động"
+                        android:textColor="@color/black"
+                        android:textSize="19sp"
+                        android:textStyle="bold" />
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginEnd="5dp"
+                        android:gravity="center_vertical"
+                        android:src="@drawable/ic_arrow_right_more_category" />
+
+                </RelativeLayout>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rcv_film2"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="10dp"
+                    android:orientation="horizontal"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:orientation="vertical">
+
+                <RelativeLayout
+                    android:id="@+id/more_horror_movie"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:text="Kinh dị"
+                        android:textColor="@color/black"
+                        android:textSize="19sp"
+                        android:textStyle="bold" />
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginEnd="5dp"
+                        android:gravity="center_vertical"
+                        android:src="@drawable/ic_arrow_right_more_category" />
+
+                </RelativeLayout>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rcv_film3"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="10dp"
+                    android:orientation="horizontal"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:orientation="vertical">
+
+                <RelativeLayout
+                    android:id="@+id/more_thriller_movie"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:text="Trinh thám"
+                        android:textColor="@color/black"
+                        android:textSize="19sp"
+                        android:textStyle="bold" />
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginEnd="5dp"
+                        android:gravity="center_vertical"
+                        android:src="@drawable/ic_arrow_right_more_category" />
+
+                </RelativeLayout>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rcv_film4"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="10dp"
+                    android:orientation="horizontal"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:orientation="vertical">
+
+                <RelativeLayout
+                    android:id="@+id/more_comedy_movie"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:text="Hài kịch"
+                        android:textColor="@color/black"
+                        android:textSize="19sp"
+                        android:textStyle="bold" />
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginEnd="5dp"
+                        android:gravity="center_vertical"
+                        android:src="@drawable/ic_arrow_right_more_category" />
+
+                </RelativeLayout>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rcv_film5"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="10dp"
+                    android:orientation="horizontal"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:orientation="vertical">
+
+                <RelativeLayout
+                    android:id="@+id/more_romantic_movie"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:text="Lãng mạn"
+                        android:textColor="@color/black"
+                        android:textSize="19sp"
+                        android:textStyle="bold" />
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginEnd="5dp"
+                        android:gravity="center_vertical"
+                        android:src="@drawable/ic_arrow_right_more_category" />
+
+                </RelativeLayout>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rcv_film6"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="10dp"
+                    android:orientation="horizontal"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:orientation="vertical">
+
+                <RelativeLayout
+                    android:id="@+id/more_adventure_movie"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:text="Phiêu lưu"
+                        android:textColor="@color/black"
+                        android:textSize="19sp"
+                        android:textStyle="bold" />
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginEnd="5dp"
+                        android:gravity="center_vertical"
+                        android:src="@drawable/ic_arrow_right_more_category" />
+
+                </RelativeLayout>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rcv_film7"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="10dp"
+                    android:orientation="horizontal"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
