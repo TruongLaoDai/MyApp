@@ -17,7 +17,6 @@ import com.smile.watchmovie.fragment.DeleteBottomSheetFragment;
 import com.smile.watchmovie.model.HistoryWatchFilm;
 
 public class HistoryWatchFilmActivity extends AppCompatActivity {
-
     private ActivityHistoryWatchFilmBinding binding;
     private String idUser;
     private CollectionReference collectionReferenceHistory;

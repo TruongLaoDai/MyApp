@@ -10,4 +10,7 @@ class ApiRepository(private val apiHelper: ApiHelper) {
         apiHelper.searchFilm(header, keySearch, page, size)
 
     suspend fun getFilmDetail(header: String, filmId: Int) = apiHelper.getFilmDetail(header, filmId)
+
+    suspend fun getFilmByCategory(header: String, categoryId: Int, page: Int, size: Int) =
+        apiHelper.getFilmByCategory(header, categoryId, page, size)
 }

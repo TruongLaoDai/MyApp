@@ -9,4 +9,7 @@ class ApiHelper(private val apiService: ApiServices) {
 
     suspend fun getFilmDetail(header: String, filmId: Int) =
         apiService.getFilmDetail(header, filmId)
+
+    suspend fun getFilmByCategory(header: String, categoryId: Int, page: Int, size: Int) =
+        apiService.getFilmByCategory(header, categoryId, page, size)
 }

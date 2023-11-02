@@ -29,10 +29,10 @@
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tvContent"
+        style="@style/Text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/notify_empty"
-        android:textSize="18sp"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

@@ -28,4 +28,12 @@ interface ApiServices {
         @Header("wsToken") header: String,
         @Query("filmId") filmId: Int
     ): FilmDetailResponse
+
+    @GET("api/v1/get-films-by-category")
+    suspend fun getFilmByCategory(
+        @Header("wsToken") header: String,
+        @Query("categoryId") categoryId: Int,
+        @Query("page") page: Int,
+        @Query("size") size: Int
+    ): FilmArrayResponse
 }

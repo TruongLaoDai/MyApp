@@ -1,150 +1,205 @@
-package com.smile.watchmovie.fragment;
+package com.smile.watchmovie.fragment
 
-import android.annotation.SuppressLint;
-import android.content.Intent;
-import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import android.content.Intent
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
+import com.smile.watchmovie.activity.ShowMoreCategoryFilmActivity
+import com.smile.watchmovie.activity.WatchFilmActivity
+import com.smile.watchmovie.adapter.HomeFragmentAdapter
+import com.smile.watchmovie.api.ApiHelper
+import com.smile.watchmovie.api.RetrofitBuilder
+import com.smile.watchmovie.base.ViewModelFactory
+import com.smile.watchmovie.databinding.FragmentHomeBinding
+import com.smile.watchmovie.utils.Constant
+import com.smile.watchmovie.viewmodel.HomeFragmentViewModel
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
+class HomeFragment : Fragment(), HomeFragmentAdapter.OnClickListener {
+    private lateinit var binding: FragmentHomeBinding
+    private lateinit var adapter1: HomeFragmentAdapter
+    private lateinit var adapter2: HomeFragmentAdapter
+    private lateinit var adapter3: HomeFragmentAdapter
+    private lateinit var adapter4: HomeFragmentAdapter
+    private lateinit var adapter5: HomeFragmentAdapter
+    private lateinit var adapter6: HomeFragmentAdapter
+    private lateinit var adapter7: HomeFragmentAdapter
+    private lateinit var viewModel: HomeFragmentViewModel
 
-import com.smile.watchmovie.activity.ShowMoreCategoryFilmActivity;
-import com.smile.watchmovie.adapter.FilmAdapter;
-import com.smile.watchmovie.api.ApiService;
-import com.smile.watchmovie.databinding.FragmentHomeBinding;
-import com.smile.watchmovie.model.FilmArrayResponse;
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentHomeBinding.inflate(inflater, container, false)
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+        initializeData()
+        getDataFromApi()
+        handleEventClick()
 
-public class HomeFragment extends Fragment {
-    private FragmentHomeBinding binding;
-    private FilmAdapter mFilmAdapter1;
-    private FilmAdapter mFilmAdapter2;
-    private FilmAdapter mFilmAdapter3;
-    private FilmAdapter mFilmAdapter4;
-    private FilmAdapter mFilmAdapter5;
-    private FilmAdapter mFilmAdapter6;
-    private FilmAdapter mFilmAdapter7;
-
-    public HomeFragment() {
-
+        return binding.root
     }
 
-    @SuppressLint("MissingInflatedId")
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        binding = FragmentHomeBinding.inflate(inflater, container, false);
+    private fun handleEventClick() {
+        binding.apply {
+            moreCartonMovie.setOnClickListener {
+                val intent = Intent(requireActivity(), ShowMoreCategoryFilmActivity::class.java)
+                intent.putExtra("categoryId", 14)
+                startActivity(intent)
+            }
 
-        mFilmAdapter1 = new FilmAdapter(requireActivity());
-        mFilmAdapter2 = new FilmAdapter(requireActivity());
-        mFilmAdapter3 = new FilmAdapter(requireActivity());
-        mFilmAdapter4 = new FilmAdapter(requireActivity());
-        mFilmAdapter5 = new FilmAdapter(requireActivity());
-        mFilmAdapter6 = new FilmAdapter(requireActivity());
-        mFilmAdapter7 = new FilmAdapter(requireActivity());
+            moreActionMovie.setOnClickListener {
+                val intent = Intent(requireActivity(), ShowMoreCategoryFilmActivity::class.java)
+                intent.putExtra("categoryId", 6)
+                startActivity(intent)
+            }
 
-        callApiGetHomeFilmByCategory(15, 0);
+            moreHorrorMovie.setOnClickListener {
+                val intent = Intent(requireActivity(), ShowMoreCategoryFilmActivity::class.java)
+                intent.putExtra("categoryId", 4)
+                startActivity(intent)
+            }
 
-        binding.moreCartonMovie.setOnClickListener(v -> {
-            Intent intent = new Intent(requireActivity(), ShowMoreCategoryFilmActivity.class);
-            intent.putExtra("categoryId", 14);
-            startActivity(intent);
-        });
+            moreThrillerMovie.setOnClickListener {
+                val intent = Intent(requireActivity(), ShowMoreCategoryFilmActivity::class.java)
+                intent.putExtra("categoryId", 11)
+                startActivity(intent)
+            }
 
-        binding.moreActionMovie.setOnClickListener(v -> {
-            Intent intent = new Intent(requireActivity(), ShowMoreCategoryFilmActivity.class);
-            intent.putExtra("categoryId", 6);
-            startActivity(intent);
-        });
+            moreComedyMovie.setOnClickListener {
+                val intent = Intent(requireActivity(), ShowMoreCategoryFilmActivity::class.java)
+                intent.putExtra("categoryId", 12)
+                startActivity(intent)
+            }
 
-        binding.moreHorrorMovie.setOnClickListener(v -> {
-            Intent intent = new Intent(requireActivity(), ShowMoreCategoryFilmActivity.class);
-            intent.putExtra("categoryId", 4);
-            startActivity(intent);
-        });
+            moreRomanticMovie.setOnClickListener {
+                val intent = Intent(requireActivity(), ShowMoreCategoryFilmActivity::class.java)
+                intent.putExtra("categoryId", 13)
+                startActivity(intent)
+            }
 
-        binding.moreThrillerMovie.setOnClickListener(v -> {
-            Intent intent = new Intent(requireActivity(), ShowMoreCategoryFilmActivity.class);
-            intent.putExtra("categoryId", 11);
-            startActivity(intent);
-        });
-
-        binding.moreComedyMovie.setOnClickListener(v -> {
-            Intent intent = new Intent(requireActivity(), ShowMoreCategoryFilmActivity.class);
-            intent.putExtra("categoryId", 12);
-            startActivity(intent);
-        });
-
-        binding.moreRomanticMovie.setOnClickListener(v -> {
-            Intent intent = new Intent(requireActivity(), ShowMoreCategoryFilmActivity.class);
-            intent.putExtra("categoryId", 13);
-            startActivity(intent);
-        });
-
-        binding.moreAdventureMovie.setOnClickListener(v -> {
-            Intent intent = new Intent(requireActivity(), ShowMoreCategoryFilmActivity.class);
-            intent.putExtra("categoryId", 15);
-            startActivity(intent);
-        });
-
-        return binding.getRoot();
+            moreAdventureMovie.setOnClickListener {
+                val intent = Intent(requireActivity(), ShowMoreCategoryFilmActivity::class.java)
+                intent.putExtra("categoryId", 15)
+                startActivity(intent)
+            }
+        }
     }
 
-    public void callApiGetHomeFilmByCategory(int categoryId, int page) {
-        ApiService.apiService.getFilmByCategory("7da353b8a3246f851e0ee436d898a26d", categoryId, page, 5).enqueue(new Callback<FilmArrayResponse>() {
-            @Override
-            public void onResponse(@NonNull Call<FilmArrayResponse> call, @NonNull Response<FilmArrayResponse> response) {
-                FilmArrayResponse movieArrayResponse = response.body();
-                if (movieArrayResponse != null) {
-                    switch (categoryId) {
-                        case 14:
-                            mFilmAdapter1.setData(movieArrayResponse.getData());
-                            binding.rcvFilm1.setAdapter(mFilmAdapter1);
-                            callApiGetHomeFilmByCategory(15, 0);
-                            break;
-                        case 6:
-                            mFilmAdapter2.setData(movieArrayResponse.getData());
-                            binding.rcvFilm2.setAdapter(mFilmAdapter2);
-                            callApiGetHomeFilmByCategory(14, 0);
-                            break;
-                        case 4:
-                            mFilmAdapter3.setData(movieArrayResponse.getData());
-                            binding.rcvFilm3.setAdapter(mFilmAdapter3);
-                            callApiGetHomeFilmByCategory(6, 0);
-                            break;
-                        case 11:
-                            mFilmAdapter4.setData(movieArrayResponse.getData());
-                            binding.rcvFilm4.setAdapter(mFilmAdapter4);
-                            callApiGetHomeFilmByCategory(4, 0);
-                            break;
-                        case 12:
-                            mFilmAdapter5.setData(movieArrayResponse.getData());
-                            binding.rcvFilm5.setAdapter(mFilmAdapter5);
-                            callApiGetHomeFilmByCategory(11, 0);
-                            break;
-                        case 13:
-                            mFilmAdapter6.setData(movieArrayResponse.getData());
-                            binding.rcvFilm6.setAdapter(mFilmAdapter6);
-                            callApiGetHomeFilmByCategory(12, 0);
-                            break;
-                        case 15:
-                            mFilmAdapter7.setData(movieArrayResponse.getData());
-                            binding.rcvFilm7.setAdapter(mFilmAdapter7);
-                            callApiGetHomeFilmByCategory(13, 0);
-                            break;
-                    }
+    private fun getDataFromApi() {
+        viewModel.apply {
+            getFilmByCategory(Constant.Api.WS_TOKEN, 14, 0, 5).observe(requireActivity()) {
+                it?.let {
+                    adapter1.setData(it.data)
                 }
             }
 
-            @Override
-            public void onFailure(@NonNull Call<FilmArrayResponse> call, @NonNull Throwable t) {
+            getFilmByCategory(Constant.Api.WS_TOKEN, 6, 0, 5).observe(requireActivity()) {
+                it?.let {
+                    adapter2.setData(it.data)
+                }
             }
-        });
+
+            getFilmByCategory(Constant.Api.WS_TOKEN, 4, 0, 5).observe(requireActivity()) {
+                it?.let {
+                    adapter3.setData(it.data)
+                }
+            }
+
+            getFilmByCategory(Constant.Api.WS_TOKEN, 11, 0, 5).observe(requireActivity()) {
+                it?.let {
+                    adapter4.setData(it.data)
+                }
+            }
+
+            getFilmByCategory(Constant.Api.WS_TOKEN, 12, 0, 5).observe(requireActivity()) {
+                it?.let {
+                    adapter5.setData(it.data)
+                }
+            }
+
+            getFilmByCategory(Constant.Api.WS_TOKEN, 13, 0, 5).observe(requireActivity()) {
+                it?.let {
+                    adapter6.setData(it.data)
+                }
+            }
+
+            getFilmByCategory(Constant.Api.WS_TOKEN, 15, 0, 5).observe(requireActivity()) {
+                it?.let {
+                    adapter7.setData(it.data)
+                }
+            }
+        }
+    }
+
+    private fun initializeData() {
+        viewModel = ViewModelProvider(
+            this,
+            ViewModelFactory(ApiHelper(RetrofitBuilder.apiServiceFilm))
+        )[HomeFragmentViewModel::class.java]
+
+        adapter1 =
+            HomeFragmentAdapter(requireActivity(), this)
+        adapter2 =
+            HomeFragmentAdapter(requireActivity(), this)
+        adapter3 =
+            HomeFragmentAdapter(requireActivity(), this)
+        adapter4 =
+            HomeFragmentAdapter(requireActivity(), this)
+        adapter5 =
+            HomeFragmentAdapter(requireActivity(), this)
+        adapter6 =
+            HomeFragmentAdapter(requireActivity(), this)
+        adapter7 =
+            HomeFragmentAdapter(requireActivity(), this)
+
+        binding.apply {
+            rcvFilm1.apply {
+                setHasFixedSize(true)
+                adapter = adapter1
+            }
+
+            rcvFilm2.apply {
+                setHasFixedSize(true)
+                adapter = adapter2
+            }
+
+            rcvFilm3.apply {
+                setHasFixedSize(true)
+                adapter = adapter3
+            }
+
+            rcvFilm4.apply {
+                setHasFixedSize(true)
+                adapter = adapter4
+            }
+
+            rcvFilm5.apply {
+                setHasFixedSize(true)
+                adapter = adapter5
+            }
+
+            rcvFilm6.apply {
+                setHasFixedSize(true)
+                adapter = adapter6
+            }
+
+            rcvFilm7.apply {
+                setHasFixedSize(true)
+                adapter = adapter7
+            }
+        }
+    }
+
+    override fun openFilm(filmId: Int) {
+        viewModel.getFilmDetail(Constant.Api.WS_TOKEN, filmId).observe(requireActivity()) {
+            it?.let {
+                val intent = Intent(requireActivity(), WatchFilmActivity::class.java)
+                intent.putExtra("film", it.data)
+                startActivity(intent)
+            }
+        }
     }
 }
