@@ -19,6 +19,7 @@ import com.smile.watchmovie.adapter.EpisodeAdapter;
 import com.smile.watchmovie.adapter.FilmSearchAdapter;
 import com.smile.watchmovie.api.ApiService;
 import com.smile.watchmovie.databinding.FragmentIntroduceFilmBinding;
+import com.smile.watchmovie.dialog.InfoFilmDialog;
 import com.smile.watchmovie.model.FilmArrayResponse;
 import com.smile.watchmovie.model.FilmMainHome;
 import com.smile.watchmovie.model.FilmReaction;
@@ -143,7 +144,7 @@ public class IntroduceFilmFragment extends Fragment {
     }
 
     private void clickOpenDetailFilm() {
-        DetailFilmBottomSheetFragment myBottomSheetFragment = new DetailFilmBottomSheetFragment(filmMainHome);
+        InfoFilmDialog myBottomSheetFragment = new InfoFilmDialog(filmMainHome);
         myBottomSheetFragment.show(mWatchFilmActivity.getSupportFragmentManager(), myBottomSheetFragment.getTag());
     }
 

@@ -13,7 +13,7 @@
     <string name="xem_phim">Xem phim</string>
     <string name="description">Tóm tắt nội dung</string>
     <string name="directors">Đạo diễn: </string>
-    <string name="detail">Thông tin về bộ phim</string>
+    <string name="detail">Thông tin bộ phim</string>
     <string name="image_film">Image Film</string>
     <string name="tb_edit_text">Danh sách tìm kiếm trống</string>
     <string name="hint">Tên phim…</string>
@@ -26,7 +26,7 @@
     <string name="Email">Email</string>
     <string name="phone">Phone</string>
     <string name="tap">Tập phim</string>
-    <string name="dexuat">Đề xuất cho bạn</string>
+    <string name="dexuat">Bạn cũng có thể thích</string>
     <string name="trang_chu">Thịnh hành</string>
     <string name="download">Tải xuống</string>
     <string name="favorite">Yêu thích</string>

@@ -1,4 +1,4 @@
-package com.smile.watchmovie.fragment;
+package com.smile.watchmovie.dialog;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
@@ -22,10 +22,10 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-public class DetailFilmBottomSheetFragment extends BottomSheetDialogFragment {
+public class InfoFilmDialog extends BottomSheetDialogFragment {
     private final FilmMainHome filmDetail;
 
-    public DetailFilmBottomSheetFragment(FilmMainHome filmDetail) {
+    public InfoFilmDialog(FilmMainHome filmDetail) {
         this.filmDetail = filmDetail;
     }
 

@@ -221,12 +221,8 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
         binding.viewPager.setAdapter(viewPagerAdapter);
         new TabLayoutMediator(binding.tabLayout, binding.viewPager, ((tab, position) -> {
             switch (position) {
-                case 0:
-                    tab.setText("Giới thiệu");
-                    break;
-                case 1:
-                    tab.setText("Bình luận");
-                    break;
+                case 0 -> tab.setText("Giới thiệu");
+                case 1 -> tab.setText("Bình luận");
             }
         })).attach();
     }
