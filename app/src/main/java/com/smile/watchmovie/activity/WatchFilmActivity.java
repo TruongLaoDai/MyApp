@@ -4,19 +4,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -24,6 +18,7 @@ import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.MediaItem;
 import com.google.android.exoplayer2.PlaybackParameters;
 import com.google.android.exoplayer2.Player;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -34,6 +29,7 @@ import com.smile.watchmovie.databinding.ActivityWatchFilmBinding;
 import com.smile.watchmovie.model.FilmMainHome;
 import com.smile.watchmovie.model.HistoryWatchFilm;
 import com.smile.watchmovie.model.SubFilm;
+import com.smile.watchmovie.utils.Constant;
 
 import java.text.SimpleDateFormat;
 import java.util.Collections;
@@ -41,11 +37,12 @@ import java.util.Date;
 import java.util.Locale;
 
 public class WatchFilmActivity extends AppCompatActivity implements Player.Listener {
+
     private ActivityWatchFilmBinding binding;
+    public FilmMainHome film;
     private ExoPlayer player;
-    private ImageView fullScreen, speedPlayVideo;
+    private ImageView fullScreen;
     private TextView tvSpeed;
-    public FilmMainHome filmMainHome;
     private CollectionReference collectionReference;
     public String idUser, isVip;
     private boolean isFullScreen = false, existHistory = false;
@@ -61,67 +58,71 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
         setContentView(binding.getRoot());
 
         /* Lấy dữ liệu phim được gửi sang */
-        filmMainHome = new FilmMainHome();
-        filmMainHome = (FilmMainHome) getIntent().getSerializableExtra("film");
+        film = (FilmMainHome) getIntent().getSerializableExtra("film");
 
         /* Lấy thông tin user và các cài đặt */
-        SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
-        idUser = sharedPreferences.getString("idUser", "");
-        isVip = sharedPreferences.getString("isVip", "0");
-        full_screen = sharedPreferences.getBoolean("full_screen", false);
-        auto_play = sharedPreferences.getBoolean("auto_play", false);
+        SharedPreferences sharedPreferences = getSharedPreferences(
+                Constant.NAME_DATABASE_SHARED_PREFERENCES,
+                Context.MODE_PRIVATE
+        );
+        idUser = sharedPreferences.getString(Constant.ID_USER, "");
+        isVip = sharedPreferences.getString(Constant.IS_VIP, "0");
+        full_screen = sharedPreferences.getBoolean(Constant.FULL_SCREEN, false);
+        auto_play = sharedPreferences.getBoolean(Constant.AUTO_PLAY, true);
 
         /* mapping from custom_playback_view.xml */
         fullScreen = binding.exoplayerView.findViewById(R.id.ivFullscreen);
-        speedPlayVideo = binding.exoplayerView.findViewById(R.id.iv_speed_play_vertical);
+        ImageView speedPlayVideo = binding.exoplayerView.findViewById(R.id.iv_speed_play_vertical);
         tvSpeed = binding.exoplayerView.findViewById(R.id.tv_speed_play_vertical);
 
-        /* Thiết lập phát phim và các đề xuất */
-        if (filmMainHome != null) {
+        /* Thiết lập dữ liệu */
+        if (film != null) {
             setupFirebase();
             prepareVideo();
             controllerTimeVideo();
             setFullScreen();
+            initialInfoRelate();
             speedPlayVideo.setOnClickListener(view -> playSpeedFilm());
         }
-
-        initialInfoRelate();
     }
 
     private void setupFirebase() {
         if (!idUser.equals("")) {
+            /* Khởi tạo dữ liệu firebase */
             FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
-            collectionReference = firebaseFirestore.collection("WatchFilm");
+            collectionReference = firebaseFirestore.collection(Constant.FirebaseFiretore.NAME_DATABASE);
+
+            /* Load lịch sử xem */
             loadTimeWatched();
         }
     }
 
     private void prepareVideo() {
-        if ((idUser == null || idUser.equals("")) && filmMainHome.getId() % 2 == 0) {
-            showDialog("Bạn cần đăng nhập tài khoản và đăng ký tài khoản vip (Nếu chưa có) để có thể xem nội dung bộ phim này. (Hãy vào mục Cá nhân để thực hiện)", 0, 0);
-        } else if (isVip.equals("0") && filmMainHome.getId() % 2 == 0) {
-            showDialog("Bạn cần đăng ký tài khoản vip để có thể xem nội dung bộ phim này. (Hãy vào mục Cá nhân để thực hiện đăng ký)", 1, 0);
+        if ((idUser == null || idUser.equals("")) && film.getId() % 2 == 0) {
+            showDialog("Bạn cần đăng nhập tài khoản và đăng ký tài khoản vip (Nếu chưa có) để có thể xem nội dung bộ phim này. (Hãy vào mục Hồ sơ để thực hiện)");
+        } else if (isVip.equals("0") && film.getId() % 2 == 0) {
+            showDialog("Bạn cần đăng ký tài khoản vip để có thể xem nội dung bộ phim này. (Hãy vào mục Hồ sơ để thực hiện đăng ký)");
         } else {
             /* Khởi tạo trình phát */
             setUpPlayer();
-
-            /* Phát phim */
-            playFilmFirst();
         }
     }
 
     private void setUpPlayer() {
         player = new ExoPlayer.Builder(this).build();
         binding.exoplayerView.setPlayer(player);
+
+        /* Phát phim */
+        playFilmFirst();
     }
 
     private void playFilmFirst() {
-        if (filmMainHome.getSubVideoList() != null) {
-            Collections.sort(filmMainHome.getSubVideoList());
-            playFilm(filmMainHome.getSubVideoList().get(0));
+        if (film.getSubVideoList() != null) {
+            Collections.sort(film.getSubVideoList());
+            playFilm(film.getSubVideoList().get(0));
         } else {
             SubFilm subFilm = new SubFilm();
-            subFilm.setLink(filmMainHome.getLink());
+            subFilm.setLink(film.getLink());
             playFilm(subFilm);
         }
     }
@@ -142,10 +143,10 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
 
     private void setFullScreen() {
         fullScreen.setOnClickListener(v -> {
-            ViewGroup.LayoutParams params = binding.layoutFilm.getLayoutParams();
+            ViewGroup.LayoutParams params = binding.exoplayerView.getLayoutParams();
             if (!isFullScreen) {
                 params.height = ViewGroup.LayoutParams.MATCH_PARENT;
-                binding.layoutFilm.setLayoutParams(params);
+                binding.exoplayerView.setLayoutParams(params);
 
                 getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
@@ -154,7 +155,7 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
                 isFullScreen = true;
             } else {
                 params.height = 404;
-                binding.layoutFilm.setLayoutParams(params);
+                binding.exoplayerView.setLayoutParams(params);
 
                 getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
@@ -174,38 +175,36 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
 
         alBuilder.setSingleChoiceItems(items, checkedItem, (dialog, which) -> {
             switch (which) {
-                case 0:
+                case 0 -> {
                     speed = 0.5f;
                     tvSpeed.setVisibility(View.VISIBLE);
                     tvSpeed.setText("0.5x");
                     dialog.dismiss();
-                    break;
-                case 1:
+                }
+                case 1 -> {
                     speed = 1f;
                     tvSpeed.setVisibility(View.GONE);
                     dialog.dismiss();
-                    break;
-                case 2:
+                }
+                case 2 -> {
                     speed = 1.25f;
                     tvSpeed.setVisibility(View.VISIBLE);
                     tvSpeed.setText("1.25x");
                     dialog.dismiss();
-                    break;
-                case 3:
+                }
+                case 3 -> {
                     speed = 1.5f;
                     tvSpeed.setVisibility(View.VISIBLE);
                     tvSpeed.setText("1.5x");
                     dialog.dismiss();
-                    break;
-                case 4:
+                }
+                case 4 -> {
                     speed = 2f;
                     tvSpeed.setVisibility(View.VISIBLE);
                     tvSpeed.setText("2x");
                     dialog.dismiss();
-                    break;
-                default:
-                    dialog.dismiss();
-                    break;
+                }
+                default -> dialog.dismiss();
             }
             playbackParameters = new PlaybackParameters(speed);
             player.setPlaybackParameters(playbackParameters);
@@ -250,7 +249,7 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
                 historyWatchFilm.setDuration(timeWatch);
                 updateDataTimeWatchFilm(historyWatchFilm);
             } else {
-                HistoryWatchFilm historyWatchFilm = new HistoryWatchFilm(filmMainHome.getId(), timeWatch, dateWatch, filmMainHome.getAvatar(), filmMainHome.getName());
+                HistoryWatchFilm historyWatchFilm = new HistoryWatchFilm(film.getId(), timeWatch, dateWatch, film.getAvatar(), film.getName());
                 collectionReference.document("tblhistorywatchfilm").collection(idUser).add(historyWatchFilm);
             }
         }
@@ -269,51 +268,17 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
         return "Bạn có muốn tiếp tục xem bộ phim tại thời điểm: " + hour + ":" + minute + ":" + second + " hay không?";
     }
 
-    private void showDialog(String title, int type, long time) {
-        final Dialog dialog = new Dialog(this);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.layout_dialog_watch_film_from_time);
-        dialog.setCancelable(false);
-
-        Window window = dialog.getWindow();
-        if (window == null) {
-            return;
-        }
-
-        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
-        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-
-        WindowManager.LayoutParams windowAttributes = window.getAttributes();
-        windowAttributes.gravity = Gravity.CENTER;
-        window.setAttributes(windowAttributes);
-
-        TextView tv_at_time = dialog.findViewById(R.id.tv_at_time);
-        Button btn_yes = dialog.findViewById(R.id.btn_yes);
-        Button btn_no = dialog.findViewById(R.id.btn_no);
-
-        tv_at_time.setText(title);
-
-        dialog.show();
-
-        if (type == 0 || type == 1) {
-            btn_yes.setVisibility(View.GONE);
-            btn_no.setText("Đã hiểu");
-        } else {
-            btn_yes.setVisibility(View.VISIBLE);
-            btn_no.setText("Không");
-        }
-
-        btn_yes.setOnClickListener(v -> {
-            player.seekTo(time);
-            existHistory = true;
-            dialog.dismiss();
-        });
-
-        btn_no.setOnClickListener(v -> dialog.dismiss());
+    private void showDialog(String title) {
+        new MaterialAlertDialogBuilder(this)
+                .setMessage(title)
+                .setPositiveButton("Xác nhận", (dialog, id) -> dialog.dismiss())
+                .show();
     }
 
     public void loadTimeWatched() {
-        collectionReference.document("tblhistorywatchfilm").collection(idUser).whereEqualTo("id_film", filmMainHome.getId())
+        collectionReference.document(Constant.FirebaseFiretore.TABLE_HISTORY_WATCHED)
+                .collection(idUser)
+                .whereEqualTo(Constant.FirebaseFiretore.ID_FILM, film.getId())
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     if (queryDocumentSnapshots.getDocuments().size() > 0) {
@@ -321,7 +286,7 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
                         historyWatchFilm = doc.toObject(HistoryWatchFilm.class);
                         if (historyWatchFilm != null) {
                             historyWatchFilm.setDocumentID(doc.getId());
-                            showDialog(messagePlayAtTime(historyWatchFilm.getDuration()), 2, historyWatchFilm.getDuration());
+                            /* showDialog(messagePlayAtTime(historyWatchFilm.getDuration()), 2, historyWatchFilm.getDuration()); */
                         }
                     }
                 });

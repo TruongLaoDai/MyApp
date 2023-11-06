@@ -1,80 +1,64 @@
-package com.smile.watchmovie.adapter;
+package com.smile.watchmovie.adapter
 
-import android.annotation.SuppressLint;
-import android.graphics.Color;
-import android.view.LayoutInflater;
-import android.view.ViewGroup;
+import android.annotation.SuppressLint
+import android.content.Context
+import android.graphics.Color
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
+import com.smile.watchmovie.R
+import com.smile.watchmovie.activity.WatchFilmActivity
+import com.smile.watchmovie.databinding.ItemEpisodeBinding
+import com.smile.watchmovie.fragment.IntroduceFilmFragment
+import com.smile.watchmovie.model.SubFilm
 
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
-
-import com.smile.watchmovie.R;
-import com.smile.watchmovie.activity.WatchFilmActivity;
-import com.smile.watchmovie.databinding.ItemEpisodeBinding;
-import com.smile.watchmovie.fragment.IntroduceFilmFragment;
-import com.smile.watchmovie.model.SubFilm;
-
-import java.util.List;
-
-public class EpisodeAdapter extends RecyclerView.Adapter<EpisodeAdapter.EpisodeViewHolder> {
-
-    public List<SubFilm> subFilmList;
-    public final WatchFilmActivity mWatchFilmActivity;
-    public final IntroduceFilmFragment mIntroduceFilmFragment;
-
-    public EpisodeAdapter(WatchFilmActivity watchFilmActivity, IntroduceFilmFragment mIntroduceFilmFragment) {
-        this.mWatchFilmActivity = watchFilmActivity;
-        this.mIntroduceFilmFragment = mIntroduceFilmFragment;
-    }
+class EpisodeAdapter(private val context: Context) :
+    RecyclerView.Adapter<EpisodeAdapter.ViewHolder>() {
+    private var subFilmList = ArrayList<SubFilm>()
 
     @SuppressLint("NotifyDataSetChanged")
-    public void setData(List<SubFilm> subVideoList) {
-        this.subFilmList = subVideoList;
-        notifyDataSetChanged();
+    fun setData(newSubVideoList: List<SubFilm>) {
+        subFilmList = newSubVideoList as ArrayList<SubFilm>
+        notifyDataSetChanged()
     }
 
-    @NonNull
-    @Override
-    public EpisodeViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        return new EpisodeViewHolder(ItemEpisodeBinding.inflate(inflater, parent, false));
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        val binding = ItemEpisodeBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return ViewHolder(binding)
     }
 
-    @SuppressLint({"NotifyDataSetChanged", "SetTextI18n"})
-    @Override
-    public void onBindViewHolder(@NonNull EpisodeViewHolder holder, @SuppressLint("RecyclerView") int position) {
-        SubFilm subFilm = subFilmList.get(position);
-        if (subFilm == null) {
-            return;
-        }
-        holder.itemEpisodeBinding.tvEpisode.setText(mWatchFilmActivity.getString(R.string.episode_film, subFilm.getEpisode()));
-        holder.itemEpisodeBinding.layoutEpisode.setOnClickListener(v ->{
-            mWatchFilmActivity.playFilm(subFilm);
-            mIntroduceFilmFragment.episodeFilmPlaying(subFilm);
-        });
-        if(subFilm.getIsWatching()){
-            holder.itemEpisodeBinding.tvEpisode.setBackgroundResource(R.drawable.botron_background_click);
-            holder.itemEpisodeBinding.tvEpisode.setTextColor(Color.parseColor("#1877F2"));
-        }
-        else{
-            holder.itemEpisodeBinding.tvEpisode.setBackgroundResource(R.drawable.botron_background);
-            holder.itemEpisodeBinding.tvEpisode.setTextColor(Color.parseColor("#000000"));
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        with(holder) {
+            with(subFilmList[position]) {
+                binding.apply {
+                    tvEpisode.text = context.getString(R.string.episode_film, this@with.episode)
+                }
+            }
         }
     }
 
-    @Override
-    public int getItemCount() {
-        if (subFilmList != null)
-            return subFilmList.size();
-        return 0;
-    }
+//    @SuppressLint("NotifyDataSetChanged", "SetTextI18n")
+//    override fun onBindViewHolder(
+//        holder: EpisodeViewHolder,
+//        @SuppressLint("RecyclerView") position: Int
+//    ) {
+//        val subFilm = subFilmList!![position] ?: return
+//        holder.itemEpisodeBinding.tvEpisode.text =
+//            mWatchFilmActivity.getString(R.string.episode_film, subFilm.episode)
+//        holder.itemEpisodeBinding.layoutEpisode.setOnClickListener { v: View? ->
+//            mWatchFilmActivity.playFilm(subFilm)
+//            mIntroduceFilmFragment.episodeFilmPlaying(subFilm)
+//        }
+//        if (subFilm.isWatching) {
+//            holder.itemEpisodeBinding.tvEpisode.setBackgroundResource(R.drawable.botron_background_click)
+//            holder.itemEpisodeBinding.tvEpisode.setTextColor(Color.parseColor("#1877F2"))
+//        } else {
+//            holder.itemEpisodeBinding.tvEpisode.setBackgroundResource(R.drawable.bg_corner_dialog)
+//            holder.itemEpisodeBinding.tvEpisode.setTextColor(Color.parseColor("#000000"))
+//        }
+//    }
 
-    public static class EpisodeViewHolder extends RecyclerView.ViewHolder {
-        private final ItemEpisodeBinding itemEpisodeBinding;
-        public EpisodeViewHolder(ItemEpisodeBinding itemEpisodeBinding) {
-            super(itemEpisodeBinding.getRoot());
-            this.itemEpisodeBinding = itemEpisodeBinding;
-        }
-    }
+    override fun getItemCount() = subFilmList.size
+
+    inner class ViewHolder(val binding: ItemEpisodeBinding) : RecyclerView.ViewHolder(binding.root)
 }
-

@@ -16,4 +16,10 @@ class Constant {
         const val APP_ID = "c3dd215f4ed3239d0fc98ce38ea3fcd0"
         const val WS_TOKEN = "7da353b8a3246f851e0ee436d898a26d"
     }
+
+    object FirebaseFiretore {
+        const val NAME_DATABASE = "WatchFilm"
+        const val TABLE_HISTORY_WATCHED = "tblhistorywatchfilm"
+        const val ID_FILM = "id_film"
+    }
 }

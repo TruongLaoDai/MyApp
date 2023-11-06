@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:background="@color/gray">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -25,13 +26,14 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginEnd="10dp"
-            android:layout_toRightOf="@+id/iv_speed_play_vertical"
+            android:layout_toEndOf="@+id/iv_speed_play_vertical"
             android:gravity="center_vertical"
             android:textColor="@color/white"
             android:textSize="18sp"
             android:visibility="gone"
             tools:text="1x"
             tools:visibility="visible" />
+
     </RelativeLayout>
 
     <LinearLayout
@@ -72,6 +74,7 @@
             android:layout_gravity="center"
             android:layout_weight="2"
             android:src="@drawable/ic_round_forward_10_24" />
+
     </LinearLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -104,7 +107,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:scrubber_drawable="@drawable/scrubber" />
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/exo_duration"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

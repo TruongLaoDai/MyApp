@@ -1,73 +1,69 @@
-package com.smile.watchmovie.dialog;
+package com.smile.watchmovie.dialog
 
-import android.annotation.SuppressLint;
-import android.app.Dialog;
-import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.ImageView;
-import android.widget.TextView;
+import android.content.Context
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import com.bumptech.glide.Glide
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.smile.watchmovie.R
+import com.smile.watchmovie.databinding.FrangmentDetailFilmBinding
+import com.smile.watchmovie.model.FilmMainHome
+import com.smile.watchmovie.utils.OtherUtils
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+class InfoFilmDialog(
+    private val film: FilmMainHome,
+    private val context: Context
+) : BottomSheetDialogFragment() {
+    private lateinit var binding: FrangmentDetailFilmBinding
 
-import com.bumptech.glide.Glide;
-import com.google.android.material.bottomsheet.BottomSheetDialog;
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
-import com.smile.watchmovie.R;
-import com.smile.watchmovie.model.FilmMainHome;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
-
-public class InfoFilmDialog extends BottomSheetDialogFragment {
-    private final FilmMainHome filmDetail;
-
-    public InfoFilmDialog(FilmMainHome filmDetail) {
-        this.filmDetail = filmDetail;
+    companion object {
+        const val TAG = "InfoFilmDialog"
     }
 
-    @NonNull
-    @Override
-    public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-        BottomSheetDialog bottomSheetDialog = (BottomSheetDialog) super.onCreateDialog(savedInstanceState);
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FrangmentDetailFilmBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
-        @SuppressLint("InflateParams") View view = LayoutInflater.from(getContext()).inflate(R.layout.frangment_detail_film, null);
-        bottomSheetDialog.setContentView(view);
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        initializeData()
+    }
 
-        TextView tvNameFilm, tvCreated, tvDescription, rate;
-        ImageView ivLogoFilm;
-
-        tvNameFilm = view.findViewById(R.id.tv_name_film);
-        tvCreated = view.findViewById(R.id.tv_created);
-        tvDescription = view.findViewById(R.id.tv_description);
-        ivLogoFilm = view.findViewById(R.id.img_logo_film);
-        rate = view.findViewById(R.id.rate);
-
-        tvNameFilm.setText(filmDetail.getName());
-        tvCreated.setText("Ngày ra mắt: " + dateCreated(filmDetail.getCreated()));
-        rate.setText("Điểm đánh giá: " + filmDetail.getImdbPoint() + "/10");
-        tvDescription.setText(filmDetail.getDescription());
-        Glide.with(view.getContext()).load(filmDetail.getAvatar())
+    private fun initializeData() {
+        binding.apply {
+            Glide.with(context).load(film.avatar)
                 .error(R.drawable.ic_baseline_broken_image_gray)
-                .placeholder(R.drawable.ic_baseline_image_gray)
-                .into(ivLogoFilm);
-
-        return bottomSheetDialog;
-    }
-
-    private String dateCreated(String date) {
-        String[] data = date.split("T");
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-        try {
-            Date date1 = format.parse(data[0]);
-            SimpleDateFormat format1 = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
-            assert date1 != null;
-            return format1.format(date1);
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
+                .error(R.drawable.ic_baseline_broken_image_gray)
+                .into(imgLogoFilm)
+            tvNameFilm.text = film.name
+            tvCreated.text =
+                context.getString(R.string.day_watch, OtherUtils().formatTime(film.created))
+            rate.text = context.getString(R.string.rate_film, film.star)
+            tvDescription.text = film.description
+            tvEpisodesTotal.text = if (film.episodesTotal == 0) {
+                context.getString(R.string.one_episode)
+            } else {
+                context.getString(R.string.episode_total, film.episodesTotal)
+            }
+            tvCategory.text = context.getString(
+                R.string.category_film, when (film.categoryId) {
+                    14 -> "Hoạt hình"
+                    6 -> "Hành động"
+                    4 -> "Kinh dị"
+                    11 -> "Trinh thám"
+                    12 -> "Hài kịch"
+                    13 -> "Lãng mạn"
+                    15 -> "Phiêu lưu"
+                    else -> "Chưa xác định"
+                }
+            )
         }
     }
 }

@@ -6,7 +6,7 @@
     android:layout_marginStart="10dp"
     android:layout_marginTop="10dp"
     android:layout_marginEnd="10dp"
-    android:background="@drawable/botron_background"
+    android:background="@drawable/bg_corner_dialog"
     android:backgroundTintMode="@color/gray_light"
     android:orientation="vertical"
     android:padding="10dp">

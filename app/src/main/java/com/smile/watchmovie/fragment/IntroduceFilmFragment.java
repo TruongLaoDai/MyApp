@@ -16,7 +16,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.smile.watchmovie.R;
 import com.smile.watchmovie.activity.WatchFilmActivity;
 import com.smile.watchmovie.adapter.EpisodeAdapter;
-import com.smile.watchmovie.adapter.FilmSearchAdapter;
+import com.smile.watchmovie.adapter.FilmRelativeAdapter;
 import com.smile.watchmovie.api.ApiService;
 import com.smile.watchmovie.databinding.FragmentIntroduceFilmBinding;
 import com.smile.watchmovie.dialog.InfoFilmDialog;
@@ -38,8 +38,8 @@ import retrofit2.Response;
 
 public class IntroduceFilmFragment extends Fragment {
     private FragmentIntroduceFilmBinding binding;
-    private WatchFilmActivity mWatchFilmActivity;
-    private FilmSearchAdapter relateMovieListAdapter;
+    private WatchFilmActivity activity;
+    private FilmRelativeAdapter relateMovieListAdapter;
     private String idUser;
     private FilmMainHome filmMainHome;
     private EpisodeAdapter mEpisodeAdapter;
@@ -55,13 +55,11 @@ public class IntroduceFilmFragment extends Fragment {
                              Bundle savedInstanceState) {
         binding = FragmentIntroduceFilmBinding.inflate(inflater, container, false);
 
-        filmMainHome = new FilmMainHome();
-        mWatchFilmActivity = (WatchFilmActivity) getActivity();
+        activity = (WatchFilmActivity) getActivity();
 
-        if (mWatchFilmActivity != null && mWatchFilmActivity.filmMainHome != null) {
-            setUpData();
-            initialFilmRelate();
-            if (!mWatchFilmActivity.idUser.equals("")) {
+        if (activity != null && activity.film != null) {
+            initializeData();
+            if (!activity.idUser.equals("")) {
                 setUpFireBase();
             }
             playFilmFirst();
@@ -72,8 +70,6 @@ public class IntroduceFilmFragment extends Fragment {
     }
 
     private void initialFilmRelate() {
-        relateMovieListAdapter = new FilmSearchAdapter(requireActivity());
-        binding.rcvMore.setAdapter(relateMovieListAdapter);
         callApiGetByCategoryListMovie(filmMainHome.getCategoryId(), 1);
     }
 
@@ -101,7 +97,7 @@ public class IntroduceFilmFragment extends Fragment {
 
         /* Nhấn tải phim */
         binding.loutDownload.setOnClickListener(v ->
-                Toast.makeText(mWatchFilmActivity, getString(R.string.feature_deploying), Toast.LENGTH_SHORT).show()
+                Toast.makeText(activity, getString(R.string.feature_deploying), Toast.LENGTH_SHORT).show()
         );
 
         /* Nhấn yêu thích */
@@ -114,42 +110,50 @@ public class IntroduceFilmFragment extends Fragment {
         });
     }
 
-    private void setUpData() {
-        filmMainHome = mWatchFilmActivity.filmMainHome;
-        mEpisodeAdapter = new EpisodeAdapter(mWatchFilmActivity, this);
+    private void initializeData() {
+        filmMainHome = activity.film;
+
+        relateMovieListAdapter = new FilmRelativeAdapter(requireActivity());
+        mEpisodeAdapter = new EpisodeAdapter(requireActivity());
+
+        binding.rcvMore.setAdapter(relateMovieListAdapter);
+        binding.rcvMore.setHasFixedSize(true);
+
+        binding.rcvEpisode.setAdapter(mEpisodeAdapter);
+        binding.rcvEpisode.setHasFixedSize(true);
 
         /* Hiển thị thông tin cơ bản về phim */
         binding.tvNameFilm.setText(filmMainHome.getName());
-        binding.tvViewNumber.setText(mWatchFilmActivity.getString(R.string.tv_view_number, filmMainHome.getViewNumber()));
+        binding.tvViewNumber.setText(activity.getString(R.string.tv_view_number, filmMainHome.getViewNumber()));
 
-        /* Hiển thị số tập phim nếu có */
+        /* Hiển thị các bộ phim liên quan */
+        initialFilmRelate();
+
+        /* Hiển thị số tập phim của phim đang chiếu */
+        showEpisodesTotal();
+    }
+
+    private void showEpisodesTotal() {
         if (filmMainHome.getEpisodesTotal() != 0) {
             if (filmMainHome.getSubVideoList() != null) {
                 binding.loutEpisode.setVisibility(View.VISIBLE);
                 Collections.sort(filmMainHome.getSubVideoList());
                 mEpisodeAdapter.setData(filmMainHome.getSubVideoList());
             } else {
-                List<SubFilm> subVideoList = new ArrayList<>();
-                SubFilm subFilm = new SubFilm();
-                subFilm.setEpisode(1);
-                subFilm.setLink(filmMainHome.getLink());
-                subVideoList.add(subFilm);
-                filmMainHome.setSubVideoList(subVideoList);
-                mEpisodeAdapter.setData(subVideoList);
+                binding.loutEpisode.setVisibility(View.GONE);
             }
-            binding.rcvEpisode.setAdapter(mEpisodeAdapter);
         } else {
             binding.loutEpisode.setVisibility(View.GONE);
         }
     }
 
     private void clickOpenDetailFilm() {
-        InfoFilmDialog myBottomSheetFragment = new InfoFilmDialog(filmMainHome);
-        myBottomSheetFragment.show(mWatchFilmActivity.getSupportFragmentManager(), myBottomSheetFragment.getTag());
+        InfoFilmDialog dialog = new InfoFilmDialog(filmMainHome, requireActivity());
+        dialog.show(activity.getSupportFragmentManager(), InfoFilmDialog.TAG);
     }
 
     private void setUpFireBase() {
-        idUser = mWatchFilmActivity.idUser;
+        idUser = activity.idUser;
 
         FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
         documentReferenceFilmFavorite = firebaseFirestore.document("WatchFilm/tblfilmfavorite");
@@ -165,11 +169,11 @@ public class IntroduceFilmFragment extends Fragment {
         if (changeImageFavoriteFilm == R.drawable.ic_add_favorite) {
             changeImageFavoriteFilm = R.drawable.ic_added_favorite;
             binding.tvFavorite.setTextColor(Color.parseColor("#2A48E8"));
-            Toast.makeText(mWatchFilmActivity, mWatchFilmActivity.getString(R.string.add_film_favorite), Toast.LENGTH_LONG).show();
+            Toast.makeText(activity, activity.getString(R.string.add_film_favorite), Toast.LENGTH_LONG).show();
         } else if (changeImageFavoriteFilm == R.drawable.ic_added_favorite) {
             changeImageFavoriteFilm = R.drawable.ic_add_favorite;
             binding.tvFavorite.setTextColor(Color.parseColor("#777776"));
-            Toast.makeText(mWatchFilmActivity, mWatchFilmActivity.getString(R.string.remove_film_favorite), Toast.LENGTH_LONG).show();
+            Toast.makeText(activity, activity.getString(R.string.remove_film_favorite), Toast.LENGTH_LONG).show();
         }
         binding.ivAddFavorite.setImageResource(changeImageFavoriteFilm);
         updateFavorite();
@@ -183,7 +187,7 @@ public class IntroduceFilmFragment extends Fragment {
                     currentDislike = 0;
                 }
 
-                binding.tvDislikeNumber.setText(mWatchFilmActivity.getString(R.string.dislike));
+                binding.tvDislikeNumber.setText(activity.getString(R.string.dislike));
                 changeImageDislikeFilm = R.drawable.ic_dislike;
                 binding.ivDislike.setImageResource(changeImageDislikeFilm);
                 binding.tvDislikeNumber.setTextColor(Color.parseColor("#777776"));
@@ -192,7 +196,7 @@ public class IntroduceFilmFragment extends Fragment {
             changeImageLikeFilm = R.drawable.ic_liked_film;
             binding.tvLikeNumber.setTextColor(Color.parseColor("#2A48E8"));
             currentLike += 1;
-            binding.tvLikeNumber.setText(mWatchFilmActivity.getString(R.string.number, currentLike));
+            binding.tvLikeNumber.setText(activity.getString(R.string.number, currentLike));
         } else if (changeImageLikeFilm == R.drawable.ic_liked_film) {
             changeImageLikeFilm = R.drawable.ic_like_film;
             binding.tvLikeNumber.setTextColor(Color.parseColor("#777776"));
@@ -201,7 +205,7 @@ public class IntroduceFilmFragment extends Fragment {
                 currentLike = 0;
             }
 
-            binding.tvLikeNumber.setText(mWatchFilmActivity.getString(R.string.like));
+            binding.tvLikeNumber.setText(activity.getString(R.string.like));
         }
         binding.ivLike.setImageResource(changeImageLikeFilm);
         updateFilmLike();
@@ -216,7 +220,7 @@ public class IntroduceFilmFragment extends Fragment {
                     currentLike = 0;
                 }
 
-                binding.tvLikeNumber.setText(mWatchFilmActivity.getString(R.string.like));
+                binding.tvLikeNumber.setText(activity.getString(R.string.like));
                 changeImageLikeFilm = R.drawable.ic_like_film;
                 binding.ivLike.setImageResource(changeImageLikeFilm);
                 binding.tvLikeNumber.setTextColor(Color.parseColor("#777776"));
@@ -224,7 +228,7 @@ public class IntroduceFilmFragment extends Fragment {
             changeImageDislikeFilm = R.drawable.ic_disliked;
             binding.tvDislikeNumber.setTextColor(Color.parseColor("#2A48E8"));
             currentDislike += 1;
-            binding.tvDislikeNumber.setText(mWatchFilmActivity.getString(R.string.number, currentDislike));
+            binding.tvDislikeNumber.setText(activity.getString(R.string.number, currentDislike));
         } else if (changeImageDislikeFilm == R.drawable.ic_disliked) {
             changeImageDislikeFilm = R.drawable.ic_dislike;
             binding.tvDislikeNumber.setTextColor(Color.parseColor("#777776"));
@@ -232,7 +236,7 @@ public class IntroduceFilmFragment extends Fragment {
             if (currentDislike < 0) {
                 currentDislike = 0;
             }
-            binding.tvDislikeNumber.setText(mWatchFilmActivity.getString(R.string.dislike));
+            binding.tvDislikeNumber.setText(activity.getString(R.string.dislike));
         }
         binding.ivDislike.setImageResource(changeImageDislikeFilm);
         updateFilmDisLike();
@@ -273,7 +277,7 @@ public class IntroduceFilmFragment extends Fragment {
             @Override
             public void onResponse(@NonNull Call<FilmArrayResponse> call, @NonNull Response<FilmArrayResponse> response) {
                 if (response.body() != null && response.body().getData() != null) {
-                    relateMovieListAdapter.updateData(response.body().getData());
+                    relateMovieListAdapter.updateData((ArrayList<FilmMainHome>) response.body().getData());
                 }
             }
 

@@ -126,6 +126,7 @@ public class SubFilm implements Serializable, Comparable<SubFilm>{
     }
 
     public boolean getIsWatching(){ return isWatching;}
+
     @Override
     public int compareTo(SubFilm o) {
         return this.getEpisode() > o.episode ? 1 : -1 ;
