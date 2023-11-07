@@ -6,7 +6,7 @@ import com.smile.watchmovie.api.ApiHelper
 import com.smile.watchmovie.repository.ApiRepository
 import com.smile.watchmovie.viewmodel.CategoryFilmActivityViewModel
 import com.smile.watchmovie.viewmodel.HomeFragmentViewModel
-import com.smile.watchmovie.viewmodel.IntroduceFilmViewModel
+import com.smile.watchmovie.viewmodel.InfoFilmFragmentViewModel
 import com.smile.watchmovie.viewmodel.PersonFragmentViewModel
 import com.smile.watchmovie.viewmodel.SearchFragmentViewModel
 import java.lang.IllegalArgumentException
@@ -30,8 +30,8 @@ class ViewModelFactory(private val apiHelper: ApiHelper) : ViewModelProvider.Fac
             return CategoryFilmActivityViewModel(ApiRepository(apiHelper)) as T
         }
 
-        if (modelClass.isAssignableFrom(IntroduceFilmViewModel::class.java)) {
-            return IntroduceFilmViewModel(ApiRepository(apiHelper)) as T
+        if (modelClass.isAssignableFrom(InfoFilmFragmentViewModel::class.java)) {
+            return InfoFilmFragmentViewModel(ApiRepository(apiHelper)) as T
         }
 
         throw IllegalArgumentException("Unknown ViewModel class: ${modelClass.name}")

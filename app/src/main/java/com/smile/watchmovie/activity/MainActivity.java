@@ -59,30 +59,21 @@ public class MainActivity extends AppCompatActivity {
             public void onPageSelected(int position) {
                 super.onPageSelected(position);
                 switch (position) {
-                    case 0:
-                        binding.bottomNav.getMenu().findItem(R.id.action_home).setChecked(true);
-                        break;
-                    case 1:
-                        binding.bottomNav.getMenu().findItem(R.id.action_search).setChecked(true);
-                        break;
-                    case 2:
-                        binding.bottomNav.getMenu().findItem(R.id.action_person).setChecked(true);
-                        break;
+                    case 0 ->
+                            binding.bottomNav.getMenu().findItem(R.id.action_home).setChecked(true);
+                    case 1 ->
+                            binding.bottomNav.getMenu().findItem(R.id.action_search).setChecked(true);
+                    case 2 ->
+                            binding.bottomNav.getMenu().findItem(R.id.action_person).setChecked(true);
                 }
             }
         });
 
         binding.bottomNav.setOnNavigationItemSelectedListener(item -> {
             switch (item.getItemId()) {
-                case R.id.action_home:
-                    binding.viewPager.setCurrentItem(0);
-                    break;
-                case R.id.action_search:
-                    binding.viewPager.setCurrentItem(1);
-                    break;
-                case R.id.action_person:
-                    binding.viewPager.setCurrentItem(2);
-                    break;
+                case R.id.action_home -> binding.viewPager.setCurrentItem(0);
+                case R.id.action_search -> binding.viewPager.setCurrentItem(1);
+                case R.id.action_person -> binding.viewPager.setCurrentItem(2);
             }
             return true;
         });

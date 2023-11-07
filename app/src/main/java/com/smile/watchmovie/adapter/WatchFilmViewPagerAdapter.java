@@ -6,7 +6,7 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 import com.smile.watchmovie.fragment.CommentFragment;
-import com.smile.watchmovie.fragment.IntroduceFilmFragment;
+import com.smile.watchmovie.fragment.InfoFilmFragment;
 
 public class WatchFilmViewPagerAdapter extends FragmentStateAdapter {
 
@@ -20,7 +20,7 @@ public class WatchFilmViewPagerAdapter extends FragmentStateAdapter {
         if (position == 1) {
             return new CommentFragment();
         }
-        return new IntroduceFilmFragment();
+        return new InfoFilmFragment();
     }
 
     @Override

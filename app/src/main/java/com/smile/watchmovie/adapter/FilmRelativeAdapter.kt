@@ -2,26 +2,20 @@ package com.smile.watchmovie.adapter
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.smile.watchmovie.R
-import com.smile.watchmovie.activity.WatchFilmActivity
-import com.smile.watchmovie.api.ApiService
 import com.smile.watchmovie.databinding.ItemFilmDetailBinding
-import com.smile.watchmovie.model.FilmDetailResponse
 import com.smile.watchmovie.model.FilmMainHome
 import com.smile.watchmovie.utils.OtherUtils
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
-class FilmRelativeAdapter(private val context: Context) :
-    RecyclerView.Adapter<FilmRelativeAdapter.ViewHolder>() {
+class FilmRelativeAdapter(
+    private val context: Context,
+    private val listener: OnClickListener
+) : RecyclerView.Adapter<FilmRelativeAdapter.ViewHolder>() {
     private var list = ArrayList<FilmMainHome>()
 
     @SuppressLint("NotifyDataSetChanged")
@@ -82,36 +76,21 @@ class FilmRelativeAdapter(private val context: Context) :
                     } else {
                         context.getString(R.string.episode_total, this@with.episodesTotal)
                     }
+
+                    root.setOnClickListener {
+                        listener.onClickOpenFilmRelate(this@with)
+                    }
                 }
             }
         }
-    }
-
-    private fun playFilm(filmMainHome: FilmMainHome) {
-        ApiService.apiService.getFilmDetail(context.getString(R.string.wsToken), filmMainHome.id)
-            .enqueue(object : Callback<FilmDetailResponse?> {
-                @SuppressLint("StringFormatMatches")
-                override fun onResponse(
-                    call: Call<FilmDetailResponse?>,
-                    response: Response<FilmDetailResponse?>
-                ) {
-                    val cinema = response.body()
-                    if (cinema != null) {
-                        val intent = Intent(context, WatchFilmActivity::class.java)
-                        intent.putExtra("film", cinema.data)
-                        context.startActivity(intent)
-                    }
-                }
-
-                override fun onFailure(call: Call<FilmDetailResponse?>, t: Throwable) {
-                    Toast.makeText(context, "Tải dữ liệu phim không thành công", Toast.LENGTH_SHORT)
-                        .show()
-                }
-            })
     }
 
     override fun getItemCount() = list.size
 
     inner class ViewHolder(val binding: ItemFilmDetailBinding) :
         RecyclerView.ViewHolder(binding.root)
+
+    interface OnClickListener {
+        fun onClickOpenFilmRelate(film: FilmMainHome)
+    }
 }

@@ -1,5 +1,7 @@
 package com.smile.watchmovie.model;
 
+import androidx.annotation.NonNull;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -38,7 +40,6 @@ public class SubFilm implements Serializable, Comparable<SubFilm>{
     @SerializedName("redirectLink")
     @Expose
     private String redirectLink;
-
     private boolean isWatching;
 
     public int getId() {
@@ -128,7 +129,7 @@ public class SubFilm implements Serializable, Comparable<SubFilm>{
     public boolean getIsWatching(){ return isWatching;}
 
     @Override
-    public int compareTo(SubFilm o) {
+    public int compareTo(@NonNull SubFilm o) {
         return this.getEpisode() > o.episode ? 1 : -1 ;
     }
 }

@@ -37,7 +37,6 @@ import java.util.Date;
 import java.util.Locale;
 
 public class WatchFilmActivity extends AppCompatActivity implements Player.Listener {
-
     private ActivityWatchFilmBinding binding;
     public FilmMainHome film;
     private ExoPlayer player;
@@ -128,9 +127,14 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
     }
 
     public void playFilm(SubFilm subFilm) {
+        if (player.isPlaying()) {
+            player.stop();
+        }
+
         MediaItem mediaItem = MediaItem.fromUri(subFilm.getLink());
         player.setMediaItem(mediaItem);
         player.prepare();
+
         if (auto_play) {
             player.play();
         }
@@ -218,6 +222,7 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
         /* Khởi tạo viewpager và tabLayout */
         WatchFilmViewPagerAdapter viewPagerAdapter = new WatchFilmViewPagerAdapter(this);
         binding.viewPager.setAdapter(viewPagerAdapter);
+        binding.viewPager.setUserInputEnabled(false);
         new TabLayoutMediator(binding.tabLayout, binding.viewPager, ((tab, position) -> {
             switch (position) {
                 case 0 -> tab.setText("Giới thiệu");
