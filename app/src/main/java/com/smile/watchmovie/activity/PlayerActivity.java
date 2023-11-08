@@ -45,9 +45,9 @@ public class PlayerActivity extends AppCompatActivity implements Player.Listener
     public String idUser, isVip;
     private boolean isFullScreen = false, existHistory = false;
     private float speed;
-    private PlaybackParameters playbackParameters;
     private boolean auto_play, full_screen;
     private HistoryWatchFilm historyWatchFilm;
+    private int markerSpeedPlayFilm = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -170,51 +170,50 @@ public class PlayerActivity extends AppCompatActivity implements Player.Listener
     }
 
     public void playSpeedFilm() {
-        AlertDialog.Builder alBuilder = new AlertDialog.Builder(PlayerActivity.this);
-        alBuilder.setTitle("Tốc độ phát");
+        AlertDialog.Builder builder = new AlertDialog.Builder(PlayerActivity.this);
+        builder.setTitle("Tốc độ phát");
 
         String[] items = {"0.5", "Chuẩn", "1.25", "1.5", "2"};
-        int checkedItem = -1;
 
-        alBuilder.setSingleChoiceItems(items, checkedItem, (dialog, which) -> {
+        builder.setSingleChoiceItems(items, markerSpeedPlayFilm, (dialog, which) -> {
             switch (which) {
                 case 0 -> {
                     speed = 0.5f;
-                    tvSpeed.setVisibility(View.VISIBLE);
+                    markerSpeedPlayFilm = 0;
                     tvSpeed.setText("0.5x");
-                    dialog.dismiss();
+                    tvSpeed.setVisibility(View.VISIBLE);
                 }
                 case 1 -> {
                     speed = 1f;
+                    markerSpeedPlayFilm = 1;
                     tvSpeed.setVisibility(View.GONE);
-                    dialog.dismiss();
                 }
                 case 2 -> {
                     speed = 1.25f;
-                    tvSpeed.setVisibility(View.VISIBLE);
+                    markerSpeedPlayFilm = 2;
                     tvSpeed.setText("1.25x");
-                    dialog.dismiss();
+                    tvSpeed.setVisibility(View.VISIBLE);
                 }
                 case 3 -> {
                     speed = 1.5f;
-                    tvSpeed.setVisibility(View.VISIBLE);
+                    markerSpeedPlayFilm = 3;
                     tvSpeed.setText("1.5x");
-                    dialog.dismiss();
+                    tvSpeed.setVisibility(View.VISIBLE);
                 }
                 case 4 -> {
                     speed = 2f;
-                    tvSpeed.setVisibility(View.VISIBLE);
+                    markerSpeedPlayFilm = 4;
                     tvSpeed.setText("2x");
-                    dialog.dismiss();
+                    tvSpeed.setVisibility(View.VISIBLE);
                 }
                 default -> dialog.dismiss();
             }
-            playbackParameters = new PlaybackParameters(speed);
-            player.setPlaybackParameters(playbackParameters);
+            dialog.dismiss();
+            player.setPlaybackSpeed(speed);
         });
 
-        AlertDialog alertDialog = alBuilder.create();
-        alertDialog.show();
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
     private void initialInfoRelate() {
