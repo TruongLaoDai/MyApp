@@ -10,7 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
-import com.smile.watchmovie.activity.WatchFilmActivity
+import com.smile.watchmovie.activity.PlayerActivity
 import com.smile.watchmovie.adapter.PagingAdapter
 import com.smile.watchmovie.api.ApiHelper
 import com.smile.watchmovie.api.RetrofitBuilder
@@ -96,7 +96,7 @@ class SearchFragment : Fragment(), PagingAdapter.OnClickListener {
     override fun playFilm(film: FilmMainHome) {
         viewModel.getFilmDetail(Constant.Api.WS_TOKEN, film.id).observe(requireActivity()) {
             it?.let {
-                val intent = Intent(requireActivity(), WatchFilmActivity::class.java)
+                val intent = Intent(requireActivity(), PlayerActivity::class.java)
                 intent.putExtra("film", it.data)
                 startActivity(intent)
             }

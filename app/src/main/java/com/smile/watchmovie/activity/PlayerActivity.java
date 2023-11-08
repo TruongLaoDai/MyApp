@@ -18,7 +18,6 @@ import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.MediaItem;
 import com.google.android.exoplayer2.PlaybackParameters;
 import com.google.android.exoplayer2.Player;
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -36,7 +35,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.Locale;
 
-public class WatchFilmActivity extends AppCompatActivity implements Player.Listener {
+public class PlayerActivity extends AppCompatActivity implements Player.Listener {
     private ActivityWatchFilmBinding binding;
     public FilmMainHome film;
     private ExoPlayer player;
@@ -171,7 +170,7 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
     }
 
     public void playSpeedFilm() {
-        AlertDialog.Builder alBuilder = new AlertDialog.Builder(WatchFilmActivity.this);
+        AlertDialog.Builder alBuilder = new AlertDialog.Builder(PlayerActivity.this);
         alBuilder.setTitle("Tốc độ phát");
 
         String[] items = {"0.5", "Chuẩn", "1.25", "1.5", "2"};
@@ -274,9 +273,10 @@ public class WatchFilmActivity extends AppCompatActivity implements Player.Liste
     }
 
     private void showDialog(String title) {
-        new MaterialAlertDialogBuilder(this)
+        new AlertDialog.Builder(this)
                 .setMessage(title)
                 .setPositiveButton("Xác nhận", (dialog, id) -> dialog.dismiss())
+                .create()
                 .show();
     }
 

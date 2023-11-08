@@ -87,7 +87,7 @@ class ShowMoreCategoryFilmActivity : AppCompatActivity(), PagingAdapter.OnClickL
     override fun playFilm(film: FilmMainHome) {
         viewModel.getFilmDetail(Constant.Api.WS_TOKEN, film.id).observe(this) {
             it?.let {
-                val intent = Intent(this, WatchFilmActivity::class.java)
+                val intent = Intent(this, PlayerActivity::class.java)
                 intent.putExtra("film", it.data)
                 startActivity(intent)
             }

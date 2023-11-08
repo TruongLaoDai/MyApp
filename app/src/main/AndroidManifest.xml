@@ -65,7 +65,7 @@
                 android:value="" />
         </activity>
         <activity
-            android:name=".activity.WatchFilmActivity"
+            android:name=".activity.PlayerActivity"
             android:configChanges="screenSize|orientation|keyboardHidden"
             android:excludeFromRecents="true"
             android:exported="false">

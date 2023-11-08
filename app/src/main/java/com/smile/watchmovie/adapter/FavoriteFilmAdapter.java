@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.smile.watchmovie.R;
-import com.smile.watchmovie.activity.WatchFilmActivity;
+import com.smile.watchmovie.activity.PlayerActivity;
 import com.smile.watchmovie.api.ApiService;
 import com.smile.watchmovie.databinding.ItemFilmHistoryBinding;
 import com.smile.watchmovie.listener.IClickItemUnFavoriteListener;
@@ -90,7 +90,7 @@ public class FavoriteFilmAdapter extends RecyclerView.Adapter<FavoriteFilmAdapte
                                 if (cinema != null) {
                                     FilmMainHome filmPlay;
                                     filmPlay = cinema.getData();
-                                    Intent intent = new Intent(context, WatchFilmActivity.class);
+                                    Intent intent = new Intent(context, PlayerActivity.class);
                                     intent.putExtra("film", filmPlay);
                                     context.startActivity(intent);
                                 }

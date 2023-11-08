@@ -13,7 +13,7 @@ import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QuerySnapshot
 import com.smile.watchmovie.R
-import com.smile.watchmovie.activity.WatchFilmActivity
+import com.smile.watchmovie.activity.PlayerActivity
 import com.smile.watchmovie.adapter.EpisodeAdapter
 import com.smile.watchmovie.adapter.EpisodeAdapter.OnListener
 import com.smile.watchmovie.adapter.FilmRelativeAdapter
@@ -39,7 +39,7 @@ import java.util.Locale
 
 class InfoFilmFragment : Fragment(), OnListener, FilmRelativeAdapter.OnClickListener {
     private lateinit var binding: FragmentIntroduceFilmBinding
-    private lateinit var activity: WatchFilmActivity
+    private lateinit var activity: PlayerActivity
     private lateinit var filmRelativeAdapter: FilmRelativeAdapter
     private lateinit var viewModel: InfoFilmFragmentViewModel
     private var idUser: String = ""
@@ -68,7 +68,7 @@ class InfoFilmFragment : Fragment(), OnListener, FilmRelativeAdapter.OnClickList
     ): View {
         binding = FragmentIntroduceFilmBinding.inflate(inflater, container, false)
 
-        activity = requireActivity() as WatchFilmActivity
+        activity = requireActivity() as PlayerActivity
         initializeData()
 
         if (activity.idUser != "") {
@@ -291,7 +291,11 @@ class InfoFilmFragment : Fragment(), OnListener, FilmRelativeAdapter.OnClickList
                     response: Response<FilmArrayResponse>
                 ) {
                     if (response.isSuccessful) {
-                        filmRelativeAdapter.updateData(response.body()?.data as ArrayList)
+                        response.body()?.let {
+                            it.data?.let { listFilmRelative ->
+                                filmRelativeAdapter.updateData(listFilmRelative as ArrayList)
+                            }
+                        }
                     }
                 }
 
@@ -301,7 +305,7 @@ class InfoFilmFragment : Fragment(), OnListener, FilmRelativeAdapter.OnClickList
             })
     }
 
-    fun loadFavorite() {
+    private fun loadFavorite() {
         documentReferenceFilmFavorite
             .collection(idUser)
             .whereEqualTo("idFilm", filmMainHome.id)
@@ -331,7 +335,7 @@ class InfoFilmFragment : Fragment(), OnListener, FilmRelativeAdapter.OnClickList
             }
     }
 
-    fun loadLike() {
+    private fun loadLike() {
         documentReferenceFilmLike
             .collection(filmMainHome.id.toString() + "")
             .whereEqualTo("idUser", idUser)
@@ -362,7 +366,7 @@ class InfoFilmFragment : Fragment(), OnListener, FilmRelativeAdapter.OnClickList
             }
     }
 
-    fun loadDislike() {
+    private fun loadDislike() {
         documentReferenceFilmDislike
             .collection(filmMainHome.id.toString() + "")
             .whereEqualTo("idUser", idUser)

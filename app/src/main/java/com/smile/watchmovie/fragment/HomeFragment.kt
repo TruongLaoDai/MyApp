@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.smile.watchmovie.activity.ShowMoreCategoryFilmActivity
-import com.smile.watchmovie.activity.WatchFilmActivity
+import com.smile.watchmovie.activity.PlayerActivity
 import com.smile.watchmovie.adapter.HomeFragmentAdapter
 import com.smile.watchmovie.api.ApiHelper
 import com.smile.watchmovie.api.RetrofitBuilder
@@ -196,7 +196,7 @@ class HomeFragment : Fragment(), HomeFragmentAdapter.OnClickListener {
     override fun openFilm(filmId: Int) {
         viewModel.getFilmDetail(Constant.Api.WS_TOKEN, filmId).observe(requireActivity()) {
             it?.let {
-                val intent = Intent(requireActivity(), WatchFilmActivity::class.java)
+                val intent = Intent(requireActivity(), PlayerActivity::class.java)
                 intent.putExtra("film", it.data)
                 startActivity(intent)
             }

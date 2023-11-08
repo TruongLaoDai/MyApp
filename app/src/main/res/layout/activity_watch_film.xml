@@ -14,6 +14,7 @@
         app:controller_layout_id="@layout/custom_playback_view"
         app:player_layout_id="@layout/exo_player_view"
         app:resize_mode="fit"
+        app:show_buffering="always"
         app:use_controller="true" />
 
     <com.google.android.material.tabs.TabLayout
