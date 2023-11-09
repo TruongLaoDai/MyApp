@@ -45,7 +45,10 @@ dependencies {
 
     implementation 'com.facebook.android:facebook-android-sdk:16.0.0'
     implementation 'com.google.android.gms:play-services-auth:20.7.0'
+
+    /* Khai báo thư viện OkHttp Interceptor */
     implementation 'com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.11'
+
     implementation "com.github.bumptech.glide:okhttp3-integration:4.16.0"
     implementation 'com.google.code.gson:gson:2.10.1'
 
@@ -74,7 +77,6 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
     implementation 'com.google.firebase:firebase-database:20.3.0'
-    implementation 'androidx.multidex:multidex:2.0.1'
 
     /* Thư viện load phim */
     implementation 'com.google.android.exoplayer:exoplayer:2.19.1'

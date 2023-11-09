@@ -80,7 +80,7 @@ class InfoFilmFragment : Fragment(), OnListener, FilmRelativeAdapter.OnClickList
     }
 
     private fun initialFilmRelate() {
-        callApiGetByCategoryListMovie(filmMainHome.categoryId, (0..10).random())
+        callApiGetByCategoryListMovie(filmMainHome.categoryId, (0..5).random())
     }
 
     private fun handleEventClick() {
