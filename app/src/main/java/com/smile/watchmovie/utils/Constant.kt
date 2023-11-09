@@ -21,5 +21,6 @@ class Constant {
         const val NAME_DATABASE = "WatchFilm"
         const val TABLE_HISTORY_WATCHED = "tblhistorywatchfilm"
         const val ID_FILM = "id_film"
+        const val TABLE_HISTORY_BUY_PREMIUM = "tblhistoryupvip"
     }
 }

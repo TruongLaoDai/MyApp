@@ -13,7 +13,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.smile.watchmovie.R
-import com.smile.watchmovie.activity.ChoosePaymentActivity
+import com.smile.watchmovie.activity.BuyPremiumActivity
 import com.smile.watchmovie.activity.FavoriteFilmActivity
 import com.smile.watchmovie.activity.HistoryWatchFilmActivity
 import com.smile.watchmovie.activity.InfoAccountActivity
@@ -161,7 +161,7 @@ class PersonFragment : Fragment() {
                 ).show()
             } else {
                 requireActivity().startActivity(
-                    Intent(requireActivity(), ChoosePaymentActivity::class.java)
+                    Intent(requireActivity(), BuyPremiumActivity::class.java)
                 )
             }
         }
