@@ -35,7 +35,7 @@
                 android:layout_height="30dp"
                 android:layout_alignStart="@+id/iv_avt_account"
                 android:layout_alignEnd="@+id/iv_avt_account"
-                android:layout_marginTop="53dp"
+                android:layout_marginTop="50dp"
                 android:src="@drawable/ic_vip" />
 
             <androidx.appcompat.widget.AppCompatTextView

@@ -3,63 +3,41 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginStart="10dp"
+    android:layout_marginHorizontal="15dp"
     android:layout_marginTop="10dp"
-    android:layout_marginEnd="10dp"
     android:background="@drawable/bg_corner_dialog"
-    android:backgroundTintMode="@color/gray_light"
     android:orientation="vertical"
-    android:padding="10dp">
+    android:paddingHorizontal="15dp"
+    android:paddingVertical="10dp">
 
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tv_type_premium"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:fontFamily="@font/noto_sans"
         android:gravity="center"
-        android:text="@string/monthly_package"
         android:textColor="@color/black"
         android:textSize="20sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        tools:text="@string/monthly_package" />
 
-    <LinearLayout
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_status"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp">
+        android:layout_marginTop="5dp"
+        android:fontFamily="@font/noto_sans"
+        android:textColor="@color/black"
+        tools:text="Trạng thái: Hết hạn" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/status"
-            android:textColor="@color/black" />
-
-        <TextView
-            android:id="@+id/tv_status"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:textColor="@color/black"
-            tools:text="Hoạt động" />
-    </LinearLayout>
-
-    <LinearLayout
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_date_start"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="5dp">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/date_register"
-            android:textColor="@color/black" />
-
-        <TextView
-            android:id="@+id/tv_date_start"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:textColor="@color/black"
-            tools:text="10/08/2023" />
-    </LinearLayout>
+        android:layout_marginTop="2dp"
+        android:fontFamily="@font/noto_sans"
+        android:textColor="@color/black"
+        tools:text="Ngày đăng ký: 09/11/2023" />
 
 </LinearLayout>

@@ -48,8 +48,8 @@
     <string name="auto_play_full_screen">Tự động toàn màn hình</string>
     <string name="feature_deploying">Tính năng đang được phát triển</string>
     <string name="buy_premium">Mua Premium</string>
-    <string name="buy_title">Mua Premium để khám phá vô số nội dung</string>
-    <string name="account_vip">Bạn đã là thành viên vip. Hãy vào kiểm tra gói hoặc nâng cấp gói đã sử dụng nào</string>
+    <string name="buy_title">Mua Premium để khám phá vô số nội dung.</string>
+    <string name="account_vip">Bạn đã là thành viên vip. Hãy vào kiểm tra gói hoặc nâng cấp gói đã sử dụng nào.</string>
     <string name="go">Go</string>
     <string name="title_buy">Mua Premium để mở khóa tất cả các bộ phim</string>
     <string name="type_premium">Các gói Premium</string>
@@ -84,10 +84,10 @@
     <string name="notify_empty">Mục yêu thích rỗng</string>
     <string name="history_watch_empty">Lịch sử xem rỗng</string>
     <string name="history_buy_empty">Lịch sử mua trống</string>
-    <string name="get_data_fail">Tải dữ liệu thất bại</string>
+    <string name="get_data_fail">Lấy dữ liệu thất bại</string>
     <string name="monthly_package">Gói tháng</string>
-    <string name="status">Trạng thái:</string>
-    <string name="date_register">Ngày đăng kí:</string>
+    <string name="status">Trạng thái: %s</string>
+    <string name="date_register">Ngày đăng ký: %s</string>
 
     <string name="notify_login_google_fail">Đăng nhập không thành công</string>
 
@@ -99,6 +99,6 @@
 
     <string name="title_weather">%d°C tại Hà Nội</string>
     <string name="category_film">Thể loại: %s</string>
-    
+
     <string name="rate_film">Điểm đánh giá: %d/5</string>
 </resources>

@@ -1,69 +1,55 @@
-package com.smile.watchmovie.adapter;
+package com.smile.watchmovie.adapter
 
-import android.annotation.SuppressLint;
-import android.view.LayoutInflater;
-import android.view.ViewGroup;
+import android.annotation.SuppressLint
+import android.content.Context
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
+import com.smile.watchmovie.R
+import com.smile.watchmovie.databinding.ItemHistoryPaymentBinding
+import com.smile.watchmovie.model.HistoryUpVip
+import com.smile.watchmovie.utils.OtherUtils
 
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
-
-import com.smile.watchmovie.databinding.ItemHistoryPaymentBinding;
-import com.smile.watchmovie.model.HistoryUpVip;
-import com.smile.watchmovie.utils.OtherUtils;
-
-import java.util.ArrayList;
-import java.util.List;
-
-public class HistoryUpVipAdapter extends RecyclerView.Adapter<HistoryUpVipAdapter.HistoryUpVipViewHolder> {
-    private final List<HistoryUpVip> historyUpVipList = new ArrayList<>();
-
-    public HistoryUpVipAdapter() {
-    }
+class HistoryBuyVipAdapter(val context: Context) :
+    RecyclerView.Adapter<HistoryBuyVipAdapter.ViewHolder>() {
+    private var list = ArrayList<HistoryUpVip>()
 
     @SuppressLint("NotifyDataSetChanged")
-    public void setData(List<HistoryUpVip> historyUpVipList) {
-        this.historyUpVipList.addAll(historyUpVipList);
-        notifyDataSetChanged();
+    fun updateData(newList: List<HistoryUpVip>) {
+        this.list.addAll(newList)
+        notifyDataSetChanged()
     }
 
-    @NonNull
-    @Override
-    public HistoryUpVipViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        return new HistoryUpVipAdapter.HistoryUpVipViewHolder(ItemHistoryPaymentBinding.inflate(inflater, parent, false));
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        val binding =
+            ItemHistoryPaymentBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return ViewHolder(binding)
     }
 
-    @Override
-    public void onBindViewHolder(@NonNull HistoryUpVipViewHolder holder, int position) {
-        HistoryUpVip historyUpVip = historyUpVipList.get(position);
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        with(holder) {
+            with(list[position]) {
+                binding.apply {
+                    tvTypePremium.text = if (this@with.is_vip == "1") {
+                        "Gói tháng"
+                    } else {
+                        "Gói năm"
+                    }
 
-        if (historyUpVip == null) {
-            return;
-        }
+                    tvDateStart.text =
+                        context.getString(R.string.date_register, this@with.dateRegister)
 
-        if (historyUpVip.getIs_vip().equals("1")) {
-            holder.binding.tvTypePremium.setText("Gói tháng");
-        } else {
-            holder.binding.tvTypePremium.setText("Gói năm");
-        }
-
-        OtherUtils otherUtils = new OtherUtils();
-        holder.binding.tvStatus.setText(otherUtils.formatCommonTime(historyUpVip.getDateRegister(), historyUpVip.getIs_vip()));
-
-        holder.binding.tvDateStart.setText(historyUpVip.getDateRegister());
-    }
-
-    @Override
-    public int getItemCount() {
-        return historyUpVipList.size();
-    }
-
-    public static class HistoryUpVipViewHolder extends RecyclerView.ViewHolder {
-        private final ItemHistoryPaymentBinding binding;
-
-        public HistoryUpVipViewHolder(@NonNull ItemHistoryPaymentBinding binding) {
-            super(binding.getRoot());
-            this.binding = binding;
+                    tvStatus.text = context.getString(
+                        R.string.status,
+                        OtherUtils().formatCommonTime(this@with.dateRegister, this@with.is_vip)
+                    )
+                }
+            }
         }
     }
+
+    override fun getItemCount() = list.size
+
+    inner class ViewHolder(val binding: ItemHistoryPaymentBinding) :
+        RecyclerView.ViewHolder(binding.root)
 }

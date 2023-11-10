@@ -5,6 +5,7 @@ import com.google.gson.annotations.SerializedName;
 public class HistoryUpVip {
     @SerializedName("is_vip")
     private String is_vip;
+
     @SerializedName("exp_vip")
     private String dateRegister;
 

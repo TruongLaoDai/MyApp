@@ -37,6 +37,7 @@ class PersonFragment : Fragment() {
     private var nameUser: String? = null
     private var idUser: String? = null
     private var isVip: String? = null
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
