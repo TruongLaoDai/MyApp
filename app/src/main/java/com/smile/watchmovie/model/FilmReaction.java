@@ -20,6 +20,13 @@ public class FilmReaction {
         this.type_reaction = type_reaction;
     }
 
+    public FilmReaction(int idFilm, String avatarFilm, String nameFilm, String dateReact) {
+        this.idFilm = idFilm;
+        this.avatarFilm = avatarFilm;
+        this.nameFilm = nameFilm;
+        this.dateReact = dateReact;
+    }
+
     public FilmReaction(int idFilm, String avatarFilm, String nameFilm, String dateReact, int type_reaction) {
         this.idFilm = idFilm;
         this.avatarFilm = avatarFilm;

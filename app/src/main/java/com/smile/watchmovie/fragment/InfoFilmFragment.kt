@@ -48,7 +48,6 @@ class InfoFilmFragment : Fragment(), OnListener, FilmRelativeAdapter.OnClickList
     private lateinit var documentReferenceFilmFavorite: DocumentReference
     private lateinit var documentReferenceFilmLike: DocumentReference
     private lateinit var documentReferenceFilmDislike: DocumentReference
-    private var changeImageFavoriteFilm = 0
     private var changeImageDislikeFilm = 0
     private var changeImageLikeFilm = 0
     private var currentLike = 0
@@ -58,8 +57,8 @@ class InfoFilmFragment : Fragment(), OnListener, FilmRelativeAdapter.OnClickList
     private var statusFavorite = 0
     private lateinit var mediaLike: FilmReaction
     private lateinit var mediaDislike: FilmReaction
-    private lateinit var mediaFavorite: FilmReaction
     private lateinit var subFilmArrayList: List<SubFilm>
+    private lateinit var documentIdFilmFavorite: String
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -70,7 +69,6 @@ class InfoFilmFragment : Fragment(), OnListener, FilmRelativeAdapter.OnClickList
 
         activity = requireActivity() as PlayerActivity
         initializeData()
-
         if (activity.idUser != "") {
             setUpFireBase()
         }
@@ -93,6 +91,19 @@ class InfoFilmFragment : Fragment(), OnListener, FilmRelativeAdapter.OnClickList
 
             /* Bắt sự kiện người dùng nhấn xem mô tả phim */
             loutIntro.setOnClickListener { clickOpenDetailFilm() }
+
+            /* Nhấn yêu thích */
+            loutFavorite.setOnClickListener {
+                if (activity.idUser == "") {
+                    Toast.makeText(
+                        requireActivity(),
+                        getString(R.string.not_logged_in_message),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                } else {
+                    updateFavorite()
+                }
+            }
         }
 
         /* Nhấn like */binding.loutLike.setOnClickListener { v: View? ->
@@ -116,18 +127,6 @@ class InfoFilmFragment : Fragment(), OnListener, FilmRelativeAdapter.OnClickList
                 ).show()
             } else {
                 setUpViewDislikeFilm()
-            }
-        }
-
-        /* Nhấn yêu thích */binding.loutFavorite.setOnClickListener { v: View? ->
-            if (idUser == null || idUser == "") {
-                Toast.makeText(
-                    requireActivity(),
-                    "Bạn cần đăng nhập tài khoản để thực hiện tính năng này",
-                    Toast.LENGTH_SHORT
-                ).show()
-            } else {
-                setUpViewFavoriteFilm()
             }
         }
     }
@@ -191,7 +190,6 @@ class InfoFilmFragment : Fragment(), OnListener, FilmRelativeAdapter.OnClickList
     }
 
     private fun setUpFireBase() {
-        idUser = activity.idUser
         val firebaseFirestore = FirebaseFirestore.getInstance()
         documentReferenceFilmFavorite = firebaseFirestore.document("WatchFilm/tblfilmfavorite")
         documentReferenceFilmLike = firebaseFirestore.document("WatchFilm/tblfilmlike")
@@ -199,28 +197,6 @@ class InfoFilmFragment : Fragment(), OnListener, FilmRelativeAdapter.OnClickList
         loadFavorite()
         loadLike()
         loadDislike()
-    }
-
-    private fun setUpViewFavoriteFilm() {
-        if (changeImageFavoriteFilm == R.drawable.ic_add_favorite) {
-            changeImageFavoriteFilm = R.drawable.ic_added_favorite
-            binding.tvFavorite.setTextColor(Color.parseColor("#2A48E8"))
-            Toast.makeText(
-                activity,
-                activity.getString(R.string.add_film_favorite),
-                Toast.LENGTH_LONG
-            ).show()
-        } else if (changeImageFavoriteFilm == R.drawable.ic_added_favorite) {
-            changeImageFavoriteFilm = R.drawable.ic_add_favorite
-            binding.tvFavorite.setTextColor(Color.parseColor("#777776"))
-            Toast.makeText(
-                activity,
-                activity.getString(R.string.remove_film_favorite),
-                Toast.LENGTH_LONG
-            ).show()
-        }
-        binding.ivAddFavorite.setImageResource(changeImageFavoriteFilm)
-        updateFavorite()
     }
 
     private fun setUpViewLikeFilm() {
@@ -307,30 +283,26 @@ class InfoFilmFragment : Fragment(), OnListener, FilmRelativeAdapter.OnClickList
 
     private fun loadFavorite() {
         documentReferenceFilmFavorite
-            .collection(idUser)
+            .collection(activity.idUser)
             .whereEqualTo("idFilm", filmMainHome.id)
-            .get().addOnSuccessListener { queryDocumentSnapshots: QuerySnapshot ->
-                if (queryDocumentSnapshots.size() > 0) {
-                    mediaFavorite = queryDocumentSnapshots.documents[0].toObject(
-                        FilmReaction::class.java
-                    )!!
-                    if (mediaFavorite != null) {
-                        mediaFavorite.documentId = queryDocumentSnapshots.documents[0].id
-                        if (mediaFavorite.type_reaction == 1) {
-                            statusFavorite = 2
-                            changeImageFavoriteFilm = R.drawable.ic_added_favorite
-                            binding.ivAddFavorite.setImageResource(changeImageFavoriteFilm)
-                            binding.tvFavorite.setTextColor(Color.parseColor("#2A48E8"))
-                        } else {
-                            changeImageFavoriteFilm = R.drawable.ic_add_favorite
-                            statusFavorite = 1
+            .get()
+            .addOnSuccessListener { querySnapshot: QuerySnapshot ->
+                if (querySnapshot.size() > 0) {
+                    val reaction = querySnapshot.documents[0].toObject(FilmReaction::class.java)
+                    documentIdFilmFavorite = querySnapshot.documents[0].id
+                    reaction?.let {
+                        statusFavorite = 1
+                        binding.apply {
+                            ivAddFavorite.setImageResource(R.drawable.ic_added_favorite)
+                            tvFavorite.setTextColor(Color.parseColor("#2A48E8"))
                         }
-                    } else {
-                        statusFavorite = 0
                     }
                 } else {
-                    changeImageFavoriteFilm = R.drawable.ic_add_favorite
                     statusFavorite = 0
+                    binding.apply {
+                        ivAddFavorite.setImageResource(R.drawable.ic_add_favorite)
+                        tvFavorite.setTextColor(Color.parseColor("#313030"))
+                    }
                 }
             }
     }
@@ -398,24 +370,45 @@ class InfoFilmFragment : Fragment(), OnListener, FilmRelativeAdapter.OnClickList
     }
 
     private fun updateFavorite() {
-        if (statusFavorite == 1 && changeImageFavoriteFilm == R.drawable.ic_added_favorite) {
-            documentReferenceFilmFavorite
-                .collection(idUser)
-                .document(mediaFavorite.documentId)
-                .update("type_reaction", 1)
-        } else if (statusFavorite == 2 && changeImageFavoriteFilm == R.drawable.ic_add_favorite) {
-            documentReferenceFilmFavorite
-                .collection(idUser)
-                .document(mediaFavorite.documentId)
-                .delete()
-        } else if (statusFavorite == 0 && changeImageFavoriteFilm == R.drawable.ic_added_favorite) {
+        if (statusFavorite == 0) {
             val format = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())
-            val mediaReaction = FilmReaction(
-                filmMainHome.id, filmMainHome.avatar, filmMainHome.name, format.format(
-                    Date()
-                ), 1
+            val reaction = FilmReaction(
+                filmMainHome.id,
+                filmMainHome.avatar,
+                filmMainHome.name,
+                format.format(Date())
             )
-            documentReferenceFilmFavorite.collection(idUser).add(mediaReaction)
+            documentReferenceFilmFavorite.collection(activity.idUser)
+                .add(reaction)
+                .addOnCompleteListener {
+                    statusFavorite = 1
+                    documentIdFilmFavorite = it.result.id
+                    binding.apply {
+                        ivAddFavorite.setImageResource(R.drawable.ic_added_favorite)
+                        tvFavorite.setTextColor(Color.parseColor("#2A48E8"))
+                    }
+                    Toast.makeText(
+                        requireActivity(),
+                        activity.getString(R.string.add_film_favorite),
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+        } else {
+            documentReferenceFilmFavorite.collection(activity.idUser)
+                .document(documentIdFilmFavorite)
+                .delete()
+                .addOnCompleteListener {
+                    statusFavorite = 0
+                    binding.apply {
+                        ivAddFavorite.setImageResource(R.drawable.ic_add_favorite)
+                        tvFavorite.setTextColor(Color.parseColor("#313030"))
+                    }
+                    Toast.makeText(
+                        requireActivity(),
+                        getString(R.string.remove_film_favorite),
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
         }
     }
 
