@@ -13,7 +13,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.smile.watchmovie.adapter.HistoryWatchFilmAdapter;
 import com.smile.watchmovie.databinding.ActivityHistoryWatchFilmBinding;
-import com.smile.watchmovie.fragment.DeleteBottomSheetFragment;
+import com.smile.watchmovie.dialog.ConfirmDeleteDialog;
 import com.smile.watchmovie.model.HistoryWatchFilm;
 
 public class HistoryWatchFilmActivity extends AppCompatActivity {
@@ -45,7 +45,7 @@ public class HistoryWatchFilmActivity extends AppCompatActivity {
     }
 
     private void openDeleteHistoryFilm(HistoryWatchFilm historyWatchFilm) {
-        DeleteBottomSheetFragment deleteBottomSheetFragment = new DeleteBottomSheetFragment();
+        ConfirmDeleteDialog deleteBottomSheetFragment = new ConfirmDeleteDialog();
         deleteBottomSheetFragment.setHistoryWatchFilm(historyWatchFilm);
         deleteBottomSheetFragment.setDeleteHistoryListener(this::deleteHistoryWatchFilm);
         deleteBottomSheetFragment.show(getSupportFragmentManager(), deleteBottomSheetFragment.getTag());

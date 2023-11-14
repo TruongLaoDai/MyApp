@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.smile.watchmovie.api.ApiHelper
 import com.smile.watchmovie.repository.ApiRepository
 import com.smile.watchmovie.viewmodel.CategoryFilmActivityViewModel
+import com.smile.watchmovie.viewmodel.FavoriteFilmActivityViewModel
 import com.smile.watchmovie.viewmodel.HomeFragmentViewModel
 import com.smile.watchmovie.viewmodel.InfoFilmFragmentViewModel
 import com.smile.watchmovie.viewmodel.PersonFragmentViewModel
@@ -32,6 +33,10 @@ class ViewModelFactory(private val apiHelper: ApiHelper) : ViewModelProvider.Fac
 
         if (modelClass.isAssignableFrom(InfoFilmFragmentViewModel::class.java)) {
             return InfoFilmFragmentViewModel(ApiRepository(apiHelper)) as T
+        }
+
+        if (modelClass.isAssignableFrom(FavoriteFilmActivityViewModel::class.java)) {
+            return FavoriteFilmActivityViewModel(ApiRepository(apiHelper)) as T
         }
 
         throw IllegalArgumentException("Unknown ViewModel class: ${modelClass.name}")

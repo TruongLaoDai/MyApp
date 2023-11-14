@@ -1,4 +1,4 @@
-package com.smile.watchmovie.fragment;
+package com.smile.watchmovie.dialog;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
@@ -19,25 +19,25 @@ import com.smile.watchmovie.listener.IClickItemUnFavoriteListener;
 import com.smile.watchmovie.model.HistoryWatchFilm;
 import com.smile.watchmovie.model.FilmReaction;
 
-public class DeleteBottomSheetFragment extends BottomSheetDialogFragment {
-
+public class ConfirmDeleteDialog extends BottomSheetDialogFragment {
     private HistoryWatchFilm historyWatchFilm;
-    private FilmReaction favoriteFilm;
+    private String documentId;
     private IClickItemDeleteHistoryListener deleteHistoryListener;
     private IClickItemUnFavoriteListener unFavoriteListener;
 
-    public DeleteBottomSheetFragment() {
+    public ConfirmDeleteDialog() {
+
     }
 
     public void setHistoryWatchFilm(HistoryWatchFilm historyWatchFilm) {
         this.historyWatchFilm = historyWatchFilm;
     }
 
-    public void setFavoriteFilm(FilmReaction favoriteFilm) {
-        this.favoriteFilm = favoriteFilm;
+    public void setFavoriteFilm(String documentId) {
+        this.documentId = documentId;
     }
 
-    public void setDeleteHistoryListener(IClickItemDeleteHistoryListener deleteHistoryListener){
+    public void setDeleteHistoryListener(IClickItemDeleteHistoryListener deleteHistoryListener) {
         this.deleteHistoryListener = deleteHistoryListener;
     }
 
@@ -60,11 +60,11 @@ public class DeleteBottomSheetFragment extends BottomSheetDialogFragment {
         lout_delete = view.findViewById(R.id.lout_delete);
         btn_cancel = view.findViewById(R.id.btn_delete);
 
-        lout_delete.setOnClickListener(v ->{
-            if(historyWatchFilm != null) {
+        lout_delete.setOnClickListener(v -> {
+            if (historyWatchFilm != null) {
                 deleteHistoryListener.onClickDeleteHistoryListener(historyWatchFilm);
             } else {
-                unFavoriteListener.onClickUnFavoriteListener(favoriteFilm);
+                unFavoriteListener.onClickUnFavoriteListener(documentId);
             }
             dismiss();
         });

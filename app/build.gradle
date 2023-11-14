@@ -61,11 +61,11 @@ dependencies {
     implementation 'com.google.firebase:firebase-firestore:24.9.1'
 
     /* Đường dẫn file aar trên window */
-    implementation fileTree(dir: 'E:\\zpdk-release-v3.1', include: ['*.aar', '*.jar'], exclude: [])
-    implementation files("E:\\zpdk-release-v3.1.aar")
+    /* implementation fileTree(dir: 'E:\\zpdk-release-v3.1', include: ['*.aar', '*.jar'], exclude: [])
+    implementation files("E:\\zpdk-release-v3.1.aar") */
 
     /* Đường dẫn file arr trên Mac */
-    /*implementation fileTree(dir: '/Users/ringme/Downloads', include: ['*.aar', '*.jar'], exclude: [])*/
+    implementation fileTree(dir: '/Users/ringme/Downloads', include: ['*.aar', '*.jar'], exclude: [])
 
     testImplementation 'junit:junit:4.13.2'
 

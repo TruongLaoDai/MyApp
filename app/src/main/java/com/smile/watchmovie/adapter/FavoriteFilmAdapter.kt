@@ -1,124 +1,73 @@
-package com.smile.watchmovie.adapter;
+package com.smile.watchmovie.adapter
 
-import android.annotation.SuppressLint;
-import android.content.Context;
-import android.content.Intent;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Toast;
+import android.annotation.SuppressLint
+import android.content.Context
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.smile.watchmovie.R
+import com.smile.watchmovie.databinding.ItemFavoriteFilmBinding
+import com.smile.watchmovie.model.FilmReaction
 
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
+class FavoriteFilmAdapter(
+    private val context: Context,
+    private val listener: OnListener
+) :
+    RecyclerView.Adapter<FavoriteFilmAdapter.ViewHolder>() {
+    private var list = ArrayList<FilmReaction>()
 
-import com.bumptech.glide.Glide;
-import com.google.firebase.firestore.QuerySnapshot;
-import com.smile.watchmovie.R;
-import com.smile.watchmovie.activity.PlayerActivity;
-import com.smile.watchmovie.api.ApiService;
-import com.smile.watchmovie.databinding.ItemFilmHistoryBinding;
-import com.smile.watchmovie.listener.IClickItemUnFavoriteListener;
-import com.smile.watchmovie.model.FilmDetailResponse;
-import com.smile.watchmovie.model.FilmMainHome;
-import com.smile.watchmovie.model.FilmReaction;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-
-public class FavoriteFilmAdapter extends RecyclerView.Adapter<FavoriteFilmAdapter.FavoriteFilmViewHolder> {
-
-    private final Context context;
-    private QuerySnapshot queryDocumentSnapshots;
-    private IClickItemUnFavoriteListener unFavoriteListener;
-
-    public FavoriteFilmAdapter(Context context) {
-        this.context = context;
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        val binding =
+            ItemFavoriteFilmBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return ViewHolder(binding)
     }
+
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        with(holder) {
+            with(list[position]) {
+                binding.apply {
+                    Glide.with(context).load(this@with.avatarFilm)
+                        .error(R.drawable.ic_baseline_broken_image_24)
+                        .placeholder(R.drawable.ic_baseline_image_gray)
+                        .into(ivImageFilm)
+
+                    tvNameFilm.text = this@with.nameFilm
+
+                    loutPremium.root.visibility = if (this@with.idFilm % 2 == 0) {
+                        View.VISIBLE
+                    } else {
+                        View.GONE
+                    }
+
+                    root.setOnClickListener {
+                        listener.openFilm(this@with.idFilm)
+                    }
+
+                    root.setOnLongClickListener {
+                        listener.deleteToFavorite(this@with.documentId)
+                        true
+                    }
+                }
+            }
+        }
+    }
+
+    override fun getItemCount() = list.size
 
     @SuppressLint("NotifyDataSetChanged")
-    public void setData(QuerySnapshot queryDocumentSnapshots) {
-        this.queryDocumentSnapshots = queryDocumentSnapshots;
-        notifyDataSetChanged();
+    fun updateData(newList: List<FilmReaction>) {
+        list = newList as ArrayList
+        notifyDataSetChanged()
     }
 
-    public void setUnFavoriteListener(IClickItemUnFavoriteListener unFavoriteListener) {
-        this.unFavoriteListener = unFavoriteListener;
-    }
+    inner class ViewHolder(val binding: ItemFavoriteFilmBinding) :
+        RecyclerView.ViewHolder(binding.root)
 
-    @NonNull
-    @Override
-    public FavoriteFilmViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        return new FavoriteFilmAdapter.FavoriteFilmViewHolder(ItemFilmHistoryBinding.inflate(inflater, parent, false));
-    }
+    interface OnListener {
+        fun openFilm(idFilm: Int)
 
-    @Override
-    public void onBindViewHolder(@NonNull FavoriteFilmViewHolder holder, int position) {
-        FilmReaction filmFavorite = queryDocumentSnapshots.getDocuments().get(position).toObject(FilmReaction.class);
-
-        if (filmFavorite == null) {
-            return;
-        }
-
-        filmFavorite.setDocumentId(queryDocumentSnapshots.getDocuments().get(position).getId());
-
-        Glide.with(context).load(filmFavorite.getAvatarFilm())
-                .error(R.drawable.ic_baseline_broken_image_24)
-                .placeholder(R.drawable.ic_baseline_image_gray)
-                .into(holder.binding.ivImageFilm);
-
-        holder.binding.tvDayWatched.setVisibility(View.VISIBLE);
-        holder.binding.ivMoreAction.setVisibility(View.VISIBLE);
-        holder.binding.tvDayWatched.setText(context.getString(R.string.day_favorite, filmFavorite.getDateReact()));
-
-        if (filmFavorite.getIdFilm() % 2 == 0) {
-            holder.binding.loutPremium.setVisibility(ViewGroup.VISIBLE);
-        } else {
-            holder.binding.loutPremium.setVisibility(ViewGroup.GONE);
-        }
-
-        holder.binding.tvNameFilm.setText(filmFavorite.getNameFilm());
-        holder.binding.layoutFilm.setOnClickListener(view ->
-                ApiService.apiService
-                        .getFilmDetail("7da353b8a3246f851e0ee436d898a26d", filmFavorite.getIdFilm())
-                        .enqueue(new Callback<FilmDetailResponse>() {
-                            @SuppressLint("StringFormatMatches")
-                            @Override
-                            public void onResponse(@NonNull Call<FilmDetailResponse> call, @NonNull Response<FilmDetailResponse> response) {
-                                FilmDetailResponse cinema = response.body();
-                                if (cinema != null) {
-                                    FilmMainHome filmPlay;
-                                    filmPlay = cinema.getData();
-                                    Intent intent = new Intent(context, PlayerActivity.class);
-                                    intent.putExtra("film", filmPlay);
-                                    context.startActivity(intent);
-                                }
-                            }
-
-                            @Override
-                            public void onFailure(@NonNull Call<FilmDetailResponse> call, @NonNull Throwable t) {
-                                Toast.makeText(context, "Error Get Film", Toast.LENGTH_SHORT).show();
-
-                            }
-                        }));
-        holder.binding.ivMoreAction.setOnClickListener(v -> unFavoriteListener.onClickUnFavoriteListener(filmFavorite));
-    }
-
-    @Override
-    public int getItemCount() {
-        if (queryDocumentSnapshots != null) {
-            return queryDocumentSnapshots.size();
-        }
-        return 0;
-    }
-
-    public static class FavoriteFilmViewHolder extends RecyclerView.ViewHolder {
-        private final ItemFilmHistoryBinding binding;
-
-        public FavoriteFilmViewHolder(@NonNull ItemFilmHistoryBinding binding) {
-            super(binding.getRoot());
-            this.binding = binding;
-        }
+        fun deleteToFavorite(documentId: String)
     }
 }
