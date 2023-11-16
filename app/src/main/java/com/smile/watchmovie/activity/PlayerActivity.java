@@ -16,7 +16,6 @@ import android.widget.TextView;
 
 import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.MediaItem;
-import com.google.android.exoplayer2.PlaybackParameters;
 import com.google.android.exoplayer2.Player;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.google.firebase.firestore.CollectionReference;
@@ -89,9 +88,6 @@ public class PlayerActivity extends AppCompatActivity implements Player.Listener
             /* Khởi tạo dữ liệu firebase */
             FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
             collectionReference = firebaseFirestore.collection(Constant.FirebaseFiretore.NAME_DATABASE);
-
-            /* Load lịch sử xem */
-            loadTimeWatched();
         }
     }
 
@@ -134,9 +130,7 @@ public class PlayerActivity extends AppCompatActivity implements Player.Listener
         player.setMediaItem(mediaItem);
         player.prepare();
 
-        if (auto_play) {
-            player.play();
-        }
+        loadTimeWatched();
     }
 
     private void controllerTimeVideo() {
@@ -180,7 +174,7 @@ public class PlayerActivity extends AppCompatActivity implements Player.Listener
                 case 0 -> {
                     speed = 0.5f;
                     markerSpeedPlayFilm = 0;
-                    tvSpeed.setText("0.5x");
+                    tvSpeed.setText(R.string._0_5x);
                     tvSpeed.setVisibility(View.VISIBLE);
                 }
                 case 1 -> {
@@ -191,19 +185,19 @@ public class PlayerActivity extends AppCompatActivity implements Player.Listener
                 case 2 -> {
                     speed = 1.25f;
                     markerSpeedPlayFilm = 2;
-                    tvSpeed.setText("1.25x");
+                    tvSpeed.setText(R.string._1_25x);
                     tvSpeed.setVisibility(View.VISIBLE);
                 }
                 case 3 -> {
                     speed = 1.5f;
                     markerSpeedPlayFilm = 3;
-                    tvSpeed.setText("1.5x");
+                    tvSpeed.setText(R.string._1_5x);
                     tvSpeed.setVisibility(View.VISIBLE);
                 }
                 case 4 -> {
                     speed = 2f;
                     markerSpeedPlayFilm = 4;
-                    tvSpeed.setText("2x");
+                    tvSpeed.setText(R.string._2x);
                     tvSpeed.setVisibility(View.VISIBLE);
                 }
                 default -> dialog.dismiss();
@@ -232,7 +226,10 @@ public class PlayerActivity extends AppCompatActivity implements Player.Listener
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-//        saveHistoryWatch();
+
+        /* Lưu thời lượng phim đã xem */
+        saveHistoryWatch();
+
         if (player != null) {
             if (player.isPlaying()) {
                 player.stop();
@@ -242,7 +239,7 @@ public class PlayerActivity extends AppCompatActivity implements Player.Listener
     }
 
     private void saveHistoryWatch() {
-        if (!idUser.equals("") && player.getCurrentPosition() >= 30000) {
+        if (!idUser.equals("")) {
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
             Date date = new Date();
             String dateWatch = simpleDateFormat.format(date);
@@ -253,22 +250,15 @@ public class PlayerActivity extends AppCompatActivity implements Player.Listener
                 updateDataTimeWatchFilm(historyWatchFilm);
             } else {
                 HistoryWatchFilm historyWatchFilm = new HistoryWatchFilm(film.getId(), timeWatch, dateWatch, film.getAvatar(), film.getName());
-                collectionReference.document("tblhistorywatchfilm").collection(idUser).add(historyWatchFilm);
+                collectionReference.document(Constant.FirebaseFiretore.TABLE_HISTORY_WATCHED).collection(idUser).add(historyWatchFilm);
             }
         }
     }
 
     private void updateDataTimeWatchFilm(HistoryWatchFilm history) {
-        collectionReference.document("tblhistorywatchfilm").collection(idUser)
+        collectionReference.document(Constant.FirebaseFiretore.TABLE_HISTORY_WATCHED).collection(idUser)
                 .document(history.getDocumentID())
                 .update("duration", history.getDuration(), "dayWatch", history.getDayWatch());
-    }
-
-    private String messagePlayAtTime(long time) {
-        int hour = (int) (time / 1000 / 3600);
-        int minute = (int) ((time / 1000 - hour * 3600) / 60);
-        int second = (int) (time / 1000 - hour * 3600 - minute * 60);
-        return "Bạn có muốn tiếp tục xem bộ phim tại thời điểm: " + hour + ":" + minute + ":" + second + " hay không?";
     }
 
     private void showDialog(String title) {
@@ -284,14 +274,23 @@ public class PlayerActivity extends AppCompatActivity implements Player.Listener
                 .collection(idUser)
                 .whereEqualTo(Constant.FirebaseFiretore.ID_FILM, film.getId())
                 .get()
-                .addOnSuccessListener(queryDocumentSnapshots -> {
-                    if (queryDocumentSnapshots.getDocuments().size() > 0) {
-                        DocumentSnapshot doc = queryDocumentSnapshots.getDocuments().get(0);
+                .addOnSuccessListener(querySnapshot -> {
+                    if (querySnapshot.getDocuments().size() > 0) {
+                        DocumentSnapshot doc = querySnapshot.getDocuments().get(0);
                         historyWatchFilm = doc.toObject(HistoryWatchFilm.class);
                         if (historyWatchFilm != null) {
+                            existHistory = true;
                             historyWatchFilm.setDocumentID(doc.getId());
-                            /* showDialog(messagePlayAtTime(historyWatchFilm.getDuration()), 2, historyWatchFilm.getDuration()); */
+                            player.seekTo(historyWatchFilm.getDuration());
                         }
+                    }
+                    if (auto_play) {
+                        player.play();
+                    }
+                })
+                .addOnFailureListener(task -> {
+                    if (auto_play) {
+                        player.play();
                     }
                 });
     }
