@@ -55,7 +55,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activity.HistoryWatchFilmActivity"
+            android:name=".activity.WatchHistoryActivity"
             android:exported="false" />
         <activity
             android:name=".activity.ShowMoreCategoryFilmActivity"

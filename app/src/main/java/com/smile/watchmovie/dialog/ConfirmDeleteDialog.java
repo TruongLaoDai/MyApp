@@ -1,74 +1,46 @@
 package com.smile.watchmovie.dialog;
 
-import android.annotation.SuppressLint;
-import android.app.Dialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
-import android.widget.RelativeLayout;
+import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
-import com.smile.watchmovie.R;
-import com.smile.watchmovie.listener.IClickItemDeleteHistoryListener;
-import com.smile.watchmovie.listener.IClickItemUnFavoriteListener;
-import com.smile.watchmovie.model.HistoryWatchFilm;
-import com.smile.watchmovie.model.FilmReaction;
+import com.smile.watchmovie.databinding.DeleteFragmentBinding;
+import com.smile.watchmovie.listener.IClickItemFilmListener;
 
 public class ConfirmDeleteDialog extends BottomSheetDialogFragment {
-    private HistoryWatchFilm historyWatchFilm;
     private String documentId;
-    private IClickItemDeleteHistoryListener deleteHistoryListener;
-    private IClickItemUnFavoriteListener unFavoriteListener;
+    private IClickItemFilmListener listener;
+    private DeleteFragmentBinding binding;
 
     public ConfirmDeleteDialog() {
-
     }
 
-    public void setHistoryWatchFilm(HistoryWatchFilm historyWatchFilm) {
-        this.historyWatchFilm = historyWatchFilm;
-    }
-
-    public void setFavoriteFilm(String documentId) {
+    public ConfirmDeleteDialog(String documentId, IClickItemFilmListener listener) {
         this.documentId = documentId;
+        this.listener = listener;
     }
 
-    public void setDeleteHistoryListener(IClickItemDeleteHistoryListener deleteHistoryListener) {
-        this.deleteHistoryListener = deleteHistoryListener;
-    }
-
-    public void setUnFavoriteFilmListener(IClickItemUnFavoriteListener unFavoriteListener) {
-        this.unFavoriteListener = unFavoriteListener;
-    }
-
-    @SuppressLint("MissingInflatedId")
-    @NonNull
+    @Nullable
     @Override
-    public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-        BottomSheetDialog bottomSheetDialog = (BottomSheetDialog) super.onCreateDialog(savedInstanceState);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        binding = DeleteFragmentBinding.inflate(getLayoutInflater());
+        return binding.getRoot();
+    }
 
-        @SuppressLint("InflateParams") View view = LayoutInflater.from(getContext()).inflate(R.layout.delete_fragment, null);
-        bottomSheetDialog.setContentView(view);
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
-        RelativeLayout lout_delete;
-        Button btn_cancel;
-
-        lout_delete = view.findViewById(R.id.lout_delete);
-        btn_cancel = view.findViewById(R.id.btn_delete);
-
-        lout_delete.setOnClickListener(v -> {
-            if (historyWatchFilm != null) {
-                deleteHistoryListener.onClickDeleteHistoryListener(historyWatchFilm);
-            } else {
-                unFavoriteListener.onClickUnFavoriteListener(documentId);
-            }
+        binding.btnDelete.setOnClickListener(v -> {
+            listener.onClickItemFilm(documentId);
             dismiss();
         });
-        btn_cancel.setOnClickListener(v -> dismiss());
-        return bottomSheetDialog;
+
+        binding.btnCancel.setOnClickListener(v -> dismiss());
     }
 }

@@ -15,7 +15,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.smile.watchmovie.R
 import com.smile.watchmovie.activity.BuyPremiumActivity
 import com.smile.watchmovie.activity.FavoriteFilmActivity
-import com.smile.watchmovie.activity.HistoryWatchFilmActivity
+import com.smile.watchmovie.activity.WatchHistoryActivity
 import com.smile.watchmovie.activity.InfoAccountActivity
 import com.smile.watchmovie.activity.LoginActivity
 import com.smile.watchmovie.activity.PrivateSettingActivity
@@ -105,7 +105,7 @@ class PersonFragment : Fragment() {
                 requireActivity().startActivity(
                     Intent(
                         requireActivity(),
-                        HistoryWatchFilmActivity::class.java
+                        WatchHistoryActivity::class.java
                     )
                 )
             }
