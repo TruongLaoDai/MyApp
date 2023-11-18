@@ -240,7 +240,7 @@ public class PlayerActivity extends AppCompatActivity implements Player.Listener
 
     private void saveHistoryWatch() {
         if (!idUser.equals("")) {
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
             Date date = new Date();
             String dateWatch = simpleDateFormat.format(date);
             long timeWatch = player.getCurrentPosition();

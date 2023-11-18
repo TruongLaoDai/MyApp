@@ -102,8 +102,11 @@
     <string name="rate_film">Điểm đánh giá: %d/5</string>
 
     <string name="title_toolbar_activity_history_watch_film">Các bộ phim đã xem</string>
+
     <string name="_0_5x">0.5x</string>
     <string name="_1_25x">1.25x</string>
     <string name="_1_5x">1.5x</string>
     <string name="_2x">2x</string>
+
+    <string name="watch_date">Ngày xem: %s</string>
 </resources>

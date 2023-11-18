@@ -41,6 +41,11 @@ class WatchHistoryAdapter(
                         View.GONE
                     }
 
+                    tvDateWatch.apply {
+                        visibility = View.VISIBLE
+                        text = context.getString(R.string.watch_date, this@with.dayWatch)
+                    }
+
                     root.setOnClickListener {
                         listener.openFilm(this@with.id_film)
                     }
