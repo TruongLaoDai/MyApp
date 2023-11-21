@@ -1,17 +1,25 @@
 package com.smile.watchmovie.activity;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.LinearLayoutCompat;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.android.exoplayer2.ExoPlayer;
@@ -38,7 +46,7 @@ public class PlayerActivity extends AppCompatActivity implements Player.Listener
     private ActivityWatchFilmBinding binding;
     public FilmMainHome film;
     private ExoPlayer player;
-    private ImageView fullScreen;
+    private ImageView fullScreen, pip;
     private TextView tvSpeed;
     private CollectionReference collectionReference;
     public String idUser, isVip;
@@ -47,6 +55,8 @@ public class PlayerActivity extends AppCompatActivity implements Player.Listener
     private boolean auto_play, full_screen;
     private HistoryWatchFilm historyWatchFilm;
     private int markerSpeedPlayFilm = 1;
+    private ConstraintLayout clControllerTop, clControllerBottom;
+    private LinearLayoutCompat llControllerMid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,12 +81,16 @@ public class PlayerActivity extends AppCompatActivity implements Player.Listener
         fullScreen = binding.exoplayerView.findViewById(R.id.ivFullscreen);
         ImageView speedPlayVideo = binding.exoplayerView.findViewById(R.id.iv_speed_play_vertical);
         tvSpeed = binding.exoplayerView.findViewById(R.id.tv_speed_play_vertical);
+        pip = binding.exoplayerView.findViewById(R.id.iv_mode_pip);
+        clControllerTop = binding.exoplayerView.findViewById(R.id.cl_controller_top);
+        clControllerBottom = binding.exoplayerView.findViewById(R.id.rl_root_layout);
+        llControllerMid = binding.exoplayerView.findViewById(R.id.layout_play_stop);
 
         /* Thiết lập dữ liệu */
         if (film != null) {
             setupFirebase();
             prepareVideo();
-            controllerTimeVideo();
+            handleEventClick();
             setFullScreen();
             initialInfoRelate();
             speedPlayVideo.setOnClickListener(view -> playSpeedFilm());
@@ -133,9 +147,19 @@ public class PlayerActivity extends AppCompatActivity implements Player.Listener
         loadTimeWatched();
     }
 
-    private void controllerTimeVideo() {
+    private void handleEventClick() {
+        /* tua hoặc lùi thời gian phát 10s */
         binding.exoplayerView.findViewById(R.id.forward).setOnClickListener(v -> player.seekTo(player.getCurrentPosition() + 10000));
         binding.exoplayerView.findViewById(R.id.rewind).setOnClickListener(v -> player.seekTo(player.getCurrentPosition() - 10000));
+
+        /* thu nhỏ trình phát */
+        pip.setOnClickListener(v -> pictureInPictureMode());
+    }
+
+    private void pictureInPictureMode() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            enterPictureInPictureMode();
+        }
     }
 
     private void setFullScreen() {
@@ -293,5 +317,37 @@ public class PlayerActivity extends AppCompatActivity implements Player.Listener
                         player.play();
                     }
                 });
+    }
+
+    @Override
+    protected void onUserLeaveHint() {
+        super.onUserLeaveHint();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            enterPictureInPictureMode();
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    @Override
+    public void onPictureInPictureModeChanged(boolean isInPictureInPictureMode, @NonNull Configuration newConfig) {
+        super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig);
+        if (isInPictureInPictureMode) {
+            llControllerMid.setVisibility(View.GONE);
+            clControllerTop.setVisibility(View.GONE);
+            clControllerBottom.setVisibility(View.GONE);
+            binding.tabLayout.setVisibility(View.GONE);
+            binding.viewPager.setVisibility((View.GONE));
+        } else {
+            llControllerMid.setVisibility(View.VISIBLE);
+            clControllerTop.setVisibility(View.VISIBLE);
+            clControllerBottom.setVisibility(View.VISIBLE);
+            binding.tabLayout.setVisibility(View.VISIBLE);
+            binding.viewPager.setVisibility((View.VISIBLE));
+        }
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
     }
 }

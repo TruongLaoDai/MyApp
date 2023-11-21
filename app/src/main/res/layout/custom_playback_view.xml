@@ -6,35 +6,48 @@
     android:layout_height="match_parent"
     tools:background="@color/gray">
 
-    <RelativeLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_controller_top"
         android:layout_width="match_parent"
-        android:layout_height="30dp"
+        android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:gravity="end">
+        android:paddingHorizontal="10dp">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/iv_mode_pip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/icon_pip"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/iv_speed_play_vertical"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginEnd="10dp"
             android:scaleType="centerCrop"
             android:src="@drawable/ic_speed_play"
-            android:visibility="visible" />
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/tv_speed_play_vertical"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_goneMarginEnd="0dp" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_speed_play_vertical"
+            style="@style/Text"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_marginEnd="10dp"
-            android:layout_toEndOf="@+id/iv_speed_play_vertical"
-            android:gravity="center_vertical"
+            android:layout_height="wrap_content"
             android:textColor="@color/white"
-            android:textSize="18sp"
             android:visibility="gone"
-            tools:text="1x"
-            tools:visibility="visible" />
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="1x" />
 
-    </RelativeLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/layout_play_stop"
