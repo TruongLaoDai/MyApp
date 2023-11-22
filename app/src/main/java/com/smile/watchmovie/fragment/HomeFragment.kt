@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import com.smile.watchmovie.activity.ShowMoreCategoryFilmActivity
+import com.smile.watchmovie.activity.ShowCategoryFilmActivity
 import com.smile.watchmovie.activity.PlayerActivity
 import com.smile.watchmovie.adapter.HomeFragmentAdapter
 import com.smile.watchmovie.api.ApiHelper
@@ -45,43 +45,43 @@ class HomeFragment : Fragment(), HomeFragmentAdapter.OnClickListener {
     private fun handleEventClick() {
         binding.apply {
             moreCartonMovie.setOnClickListener {
-                val intent = Intent(requireActivity(), ShowMoreCategoryFilmActivity::class.java)
+                val intent = Intent(requireActivity(), ShowCategoryFilmActivity::class.java)
                 intent.putExtra("categoryId", 14)
                 startActivity(intent)
             }
 
             moreActionMovie.setOnClickListener {
-                val intent = Intent(requireActivity(), ShowMoreCategoryFilmActivity::class.java)
+                val intent = Intent(requireActivity(), ShowCategoryFilmActivity::class.java)
                 intent.putExtra("categoryId", 6)
                 startActivity(intent)
             }
 
             moreHorrorMovie.setOnClickListener {
-                val intent = Intent(requireActivity(), ShowMoreCategoryFilmActivity::class.java)
+                val intent = Intent(requireActivity(), ShowCategoryFilmActivity::class.java)
                 intent.putExtra("categoryId", 4)
                 startActivity(intent)
             }
 
             moreThrillerMovie.setOnClickListener {
-                val intent = Intent(requireActivity(), ShowMoreCategoryFilmActivity::class.java)
+                val intent = Intent(requireActivity(), ShowCategoryFilmActivity::class.java)
                 intent.putExtra("categoryId", 11)
                 startActivity(intent)
             }
 
             moreComedyMovie.setOnClickListener {
-                val intent = Intent(requireActivity(), ShowMoreCategoryFilmActivity::class.java)
+                val intent = Intent(requireActivity(), ShowCategoryFilmActivity::class.java)
                 intent.putExtra("categoryId", 12)
                 startActivity(intent)
             }
 
             moreRomanticMovie.setOnClickListener {
-                val intent = Intent(requireActivity(), ShowMoreCategoryFilmActivity::class.java)
+                val intent = Intent(requireActivity(), ShowCategoryFilmActivity::class.java)
                 intent.putExtra("categoryId", 13)
                 startActivity(intent)
             }
 
             moreAdventureMovie.setOnClickListener {
-                val intent = Intent(requireActivity(), ShowMoreCategoryFilmActivity::class.java)
+                val intent = Intent(requireActivity(), ShowCategoryFilmActivity::class.java)
                 intent.putExtra("categoryId", 15)
                 startActivity(intent)
             }

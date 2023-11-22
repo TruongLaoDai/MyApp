@@ -18,7 +18,7 @@ import com.smile.watchmovie.viewmodel.CategoryFilmActivityViewModel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
-class ShowMoreCategoryFilmActivity : AppCompatActivity(), PagingAdapter.OnClickListener {
+class ShowCategoryFilmActivity : AppCompatActivity(), PagingAdapter.OnClickListener {
     private lateinit var binding: ActivityShowMoreCategoryFilmBinding
     private var categoryId = 0
     private lateinit var viewModel: CategoryFilmActivityViewModel

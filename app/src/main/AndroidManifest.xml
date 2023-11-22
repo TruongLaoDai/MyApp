@@ -58,7 +58,7 @@
             android:name=".activity.WatchHistoryActivity"
             android:exported="false" />
         <activity
-            android:name=".activity.ShowMoreCategoryFilmActivity"
+            android:name=".activity.ShowCategoryFilmActivity"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
