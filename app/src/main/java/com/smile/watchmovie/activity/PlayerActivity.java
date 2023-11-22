@@ -19,7 +19,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.android.exoplayer2.ExoPlayer;
@@ -52,9 +51,9 @@ public class PlayerActivity extends AppCompatActivity implements Player.Listener
     public String idUser, isVip;
     private boolean isFullScreen = false, existHistory = false;
     private float speed;
-    private boolean auto_play, full_screen;
+    private boolean auto_play;
     private HistoryWatchFilm historyWatchFilm;
-    private int markerSpeedPlayFilm = 1;
+    private int markerSpeedPlayFilm = 1, heightOfPlayerView;
     private ConstraintLayout clControllerTop, clControllerBottom;
     private LinearLayoutCompat llControllerMid;
 
@@ -74,7 +73,6 @@ public class PlayerActivity extends AppCompatActivity implements Player.Listener
         );
         idUser = sharedPreferences.getString(Constant.ID_USER, "");
         isVip = sharedPreferences.getString(Constant.IS_VIP, "0");
-        full_screen = sharedPreferences.getBoolean(Constant.FULL_SCREEN, false);
         auto_play = sharedPreferences.getBoolean(Constant.AUTO_PLAY, true);
 
         /* mapping from custom_playback_view.xml */
@@ -166,6 +164,7 @@ public class PlayerActivity extends AppCompatActivity implements Player.Listener
         fullScreen.setOnClickListener(v -> {
             ViewGroup.LayoutParams params = binding.exoplayerView.getLayoutParams();
             if (!isFullScreen) {
+                heightOfPlayerView = binding.exoplayerView.getHeight();
                 params.height = ViewGroup.LayoutParams.MATCH_PARENT;
                 binding.exoplayerView.setLayoutParams(params);
 
@@ -175,7 +174,7 @@ public class PlayerActivity extends AppCompatActivity implements Player.Listener
                 fullScreen.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_baseline_fullscreen_exit_24));
                 isFullScreen = true;
             } else {
-                params.height = 404;
+                params.height = heightOfPlayerView;
                 binding.exoplayerView.setLayoutParams(params);
 
                 getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -251,13 +250,15 @@ public class PlayerActivity extends AppCompatActivity implements Player.Listener
     public void onBackPressed() {
         super.onBackPressed();
 
-        /* Lưu thời lượng phim đã xem */
-        saveHistoryWatch();
-
         if (player != null) {
             if (player.isPlaying()) {
                 player.stop();
             }
+
+            /* Lưu thời lượng phim đã xem */
+            saveHistoryWatch();
+
+            /* Giải phóng tài nguyên */
             player.release();
         }
     }
@@ -349,5 +350,8 @@ public class PlayerActivity extends AppCompatActivity implements Player.Listener
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
+        film = (FilmMainHome) intent.getSerializableExtra("film");
+        prepareVideo();
+        /* Để đây sau làm tiếp */
     }
 }

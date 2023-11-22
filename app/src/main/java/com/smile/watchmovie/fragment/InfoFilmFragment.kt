@@ -106,7 +106,8 @@ class InfoFilmFragment : Fragment(), OnListener, FilmRelativeAdapter.OnClickList
             }
         }
 
-        /* Nhấn like */binding.loutLike.setOnClickListener { v: View? ->
+        /* Nhấn like */
+        binding.loutLike.setOnClickListener { v: View? ->
             if (idUser == null || idUser == "") {
                 Toast.makeText(
                     requireActivity(),
@@ -118,7 +119,8 @@ class InfoFilmFragment : Fragment(), OnListener, FilmRelativeAdapter.OnClickList
             }
         }
 
-        /* Nhấn dislike */binding.loutDislike.setOnClickListener { v: View? ->
+        /* Nhấn dislike */
+        binding.loutDislike.setOnClickListener { v: View? ->
             if (idUser == null || idUser == "") {
                 Toast.makeText(
                     requireActivity(),
