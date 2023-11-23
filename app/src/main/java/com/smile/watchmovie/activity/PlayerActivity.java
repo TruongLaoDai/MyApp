@@ -142,7 +142,11 @@ public class PlayerActivity extends AppCompatActivity implements Player.Listener
         player.setMediaItem(mediaItem);
         player.prepare();
 
-        loadTimeWatched();
+        if (idUser != null && !idUser.equals("")) {
+            loadTimeWatched();
+        } else if (auto_play) {
+            player.play();
+        }
     }
 
     private void handleEventClick() {
