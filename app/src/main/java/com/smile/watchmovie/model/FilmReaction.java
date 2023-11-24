@@ -8,15 +8,14 @@ public class FilmReaction {
     private String avatarFilm;
     private String nameFilm;
     private String dateReact;
-    private int type_reaction;
+    private int type_reaction; /* 0: không tương tác, 1: like, 2: dislike */
     private int idFilm;
 
     public FilmReaction() {
     }
 
-    public FilmReaction(String idUser, String dateReact, int type_reaction) {
+    public FilmReaction(String idUser, int type_reaction) {
         this.idUser = idUser;
-        this.dateReact = dateReact;
         this.type_reaction = type_reaction;
     }
 
@@ -25,14 +24,6 @@ public class FilmReaction {
         this.avatarFilm = avatarFilm;
         this.nameFilm = nameFilm;
         this.dateReact = dateReact;
-    }
-
-    public FilmReaction(int idFilm, String avatarFilm, String nameFilm, String dateReact, int type_reaction) {
-        this.idFilm = idFilm;
-        this.avatarFilm = avatarFilm;
-        this.nameFilm = nameFilm;
-        this.dateReact = dateReact;
-        this.type_reaction = type_reaction;
     }
 
     public int getIdFilm() {

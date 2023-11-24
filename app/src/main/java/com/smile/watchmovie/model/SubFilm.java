@@ -9,7 +9,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
-public class SubFilm implements Serializable, Comparable<SubFilm>{
+public class SubFilm implements Serializable, Comparable<SubFilm> {
     @SerializedName("id")
     @Expose
     private int id;
@@ -122,14 +122,16 @@ public class SubFilm implements Serializable, Comparable<SubFilm>{
         this.subTitleList = subTitleList;
     }
 
-    public void setWatching(boolean isWatching){
+    public void setWatching(boolean isWatching) {
         this.isWatching = isWatching;
     }
 
-    public boolean getIsWatching(){ return isWatching;}
+    public boolean getIsWatching() {
+        return isWatching;
+    }
 
     @Override
     public int compareTo(@NonNull SubFilm o) {
-        return this.getEpisode() > o.episode ? 1 : -1 ;
+        return this.getEpisode() > o.episode ? 1 : -1;
     }
 }

@@ -42,23 +42,18 @@ class InfoFilmFragment : Fragment(), OnListener, FilmRelativeAdapter.OnClickList
     private lateinit var activity: PlayerActivity
     private lateinit var filmRelativeAdapter: FilmRelativeAdapter
     private lateinit var viewModel: InfoFilmFragmentViewModel
-    private var idUser: String = ""
     private lateinit var filmMainHome: FilmMainHome
     private lateinit var mEpisodeAdapter: EpisodeAdapter
     private lateinit var documentReferenceFilmFavorite: DocumentReference
-    private lateinit var documentReferenceFilmLike: DocumentReference
+    private lateinit var documentReferenceLikeOrDislike: DocumentReference
     private lateinit var documentReferenceFilmDislike: DocumentReference
-    private var changeImageDislikeFilm = 0
-    private var changeImageLikeFilm = 0
-    private var currentLike = 0
-    private var currentDislike = 0
-    private var statusLike = 0
-    private var statusDislike = 0
     private var statusFavorite = 0
-    private lateinit var mediaLike: FilmReaction
-    private lateinit var mediaDislike: FilmReaction
     private lateinit var subFilmArrayList: List<SubFilm>
     private lateinit var documentIdFilmFavorite: String
+    private var documentIdLikeDislike = ""
+    private var totalLike = 0
+    private var totalDislike = 0
+    private var myReaction = 0
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -104,31 +99,31 @@ class InfoFilmFragment : Fragment(), OnListener, FilmRelativeAdapter.OnClickList
                     updateFavorite()
                 }
             }
-        }
 
-        /* Nhấn like */
-        binding.loutLike.setOnClickListener { v: View? ->
-            if (idUser == null || idUser == "") {
-                Toast.makeText(
-                    requireActivity(),
-                    "Bạn cần đăng nhập tài khoản để thực hiện tính năng này",
-                    Toast.LENGTH_SHORT
-                ).show()
-            } else {
-                setUpViewLikeFilm()
+            /* Nhấn like */
+            loutLike.setOnClickListener {
+                if (activity.idUser == "") {
+                    Toast.makeText(
+                        requireActivity(),
+                        R.string.not_logged_in_message,
+                        Toast.LENGTH_SHORT
+                    ).show()
+                } else {
+                    setupLikeDislike(1)
+                }
             }
-        }
 
-        /* Nhấn dislike */
-        binding.loutDislike.setOnClickListener { v: View? ->
-            if (idUser == null || idUser == "") {
-                Toast.makeText(
-                    requireActivity(),
-                    "Bạn cần đăng nhập tài khoản để thực hiện tính năng này",
-                    Toast.LENGTH_SHORT
-                ).show()
-            } else {
-                setUpViewDislikeFilm()
+            /* Nhấn dislike */
+            loutDislike.setOnClickListener {
+                if (activity.idUser == "") {
+                    Toast.makeText(
+                        requireActivity(),
+                        R.string.not_logged_in_message,
+                        Toast.LENGTH_SHORT
+                    ).show()
+                } else {
+                    setupLikeDislike(2)
+                }
             }
         }
     }
@@ -194,71 +189,125 @@ class InfoFilmFragment : Fragment(), OnListener, FilmRelativeAdapter.OnClickList
     private fun setUpFireBase() {
         val firebaseFirestore = FirebaseFirestore.getInstance()
         documentReferenceFilmFavorite = firebaseFirestore.document("WatchFilm/tblfilmfavorite")
-        documentReferenceFilmLike = firebaseFirestore.document("WatchFilm/tblfilmlike")
+        documentReferenceLikeOrDislike = firebaseFirestore.document("WatchFilm/tblfilmlike")
         documentReferenceFilmDislike = firebaseFirestore.document("WatchFilm/tblfilmdislike")
         loadFavorite()
-        loadLike()
-        loadDislike()
+        loadLikeAndDislike()
     }
 
-    private fun setUpViewLikeFilm() {
-        if (changeImageLikeFilm == R.drawable.ic_like_film) {
-            if (changeImageDislikeFilm == R.drawable.ic_disliked) {
-                currentDislike -= 1
-                if (currentDislike < 0) {
-                    currentDislike = 0
+    private fun loadLikeAndDislike() {
+        documentReferenceLikeOrDislike
+            .collection(filmMainHome.id.toString())
+            .get()
+            .addOnSuccessListener {
+                if (it.documents.isNotEmpty()) {
+                    for (i in 0 until it.documents.size) {
+                        val reaction = it.documents[i].toObject(FilmReaction::class.java)
+                        reaction?.let { reaction ->
+                            when (reaction.type_reaction) {
+                                1 -> {
+                                    totalLike += 1
+
+                                    if (reaction.idUser == activity.idUser) {
+                                        myReaction = 1
+                                        documentIdLikeDislike = it.documents[i].id
+                                    }
+                                }
+
+                                2 -> {
+                                    totalDislike += 1
+
+                                    if (reaction.idUser == activity.idUser) {
+                                        myReaction = 2
+                                        documentIdLikeDislike = it.documents[i].id
+                                    }
+                                }
+
+                                else -> {}
+                            }
+                        }
+                    }
+                    setupUILikeDislike()
                 }
-                binding.tvDislikeNumber.text = activity.getString(R.string.dislike)
-                changeImageDislikeFilm = R.drawable.ic_dislike
-                binding.ivDislike.setImageResource(changeImageDislikeFilm)
-                binding.tvDislikeNumber.setTextColor(Color.parseColor("#777776"))
             }
-            changeImageLikeFilm = R.drawable.ic_liked_film
-            binding.tvLikeNumber.setTextColor(Color.parseColor("#2A48E8"))
-            currentLike += 1
-            binding.tvLikeNumber.text = activity.getString(R.string.number, currentLike)
-        } else if (changeImageLikeFilm == R.drawable.ic_liked_film) {
-            changeImageLikeFilm = R.drawable.ic_like_film
-            binding.tvLikeNumber.setTextColor(Color.parseColor("#777776"))
-            currentLike -= 1
-            if (currentLike < 0) {
-                currentLike = 0
-            }
-            binding.tvLikeNumber.text = activity.getString(R.string.like)
-        }
-        binding.ivLike.setImageResource(changeImageLikeFilm)
-        updateFilmLike()
-        updateFilmDisLike()
     }
 
-    private fun setUpViewDislikeFilm() {
-        if (changeImageDislikeFilm == R.drawable.ic_dislike) {
-            if (changeImageLikeFilm == R.drawable.ic_liked_film) {
-                currentLike -= 1
-                if (currentLike < 0) {
-                    currentLike = 0
-                }
-                binding.tvLikeNumber.text = activity.getString(R.string.like)
-                changeImageLikeFilm = R.drawable.ic_like_film
-                binding.ivLike.setImageResource(changeImageLikeFilm)
-                binding.tvLikeNumber.setTextColor(Color.parseColor("#777776"))
-            }
-            changeImageDislikeFilm = R.drawable.ic_disliked
-            binding.tvDislikeNumber.setTextColor(Color.parseColor("#2A48E8"))
-            currentDislike += 1
-            binding.tvDislikeNumber.text = activity.getString(R.string.number, currentDislike)
-        } else if (changeImageDislikeFilm == R.drawable.ic_disliked) {
-            changeImageDislikeFilm = R.drawable.ic_dislike
-            binding.tvDislikeNumber.setTextColor(Color.parseColor("#777776"))
-            currentDislike -= 1
-            if (currentDislike < 0) {
-                currentDislike = 0
-            }
-            binding.tvDislikeNumber.text = activity.getString(R.string.dislike)
+    private fun setupUILikeDislike() = with(binding) {
+        tvLikeNumber.text = if (totalLike != 0) {
+            totalLike.toString()
+        } else {
+            getString(R.string.like)
         }
-        binding.ivDislike.setImageResource(changeImageDislikeFilm)
-        updateFilmDisLike()
-        updateFilmLike()
+
+        tvDislikeNumber.text = if (totalDislike != 0) {
+            totalDislike.toString()
+        } else {
+            getString(R.string.dislike)
+        }
+
+        when (myReaction) {
+            1 -> ivLike.setImageResource(R.drawable.ic_liked_film)
+            2 -> ivDislike.setImageResource(R.drawable.ic_disliked)
+            0 -> {
+                ivLike.setImageResource(R.drawable.ic_like_film)
+                ivDislike.setImageResource(R.drawable.ic_dislike)
+            }
+        }
+    }
+
+    private fun setupLikeDislike(typeReaction: Int) {
+        when (myReaction) {
+            /* Xoá bỏ like khi đã like */
+            1 -> {
+                documentReferenceLikeOrDislike.collection(filmMainHome.id.toString())
+                    .document(documentIdLikeDislike)
+                    .delete()
+                    .addOnCompleteListener {
+                        totalLike -= 1
+                        myReaction = 0
+                        setupUILikeDislike()
+                    }
+            }
+
+            /* Xoá bỏ dislike khi đã dislike */
+            2 -> {
+                documentReferenceLikeOrDislike.collection(filmMainHome.id.toString())
+                    .document(documentIdLikeDislike)
+                    .delete()
+                    .addOnCompleteListener {
+                        totalDislike -= 1
+                        myReaction = 0
+                        setupUILikeDislike()
+                    }
+            }
+
+            /* Trong trường hợp chưa like, dislike thì tạo like, dislike */
+            else -> {
+                if (typeReaction == 1) {
+                    val reaction = FilmReaction(activity.idUser, 1)
+                    documentReferenceLikeOrDislike
+                        .collection(filmMainHome.id.toString())
+                        .add(reaction)
+                        .addOnSuccessListener {
+                            totalLike += 1
+                            myReaction = 1
+                            documentIdLikeDislike = it.id
+                            setupUILikeDislike()
+                        }
+                } else {
+                    val reaction = FilmReaction(activity.idUser, 2)
+                    documentReferenceLikeOrDislike
+                        .collection(filmMainHome.id.toString())
+                        .add(reaction)
+                        .addOnSuccessListener {
+                            totalDislike += 1
+                            myReaction = 2
+                            documentIdLikeDislike = it.id
+                            setupUILikeDislike()
+                        }
+                }
+            }
+        }
     }
 
     private fun callApiGetByCategoryListMovie(categoryId: Int, page: Int) {
@@ -309,68 +358,6 @@ class InfoFilmFragment : Fragment(), OnListener, FilmRelativeAdapter.OnClickList
             }
     }
 
-    private fun loadLike() {
-        documentReferenceFilmLike
-            .collection(filmMainHome.id.toString() + "")
-            .whereEqualTo("idUser", idUser)
-            .get().addOnSuccessListener { queryDocumentSnapshots: QuerySnapshot ->
-                if (queryDocumentSnapshots.size() > 0) {
-                    mediaLike = queryDocumentSnapshots.documents[0].toObject(
-                        FilmReaction::class.java
-                    )!!
-                    if (mediaLike != null) {
-                        mediaLike.documentId = queryDocumentSnapshots.documents[0].id
-                        if (mediaLike.type_reaction == 1) {
-                            statusLike = 2
-                            changeImageDislikeFilm = R.drawable.ic_dislike
-                            changeImageLikeFilm = R.drawable.ic_liked_film
-                            binding.ivLike.setImageResource(changeImageLikeFilm)
-                            binding.tvLikeNumber.setTextColor(Color.parseColor("#2A48E8"))
-                        } else {
-                            changeImageLikeFilm = R.drawable.ic_like_film
-                            statusLike = 1
-                        }
-                    } else {
-                        statusLike = 0
-                    }
-                } else {
-                    changeImageLikeFilm = R.drawable.ic_like_film
-                    statusLike = 0
-                }
-            }
-    }
-
-    private fun loadDislike() {
-        documentReferenceFilmDislike
-            .collection(filmMainHome.id.toString() + "")
-            .whereEqualTo("idUser", idUser)
-            .get().addOnSuccessListener { queryDocumentSnapshots: QuerySnapshot ->
-                if (queryDocumentSnapshots.size() > 0) {
-                    mediaDislike = queryDocumentSnapshots.documents[0].toObject(
-                        FilmReaction::class.java
-                    )!!
-                    if (mediaDislike != null) {
-                        mediaDislike.documentId = queryDocumentSnapshots.documents[0].id
-                        if (mediaDislike.type_reaction == 1) {
-                            statusDislike = 2
-                            changeImageDislikeFilm = R.drawable.ic_disliked
-                            changeImageLikeFilm = R.drawable.ic_like_film
-                            binding.ivDislike.setImageResource(changeImageDislikeFilm)
-                            binding.tvDislikeNumber.setTextColor(Color.parseColor("#2A48E8"))
-                        } else {
-                            changeImageDislikeFilm = R.drawable.ic_dislike
-                            statusDislike = 1
-                        }
-                    } else {
-                        statusDislike = 0
-                    }
-                } else {
-                    changeImageDislikeFilm = R.drawable.ic_dislike
-                    statusDislike = 0
-                }
-            }
-    }
-
     private fun updateFavorite() {
         if (statusFavorite == 0) {
             val format = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())
@@ -411,44 +398,6 @@ class InfoFilmFragment : Fragment(), OnListener, FilmRelativeAdapter.OnClickList
                         Toast.LENGTH_LONG
                     ).show()
                 }
-        }
-    }
-
-    private fun updateFilmLike() {
-        if (statusLike == 1 && changeImageLikeFilm == R.drawable.ic_liked_film) {
-            documentReferenceFilmLike
-                .collection(filmMainHome.id.toString() + "")
-                .document(mediaLike.documentId)
-                .update("type_reaction", 1)
-        } else if (statusLike == 2 && changeImageLikeFilm == R.drawable.ic_like_film) {
-            documentReferenceFilmLike
-                .collection(filmMainHome.id.toString() + "")
-                .document(mediaLike.documentId)
-                .delete()
-        } else if (statusLike == 0 && changeImageLikeFilm == R.drawable.ic_liked_film) {
-            val format = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())
-            val mediaReaction = FilmReaction(idUser, format.format(Date()), 1)
-            documentReferenceFilmLike.collection(filmMainHome.id.toString() + "")
-                .add(mediaReaction)
-        }
-    }
-
-    private fun updateFilmDisLike() {
-        if (statusDislike == 1 && changeImageDislikeFilm == R.drawable.ic_disliked) {
-            documentReferenceFilmDislike
-                .collection(filmMainHome.id.toString() + "")
-                .document(mediaDislike.documentId)
-                .update("type_reaction", 1)
-        } else if (statusDislike == 2 && changeImageDislikeFilm == R.drawable.ic_dislike) {
-            documentReferenceFilmDislike
-                .collection(filmMainHome.id.toString() + "")
-                .document(mediaDislike.documentId)
-                .delete()
-        } else if (statusDislike == 0 && changeImageDislikeFilm == R.drawable.ic_disliked) {
-            val format = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())
-            val mediaReaction = FilmReaction(idUser, format.format(Date()), 1)
-            documentReferenceFilmDislike.collection(filmMainHome.id.toString() + "")
-                .add(mediaReaction)
         }
     }
 

@@ -8,6 +8,7 @@ import org.json.JSONObject; // https://mvnrepository.com/artifact/org.json/json
 
 import okhttp3.FormBody;
 import okhttp3.RequestBody;
+
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -26,8 +27,8 @@ public class Refund {
             Random rand = new Random();
             long timestamp = System.currentTimeMillis(); // miliseconds
             String uid = timestamp + "" + (111 + rand.nextInt(888)); // unique id
-            time = getCurrentTimeString(timestamp+"");
-            m_refund_id = getCurrentTimeString("yyMMdd") +"_"+ app_id +"_"+uid;
+            time = getCurrentTimeString(timestamp + "");
+            m_refund_id = getCurrentTimeString("yyMMdd") + "_" + app_id + "_" + uid;
             this.amount = amount;
             this.zp_trans_id = zp_trans_id;
             Description = "Refund for update vip error";
