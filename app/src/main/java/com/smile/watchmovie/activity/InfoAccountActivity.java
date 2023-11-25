@@ -20,6 +20,7 @@ import com.smile.watchmovie.R;
 import com.smile.watchmovie.databinding.ActivityInfoAccountBinding;
 import com.smile.watchmovie.eventbus.EventNotifyLogIn;
 import com.smile.watchmovie.model.UserInfo;
+import com.smile.watchmovie.utils.Constant;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -46,7 +47,6 @@ public class InfoAccountActivity extends AppCompatActivity {
         editor = sharedPreferences.edit();
 
         id_user = sharedPreferences.getString(getString(R.string.id_user), "");
-        documentId = sharedPreferences.getString(getString(R.string.document_id), "");
 
         /* Gọi lấy thông tin user trên FireBase */
         callApiGetUser();
@@ -94,10 +94,13 @@ public class InfoAccountActivity extends AppCompatActivity {
     }
 
     private void callApiGetUser() {
-        collectionReference.document(getString(R.string.table_user)).collection("user" + id_user).whereEqualTo("id", id_user)
+        collectionReference.document(getString(R.string.table_user))
+                .collection("user" + id_user)
+                .whereEqualTo("id", id_user)
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     if (queryDocumentSnapshots.getDocuments().size() > 0) {
+                        documentId = queryDocumentSnapshots.getDocuments().get(0).getId();
                         UserInfo user = queryDocumentSnapshots.getDocuments().get(0).toObject(UserInfo.class);
                         if (user != null) {
                             binding.edtName.setText(user.getFullName());
@@ -144,6 +147,14 @@ public class InfoAccountActivity extends AppCompatActivity {
                 .update(userInfoUpdate)
                 .addOnCompleteListener(task -> {
                     binding.clLoading.setVisibility(View.GONE);
+
+                    /* Cập nhập lại thông tin user trong DB */
+                    editor.putString(Constant.NAME_USER, Objects.requireNonNull(binding.edtName.getText()).toString());
+                    editor.apply();
+
+                    /* Thông báo cập nhập đến các nơi lắng nghe */
+                    EventBus.getDefault().post(new EventNotifyLogIn(true));
+
                     Toast.makeText(this, "Cập nhập thông tin thành công", Toast.LENGTH_SHORT).show();
                 })
                 .addOnFailureListener(e -> {

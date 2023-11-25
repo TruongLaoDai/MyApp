@@ -9,7 +9,7 @@ import java.util.Locale;
 
 public class OtherUtils {
     public String formatCommonTime(String dateUpVip, String type_vip) {
-        String[] data = dateUpVip.split("-");
+        String[] data = dateUpVip.split("/");
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             LocalDate today = LocalDate.now(); // năm - tháng - ngày
             LocalDate dateUpVIp = LocalDate.of(Integer.parseInt(data[2]), Integer.parseInt(data[1]), Integer.parseInt(data[0]));

@@ -30,7 +30,7 @@ class HistoryBuyVipAdapter(val context: Context) :
         with(holder) {
             with(list[position]) {
                 binding.apply {
-                    tvTypePremium.text = if (this@with.is_vip == "1") {
+                    tvTypePremium.text = if (this@with.typeVip == "1") {
                         "Gói tháng"
                     } else {
                         "Gói năm"
@@ -41,7 +41,7 @@ class HistoryBuyVipAdapter(val context: Context) :
 
                     tvStatus.text = context.getString(
                         R.string.status,
-                        OtherUtils().formatCommonTime(this@with.dateRegister, this@with.is_vip)
+                        OtherUtils().formatCommonTime(this@with.dateRegister, this@with.typeVip)
                     )
                 }
             }

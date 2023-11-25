@@ -23,6 +23,7 @@ import com.smile.watchmovie.R;
 import com.smile.watchmovie.databinding.ActivityLoginBinding;
 import com.smile.watchmovie.eventbus.EventNotifyLogIn;
 import com.smile.watchmovie.model.UserInfo;
+import com.smile.watchmovie.utils.Constant;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -41,7 +42,7 @@ public class LoginActivity extends AppCompatActivity {
         binding = ActivityLoginBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getSharedPreferences(Constant.NAME_DATABASE_SHARED_PREFERENCES, Context.MODE_PRIVATE);
         editor = sharedPreferences.edit();
 
         /* Khởi tạo FireStore Database  */
@@ -71,27 +72,20 @@ public class LoginActivity extends AppCompatActivity {
                         if (querySnapshot != null && !querySnapshot.isEmpty()) {
 
                             /* Lấy thông tin truy vấn */
-                            String documentId = querySnapshot.getDocuments().get(0).getId();
                             UserInfo userInfo = querySnapshot.getDocuments().get(0).toObject(UserInfo.class);
 
                             if (userInfo != null) {
-                                userInfo.setDocumentId(documentId);
-
                                 /* Lưu thông tin người dùng đã tồn tại trên FireBase vào DB */
                                 saveToSharedPreferences(userInfo);
 
                                 notifyLogIn();
                             }
                         } else {
-                            UserInfo userInfo = new UserInfo(userId, full_name, "", "", "", "0", "");
+                            UserInfo userInfo = new UserInfo(userId, full_name, "", "", "", "0");
                             collectionReference.document(getString(R.string.table_user))
                                     .collection("user" + userId)
                                     .add(userInfo)
                                     .addOnSuccessListener(documentReference -> {
-
-                                        String documentId = documentReference.getId();
-                                        userInfo.setDocumentId(documentId);
-
                                         /* Lưu thông tin người dùng lại DB */
                                         saveToSharedPreferences(userInfo);
 
@@ -106,10 +100,9 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void saveToSharedPreferences(UserInfo user) {
-        editor.putString("idUser", user.getId());
-        editor.putString("name", user.getFullName());
-        editor.putString("isVip", user.isVip());
-        editor.putString("documentId", user.getDocumentId());
+        editor.putString(Constant.ID_USER, user.getId());
+        editor.putString(Constant.NAME_USER, user.getFullName());
+        editor.putString(Constant.IS_VIP, user.isVip());
         editor.apply();
     }
 

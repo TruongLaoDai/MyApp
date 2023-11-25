@@ -17,11 +17,13 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.smile.watchmovie.R;
 import com.smile.watchmovie.databinding.ActivityChoosePaymentBinding;
+import com.smile.watchmovie.eventbus.EventNotifyBuyVipSuccess;
 import com.smile.watchmovie.model.CreateOrder;
 import com.smile.watchmovie.model.HistoryUpVip;
 import com.smile.watchmovie.model.Refund;
 import com.smile.watchmovie.utils.Constant;
 
+import org.greenrobot.eventbus.EventBus;
 import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
@@ -161,19 +163,25 @@ public class BuyPremiumActivity extends AppCompatActivity {
 
     private void callApiUpdateUserToVip(String id_user, String is_vip) {
         Date date = new Date();
-        SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
+        SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
         HistoryUpVip historyUpVip = new HistoryUpVip(is_vip, format.format(date));
 
-        collectionReference.document(Constant.FirebaseFiretore.TABLE_HISTORY_BUY_PREMIUM).collection("user" + id_user)
+        collectionReference.document(Constant.FirebaseFiretore.TABLE_HISTORY_BUY_PREMIUM)
+                .collection("user" + id_user)
                 .add(historyUpVip)
                 .addOnCompleteListener(task1 -> {
+                    /* Lưu thông tin mua vip vào DB */
                     editor.putString(Constant.IS_VIP, type_vip);
                     editor.apply();
+
+                    /* Phát thông báo mua vip thành công */
+                    EventBus.getDefault().post(new EventNotifyBuyVipSuccess());
+
                     new AlertDialog.Builder(this)
                             .setTitle("Thanh toán thành công")
                             .setMessage("Bây giờ bạn có thể trải nghiệm toàn bộ các bộ phim trong ứng dụng của mình.")
-                            .setPositiveButton("Ok", (dialog, which) -> {
-                            }).show();
+                            .setPositiveButton("Ok", (dialog, which) -> {})
+                            .show();
                 })
                 .addOnFailureListener(e -> {
                     Toast.makeText(this, "Error update", Toast.LENGTH_SHORT).show();
@@ -207,10 +215,10 @@ public class BuyPremiumActivity extends AppCompatActivity {
             String code = data.getString("return_code");
 
             if (code.equals("1") || code.equals("3")) {
-                Toast.makeText(getApplicationContext(), getString(R.string.refund_success), Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), getString(R.string.refund_success), Toast.LENGTH_SHORT).show();
                 token = data.getString("return_message");
             } else {
-                Toast.makeText(getApplicationContext(), getString(R.string.refund_unsucces), Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), getString(R.string.refund_unsucces), Toast.LENGTH_SHORT).show();
             }
 
         } catch (Exception e) {

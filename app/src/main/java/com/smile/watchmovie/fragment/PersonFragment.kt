@@ -23,6 +23,7 @@ import com.smile.watchmovie.api.ApiHelper
 import com.smile.watchmovie.api.RetrofitBuilder
 import com.smile.watchmovie.base.ViewModelFactory
 import com.smile.watchmovie.databinding.FragmentPersonBinding
+import com.smile.watchmovie.eventbus.EventNotifyBuyVipSuccess
 import com.smile.watchmovie.eventbus.EventNotifyLogIn
 import com.smile.watchmovie.utils.Constant
 import com.smile.watchmovie.viewmodel.PersonFragmentViewModel
@@ -177,9 +178,15 @@ class PersonFragment : Fragment() {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    fun onEvent(isLogIn: EventNotifyLogIn?) {
+    fun onEvent(isLogIn: EventNotifyLogIn) {
         getInfoUserInDB()
         setupInfo()
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onEvent(notify: EventNotifyBuyVipSuccess) {
+        binding.ivVip.visibility = View.VISIBLE
+        binding.tvTitlePayDetail.setText(R.string.account_vip)
     }
 
     private fun getInfoUserInDB() {

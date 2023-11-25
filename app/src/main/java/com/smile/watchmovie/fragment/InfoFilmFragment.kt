@@ -46,7 +46,6 @@ class InfoFilmFragment : Fragment(), OnListener, FilmRelativeAdapter.OnClickList
     private lateinit var mEpisodeAdapter: EpisodeAdapter
     private lateinit var documentReferenceFilmFavorite: DocumentReference
     private lateinit var documentReferenceLikeOrDislike: DocumentReference
-    private lateinit var documentReferenceFilmDislike: DocumentReference
     private var statusFavorite = 0
     private lateinit var subFilmArrayList: List<SubFilm>
     private lateinit var documentIdFilmFavorite: String
@@ -190,7 +189,6 @@ class InfoFilmFragment : Fragment(), OnListener, FilmRelativeAdapter.OnClickList
         val firebaseFirestore = FirebaseFirestore.getInstance()
         documentReferenceFilmFavorite = firebaseFirestore.document("WatchFilm/tblfilmfavorite")
         documentReferenceLikeOrDislike = firebaseFirestore.document("WatchFilm/tblfilmlike")
-        documentReferenceFilmDislike = firebaseFirestore.document("WatchFilm/tblfilmdislike")
         loadFavorite()
         loadLikeAndDislike()
     }

@@ -1,44 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#ECF3F6"
     android:orientation="vertical"
-    android:weightSum="10"
-    tools:context=".activity.MainActivity">
+    android:weightSum="10">
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/view_pager"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="10"
-        android:background="@color/white" />
+        android:layout_weight="10" />
 
     <RelativeLayout
         android:id="@+id/splash_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/white"
-        android:orientation="vertical"
-        tools:visibility="gone">
+        android:layout_height="match_parent">
 
-        <ImageView
+        <androidx.appcompat.widget.AppCompatImageView
             android:layout_width="150dp"
             android:layout_height="150dp"
             android:layout_centerInParent="true"
             android:padding="10dp"
             android:src="@drawable/logo_app" />
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_above="@+id/tv_name_owner"
             android:layout_centerInParent="true"
+            android:fontFamily="@font/noto_sans"
             android:text="@string/design_by" />
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_name_owner"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
