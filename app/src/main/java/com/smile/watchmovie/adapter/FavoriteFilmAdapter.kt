@@ -46,7 +46,7 @@ class FavoriteFilmAdapter(
                     }
 
                     root.setOnLongClickListener {
-                        listener.deleteToFavorite(this@with.documentId)
+                        listener.deleteToFavorite(this@with.documentId, position)
                         true
                     }
                 }
@@ -62,12 +62,17 @@ class FavoriteFilmAdapter(
         notifyDataSetChanged()
     }
 
+    fun removeItem(position: Int) {
+        list.removeAt(position)
+        notifyItemRemoved(position)
+    }
+
     inner class ViewHolder(val binding: ItemFavoriteFilmBinding) :
         RecyclerView.ViewHolder(binding.root)
 
     interface OnListener {
         fun openFilm(idFilm: Int)
 
-        fun deleteToFavorite(documentId: String)
+        fun deleteToFavorite(documentId: String, position: Int)
     }
 }

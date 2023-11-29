@@ -51,7 +51,7 @@ class WatchHistoryAdapter(
                     }
 
                     root.setOnLongClickListener {
-                        listener.deleteWatchHistory(this@with.documentID)
+                        listener.deleteWatchHistory(this@with.documentID, position)
                         true
                     }
                 }
@@ -67,12 +67,17 @@ class WatchHistoryAdapter(
         notifyDataSetChanged()
     }
 
+    fun removeItem(position: Int) {
+        list.removeAt(position)
+        notifyItemRemoved(position)
+    }
+
     inner class ViewHolder(val binding: ItemFavoriteFilmBinding) :
         RecyclerView.ViewHolder(binding.root)
 
     interface OnListener {
         fun openFilm(idFilm: Int)
 
-        fun deleteWatchHistory(documentId: String)
+        fun deleteWatchHistory(documentId: String, position: Int)
     }
 }

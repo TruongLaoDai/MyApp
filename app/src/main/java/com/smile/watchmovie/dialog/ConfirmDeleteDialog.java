@@ -14,14 +14,16 @@ import com.smile.watchmovie.listener.IClickItemFilmListener;
 
 public class ConfirmDeleteDialog extends BottomSheetDialogFragment {
     private String documentId;
+    private int position;
     private IClickItemFilmListener listener;
     private DeleteFragmentBinding binding;
 
     public ConfirmDeleteDialog() {
     }
 
-    public ConfirmDeleteDialog(String documentId, IClickItemFilmListener listener) {
+    public ConfirmDeleteDialog(String documentId, int position, IClickItemFilmListener listener) {
         this.documentId = documentId;
+        this.position = position;
         this.listener = listener;
     }
 
@@ -37,7 +39,7 @@ public class ConfirmDeleteDialog extends BottomSheetDialogFragment {
         super.onViewCreated(view, savedInstanceState);
 
         binding.btnDelete.setOnClickListener(v -> {
-            listener.onClickItemFilm(documentId);
+            listener.onClickItemFilm(documentId, position);
             dismiss();
         });
 

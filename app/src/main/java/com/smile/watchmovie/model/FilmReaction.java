@@ -11,6 +11,9 @@ public class FilmReaction {
     private int type_reaction; /* 0: không tương tác, 1: like, 2: dislike */
     private int idFilm;
 
+    public FilmReaction() {
+    }
+
     public FilmReaction(String idUser, int type_reaction) {
         this.idUser = idUser;
         this.type_reaction = type_reaction;

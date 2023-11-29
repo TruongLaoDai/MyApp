@@ -98,18 +98,18 @@ class WatchHistoryActivity : AppCompatActivity(),
         }
     }
 
-    override fun deleteWatchHistory(documentId: String) {
-        val dialog = ConfirmDeleteDialog(documentId, this)
+    override fun deleteWatchHistory(documentId: String, position: Int) {
+        val dialog = ConfirmDeleteDialog(documentId, position, this)
         dialog.show(supportFragmentManager, null)
     }
 
-    override fun onClickItemFilm(documentId: String) {
+    override fun onClickItemFilm(documentId: String, position: Int) {
         collectionReference.document(Constant.FirebaseFiretore.TABLE_HISTORY_WATCHED)
             .collection(idUser)
             .document(documentId)
             .delete()
             .addOnCompleteListener {
-                getHistoryWatchedInDB()
+                adapterHistoryWatched.removeItem(position)
             }
     }
 }
