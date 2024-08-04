@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="10dp">
+    android:padding="10dp"
+    app:backgroundTint="@color/background_screen">
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tv_title_dialog"
@@ -55,38 +56,30 @@
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tv_episodesTotal"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/noto_sans"
+                style="@style/Text"
                 android:singleLine="true"
-                android:textColor="@color/black"
+                android:textSize="14sp"
                 tools:text="Phim ngắn" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tv_category"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/noto_sans"
+                style="@style/Text"
                 android:singleLine="true"
-                android:textColor="@color/black"
+                android:textSize="14sp"
                 tools:text="Thể loại: Kinh dị" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/rate"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/noto_sans"
+                style="@style/Text"
                 android:singleLine="true"
-                android:textColor="@color/black"
+                android:textSize="14sp"
                 tools:text="Điểm đánh giá: 4/5" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tv_created"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/noto_sans"
+                style="@style/Text"
                 android:singleLine="true"
-                android:textColor="@color/black"
+                android:textSize="14sp"
                 tools:text="Ngày ra mắt: 13/8/2023" />
 
         </LinearLayout>
@@ -107,10 +100,9 @@
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tv_description"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/noto_sans"
+        style="@style/Text"
         android:textColor="@color/gray"
+        android:textSize="14sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_title_description"
         tools:text="Rất là mất thời gian nhá!" />

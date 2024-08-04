@@ -2,14 +2,13 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/background_screen">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/tool_bar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:navigationIcon="?attr/homeAsUpIndicator"
         app:title="@string/movie_setting" />
@@ -17,6 +16,7 @@
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/title_auto_play"
         style="@style/Button_Setting"
+        android:layout_height="54dp"
         android:layout_marginTop="10dp"
         android:drawableEnd="@null"
         android:paddingStart="20dp"
@@ -24,43 +24,40 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tool_bar" />
 
-    <androidx.appcompat.widget.SwitchCompat
+    <com.google.android.material.materialswitch.MaterialSwitch
         android:id="@+id/sw_setting_auto_play"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/Switch"
         android:layout_marginEnd="5dp"
         app:layout_constraintBottom_toBottomOf="@+id/title_auto_play"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/title_auto_play" />
 
-    <View
+    <com.google.android.material.divider.MaterialDivider
+        style="@style/Line"
         android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/color_line_setting"
         app:layout_constraintTop_toBottomOf="@+id/title_auto_play" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/title_auto_full_screen"
         style="@style/Button_Setting"
+        android:layout_height="54dp"
         android:drawableEnd="@null"
         android:paddingStart="20dp"
         android:text="@string/auto_play_full_screen"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/title_auto_play" />
 
-    <androidx.appcompat.widget.SwitchCompat
+    <com.google.android.material.materialswitch.MaterialSwitch
         android:id="@+id/sw_setting_play_full_screen"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/Switch"
         android:layout_marginEnd="5dp"
         app:layout_constraintBottom_toBottomOf="@+id/title_auto_full_screen"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/title_auto_full_screen" />
 
-    <View
+    <com.google.android.material.divider.MaterialDivider
+        style="@style/Line"
         android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/color_line_setting"
         app:layout_constraintTop_toBottomOf="@+id/title_auto_full_screen" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

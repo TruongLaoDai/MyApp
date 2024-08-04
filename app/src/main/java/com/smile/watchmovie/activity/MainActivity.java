@@ -17,8 +17,8 @@ import com.smile.watchmovie.adapter.ViewPagerAdapter;
 import com.smile.watchmovie.databinding.ActivityMainBinding;
 
 public class MainActivity extends AppCompatActivity {
-    public ActivityMainBinding binding;
-    public String nameOfUser;
+    private ActivityMainBinding binding;
+    private String nameOfUser;
 
     @SuppressLint("NonConstantResourceId")
     @Override

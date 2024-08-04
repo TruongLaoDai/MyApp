@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/background_screen">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/tool_bar"
@@ -149,24 +150,22 @@
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tv_des_type_premium"
+        style="@style/Text"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:layout_below="@+id/lout_type_premium"
         android:layout_marginHorizontal="10dp"
         android:text="@string/des_type_premium_month"
-        android:textColor="@color/gray" />
+        android:textColor="@color/gray"
+        android:textSize="14sp" />
 
-    <androidx.appcompat.widget.AppCompatButton
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_buy"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        style="@style/Button"
+        android:layout_height="51dp"
         android:layout_below="@+id/tv_des_type_premium"
         android:layout_marginHorizontal="10dp"
         android:layout_marginTop="10dp"
-        android:background="@drawable/bg_buy_premium"
         android:text="@string/buy"
-        android:textAllCaps="false"
-        android:textColor="@color/white"
         android:textStyle="bold" />
 
     <androidx.appcompat.widget.AppCompatTextView

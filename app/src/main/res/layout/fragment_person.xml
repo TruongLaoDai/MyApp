@@ -16,8 +16,7 @@
             android:layout_width="match_parent"
             android:layout_height="200dp"
             android:background="@drawable/iv_hello"
-            android:paddingStart="15dp"
-            android:paddingEnd="15dp">
+            android:paddingHorizontal="15dp">
 
             <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/iv_avt_account"
@@ -52,24 +51,19 @@
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tv_weather"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                style="@style/Text"
                 android:layout_above="@+id/tv_weather_detail"
                 android:layout_alignParentEnd="true"
-                android:fontFamily="@font/noto_sans"
                 android:textColor="@color/white"
                 android:textSize="16sp"
                 tools:text="Nhiệt độ tại Hà Nội" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tv_weather_detail"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                style="@style/Text"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentBottom="true"
                 android:layout_marginBottom="45dp"
-                android:fontFamily="@font/noto_sans"
-                android:textColor="@color/white"
                 android:textSize="16sp"
                 tools:text="Nhiều mây" />
 
@@ -105,16 +99,15 @@
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tv_title_pay_detail"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                style="@style/Text"
                 android:layout_below="@+id/tv_title_pay"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentEnd="true"
                 android:layout_marginStart="2dp"
                 android:layout_marginEnd="45dp"
-                android:fontFamily="@font/noto_sans"
                 android:text="@string/buy_title"
-                android:textColor="#E55151" />
+                android:textColor="#E55151"
+                android:textSize="14sp" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/go"
@@ -147,13 +140,14 @@
 
         </RelativeLayout>
 
+        <!-- Giao diện cài đặt, trợ giúp và phản hồi -->
         <androidx.appcompat.widget.LinearLayoutCompat
             android:id="@+id/lout_tool"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/lout_pay"
             android:layout_marginStart="10dp"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="21dp"
             android:layout_marginEnd="10dp"
             android:background="@drawable/bg_white_arrow"
             android:orientation="vertical">
@@ -165,10 +159,9 @@
                 android:paddingStart="10dp"
                 android:text="@string/history" />
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/color_line_setting" />
+            <com.google.android.material.divider.MaterialDivider
+                style="@style/Line"
+                android:layout_width="match_parent" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tv_download"
@@ -176,10 +169,9 @@
                 android:drawableStart="@drawable/icon_download"
                 android:text="@string/downloaded_film" />
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/color_line_setting" />
+            <com.google.android.material.divider.MaterialDivider
+                style="@style/Line"
+                android:layout_width="match_parent" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tv_favorite"
@@ -191,7 +183,6 @@
 
         </androidx.appcompat.widget.LinearLayoutCompat>
 
-        <!-- Giao diện cài đặt, trợ giúp và phản hồi -->
         <LinearLayout
             android:id="@+id/lout_setting"
             android:layout_width="match_parent"
@@ -211,10 +202,9 @@
                 android:paddingStart="11dp"
                 android:text="@string/setting" />
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/color_line_setting" />
+            <com.google.android.material.divider.MaterialDivider
+                style="@style/Line"
+                android:layout_width="match_parent" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tv_help_feedback"
